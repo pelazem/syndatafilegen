@@ -1,0 +1,13 @@
+﻿{
+	"IncludeHeaderRow": "true",
+	"Delimiter": ",",
+	"Encloser": "",
+	"PaddingCharacter": " ",
+	"PadAt": "AtStart",
+	"TruncateAt": "AtEnd",
+	"OutputFolderRoot": "d:\\test\\fw\\",
+	"PathSpec": "fooFixedWidth.txt",
+	"EncodingName": "UTF8",
+	"RecordsPerFileMin": 100,
+	"RecordsPerFileMax": 200
+}

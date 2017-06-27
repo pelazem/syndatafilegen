@@ -1,0 +1,10 @@
+﻿{
+	"IncludeHeaderRow": "true",
+	"Delimiter": ",",
+	"Encloser": "",
+	"OutputFolderRoot": "d:\\test\\del\\",
+	"PathSpec": "fooDelimited.txt",
+	"EncodingName": "UTF8",
+	"RecordsPerFileMin": 100,
+	"RecordsPerFileMax": 200
+}

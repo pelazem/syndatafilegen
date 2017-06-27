@@ -1,0 +1,15 @@
+﻿{
+	"IncludeHeaderRow": "true",
+	"Delimiter": "",
+	"Encloser": "",
+	"PaddingCharacter": " ",
+	"PadAt": "AtStart",
+	"TruncateAt": "AtEnd",
+	"OutputFolderRoot": "d:\\test\\",
+	"PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.txt",
+	"EncodingName": "UTF8",
+	"RecordsPerFileMin": 100,
+	"RecordsPerFileMax": 200,
+	"DateStart": "1/1/2017",
+	"DateEnd": "3/1/2017"
+}
