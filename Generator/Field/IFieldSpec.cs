@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Generator
 {
 	public interface IFieldSpec<T>
+		where T : new()
 	{
 		PropertyInfo Prop { get; }
 
@@ -15,13 +16,15 @@ namespace Generator
 
 		string FormatString { get; }
 
-		char? PaddingCharIfFixedWidth { get; }
 
-		int? LengthIfFixedWidth { get; }
+		int? FixedWidthLength { get; }
 
-		Util.Location? AddPaddingAtIfFixedWidth { get; }
+		char? FixedWidthPaddingChar { get; }
+	
+		Util.Location? FixedWidthAddPadding { get; }
 
-		Util.Location? TruncateTooLongAtIfFixedWidth { get; }
+		Util.Location? FixedWidthTruncate { get; }
+
 
 		void SetValue(T item);
 	}

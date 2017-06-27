@@ -11,7 +11,8 @@ using pelazem.Common;
 
 namespace Generator
 {
-	public class FileSpecFixedWidth<T> : IFileSpec<T>
+	public class FileSpecFixedWidth<T> : FileSpecBase<T>
+		where T : new()
 	{
 		#region Properties
 
@@ -33,8 +34,6 @@ namespace Generator
 		/// </summary>
 		public Util.Location TruncateTooLongAt { get; private set; }
 
-		public List<IFieldSpec<T>> FieldSpecs { get; private set; }
-
 		public Encoding Encoding { get; } = Encoding.UTF8;
 
 		#endregion
@@ -43,7 +42,8 @@ namespace Generator
 
 		private FileSpecFixedWidth() { }
 
-		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin = null, int? recordsPerFileMax = null)
+		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
 		{
 			this.IncludeHeaderRow = includeHeaderRow;
 			this.Delimiter = delimiter;
@@ -52,20 +52,25 @@ namespace Generator
 			this.AddPaddingAt = addPaddingAt;
 			this.TruncateTooLongAt = truncateTooLongAt;
 			this.Encoding = encoding;
-			this.RecordsPerFileMin = recordsPerFileMin;
-			this.RecordsPerFileMax = recordsPerFileMax;
-			this.FieldSpecs = fieldSpecs;
+		}
+
+		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+		{
+			this.IncludeHeaderRow = includeHeaderRow;
+			this.Delimiter = delimiter;
+			this.Encloser = encloser;
+			this.PaddingCharacter = (paddingCharacter.ToString().Trim().Length == 1 ? paddingCharacter : ' ');
+			this.AddPaddingAt = addPaddingAt;
+			this.TruncateTooLongAt = truncateTooLongAt;
+			this.Encoding = encoding;
 		}
 
 		#endregion
 
 		#region IFileSpec implementation
 
-		public int? RecordsPerFileMin { get; private set; }
-
-		public int? RecordsPerFileMax { get; private set; }
-
-		public Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(List<T> items)
 		{
 			var result = new MemoryStream();
 
@@ -105,7 +110,7 @@ namespace Generator
 			{
 				string propName = this.Encloser + fieldSpec.Prop.Name + this.Encloser;
 
-				int fieldWidth = (fieldSpec.LengthIfFixedWidth != null ? fieldSpec.LengthIfFixedWidth.Value : Math.Max(propName.Length, items.Take(Math.Min(items.Count, 1000)).Select(i => fieldSpec.Prop.GetValueEx(i).ToString().Length).Max()));
+				int fieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : Math.Max(propName.Length, items.Take(Math.Min(items.Count, 1000)).Select(i => fieldSpec.Prop.GetValueEx(i).ToString().Length).Max()));
 
 				if (propName.Length == fieldWidth)
 					result.Add(propName);
@@ -113,19 +118,19 @@ namespace Generator
 				{
 					Util.Location? padAt = null;
 
-					if (fieldSpec.AddPaddingAtIfFixedWidth != null)
-						padAt = fieldSpec.AddPaddingAtIfFixedWidth.Value;
+					if (fieldSpec.FixedWidthAddPadding != null)
+						padAt = fieldSpec.FixedWidthAddPadding.Value;
 					else
 						padAt = this.AddPaddingAt;
 
 					switch (padAt.Value)
 					{
 						case Util.Location.AtStart:
-							result.Add(propName.PadLeft(fieldWidth, (fieldSpec.PaddingCharIfFixedWidth ?? this.PaddingCharacter)));
+							result.Add(propName.PadLeft(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
 							break;
 						case Util.Location.AtEnd:
 						default:
-							result.Add(propName.PadRight(fieldWidth, (fieldSpec.PaddingCharIfFixedWidth ?? this.PaddingCharacter)));
+							result.Add(propName.PadRight(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
 							break;
 					}
 				}
@@ -133,8 +138,8 @@ namespace Generator
 				{
 					Util.Location? truncateAt = null;
 
-					if (fieldSpec.TruncateTooLongAtIfFixedWidth != null)
-						truncateAt = fieldSpec.TruncateTooLongAtIfFixedWidth.Value;
+					if (fieldSpec.FixedWidthTruncate != null)
+						truncateAt = fieldSpec.FixedWidthTruncate.Value;
 					else
 						truncateAt = this.TruncateTooLongAt;
 
@@ -160,7 +165,7 @@ namespace Generator
 
 			foreach (IFieldSpec<T> fieldSpec in this.FieldSpecs)
 			{
-				int fullFieldWidth = (fieldSpec.LengthIfFixedWidth != null ? fieldSpec.LengthIfFixedWidth.Value : Math.Max((this.IncludeHeaderRow ? fieldSpec.Prop.Name.Length : 0), items.Take(Math.Min(items.Count, 1000)).Select(i => fieldSpec.Prop.GetValueEx(i).ToString().Length).Max()));
+				int fullFieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : Math.Max((this.IncludeHeaderRow ? fieldSpec.Prop.Name.Length : 0), items.Take(Math.Min(items.Count, 1000)).Select(i => fieldSpec.Prop.GetValueEx(i).ToString().Length).Max()));
 				int fieldWidthNetEncloser = Math.Max(0, fullFieldWidth - (2 * this.Encloser.Length));
 
 				object rawValue = fieldSpec.Prop.GetValueEx(item);
@@ -173,9 +178,9 @@ namespace Generator
 				// Second we handle padding or truncation
 				if (finalValue.Length < fieldWidthNetEncloser)
 				{
-					char paddingChar = fieldSpec.PaddingCharIfFixedWidth ?? this.PaddingCharacter;
+					char paddingChar = fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter;
 
-					Util.Location? padAt = fieldSpec.AddPaddingAtIfFixedWidth ?? this.AddPaddingAt;
+					Util.Location? padAt = fieldSpec.FixedWidthAddPadding ?? this.AddPaddingAt;
 
 					switch (padAt.Value)
 					{
@@ -195,7 +200,7 @@ namespace Generator
 				}
 				else if (finalValue.Length > fieldWidthNetEncloser)
 				{
-					Util.Location? truncateAt = fieldSpec.TruncateTooLongAtIfFixedWidth ?? this.TruncateTooLongAt;
+					Util.Location? truncateAt = fieldSpec.FixedWidthTruncate ?? this.TruncateTooLongAt;
 
 					switch (truncateAt)
 					{

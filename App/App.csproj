@@ -55,9 +55,9 @@
     <Compile Include="Samples\RecordWithDate.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CCLF\CCLF.csproj">
+    <ProjectReference Include="..\CCLFLib\CCLFLib.csproj">
       <Project>{d72935f3-3515-4837-b432-186146054fd7}</Project>
-      <Name>CCLF</Name>
+      <Name>CCLFLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\Generator\Generator.csproj">
       <Project>{8f8bf84a-7285-4a47-9f91-70c3e4b791e0}</Project>

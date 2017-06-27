@@ -45,5 +45,37 @@ namespace Generator
 		}
 
 		#endregion
+
+		public static Encoding GetEncoding(string encodingName)
+		{
+			Encoding result;
+
+			if (!string.IsNullOrWhiteSpace(encodingName))
+			{
+				switch (encodingName)
+				{
+					case "ASCII":
+						result = Encoding.ASCII;
+						break;
+					case "UTF32":
+						result = Encoding.UTF32;
+						break;
+					case "UTF8":
+					default:
+						result = Encoding.UTF8;
+						break;
+				}
+			}
+			else
+				result = Encoding.UTF8;
+
+			return result;
+		}
+
+		internal static string GetPadded(int someTwoDigitNumber)
+		{
+			return (someTwoDigitNumber < 10 ? "0" : string.Empty) + someTwoDigitNumber.ToString();
+		}
+
 	}
 }

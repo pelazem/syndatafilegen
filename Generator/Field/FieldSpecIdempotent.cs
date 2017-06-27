@@ -9,6 +9,7 @@ using pelazem.Common;
 namespace Generator
 {
 	public class FieldSpecIdempotent<T> : FieldSpecBase<T>
+		where T : new()
 	{
 		#region FieldSpecBase implementation
 
@@ -32,8 +33,8 @@ namespace Generator
 		{
 		}
 
-		public FieldSpecIdempotent(PropertyInfo prop, string formatString, int? lengthIfFixedWidth, Util.Location? addPaddingAtIfFixedWidth = Util.Location.AtStart, Util.Location? truncateTooLongAtIfFixedWidth = Util.Location.AtEnd, char? paddingCharIfFixedWidth = null)
-			: base(prop, false, formatString, lengthIfFixedWidth, addPaddingAtIfFixedWidth, truncateTooLongAtIfFixedWidth, paddingCharIfFixedWidth)
+		public FieldSpecIdempotent(PropertyInfo prop, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(prop, false, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 		}
 

@@ -8,7 +8,8 @@ using pelazem.Common;
 
 namespace Generator
 {
-	public class FileSpecDelimited<T> : IFileSpec<T>
+	public class FileSpecDelimited<T> : FileSpecBase<T>
+		where T : new()
 	{
 		#region Properties
 
@@ -18,8 +19,6 @@ namespace Generator
 
 		public string Encloser { get; private set; }
 
-		public List<IFieldSpec<T>> FieldSpecs { get; private set; }
-
 		public Encoding Encoding { get; } = Encoding.UTF8;
 
 		#endregion
@@ -28,26 +27,29 @@ namespace Generator
 
 		private FileSpecDelimited() { }
 
-		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin = null, int? recordsPerFileMax = null)
+		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
 		{
 			this.IncludeHeaderRow = includeHeaderRow;
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.Encoding = encoding;
-			this.RecordsPerFileMin = recordsPerFileMin;
-			this.RecordsPerFileMax = recordsPerFileMax;
-			this.FieldSpecs = fieldSpecs;
+		}
+
+		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+		{
+			this.IncludeHeaderRow = includeHeaderRow;
+			this.Delimiter = delimiter;
+			this.Encloser = encloser;
+			this.Encoding = encoding;
 		}
 
 		#endregion
 
 		#region IFileSpec implementation
 
-		public int? RecordsPerFileMin { get; private set; }
-
-		public int? RecordsPerFileMax { get; private set; }
-
-		public Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(List<T> items)
 		{
 			var result = new MemoryStream();
 

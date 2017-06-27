@@ -12,43 +12,11 @@ namespace Generator
 	public class Generator<T>
 		where T : new()
 	{
-		#region Constants
-
-		// Tokens for path spec. May need to nuance this; currently these tokens assume fully qualified, e.g. 03.
-		public const string YYYY = "{yyyy}";
-		public const string YY = "{yy}";
-		public const string MM = "{mm}";
-		public const string DD = "{dd}";
-		public const string HH = "{hh}";
-
-		public const string DEFAULT_FILE_NAME = "generated";
-		public const string DEFAULT_FILE_EXTENSION = ".txt";
-
-		#endregion
-
-		#region Variables
-
-		// Local list of properties since we will check for loop date/time prop and remove it and do other mods that should not affect TypeInfo
-		private List<PropertyInfo> _props = new List<PropertyInfo>();
-
-		#endregion
-
 		#region Properties
 
 		public string OutputFolderRoot { get; private set; }
 
-		public string PathSpec { get; private set; }
-
-		public DateTime? DateStart { get; private set; }
-		public DateTime? DateEnd { get; private set; }
-
 		public IFileSpec<T> FileSpec { get; private set; }
-
-		public string PropertyNameForLoopDateTime { get; private set; }
-
-		public PropertyInfo PropertyForLoopDateTime { get; private set; }
-
-		public List<IFieldSpec<T>> FieldSpecs { get; private set; }
 
 		private DateTime? DateLoop { get; set; }
 
@@ -74,49 +42,13 @@ namespace Generator
 		public Generator
 		(
 			string outputFolderRoot,
-			string pathSpec,
-			IFileSpec<T> fileSpec,
-			List<IFieldSpec<T>> fieldSpecs = null,
-			DateTime? dateStart = null,
-			DateTime? dateEnd = null,
-			string propertyNameForLoopDateTime = ""
-		)
-		{
-			this.OutputFolderRoot = (string.IsNullOrWhiteSpace(outputFolderRoot) ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) : outputFolderRoot);
-			this.PathSpec = pathSpec.Replace(@"/", @"\");
-			this.FileSpec = fileSpec;
-			this.FieldSpecs = fieldSpecs;
-			this.DateStart = dateStart;
-			this.DateEnd = dateEnd;
-			this.PropertyNameForLoopDateTime = propertyNameForLoopDateTime;
-
-			this.DateLoop = this.DateStart;
-		}
-
-		public Generator
-		(
-			string outputFolderRoot,
-			string pathSpec,
 			IFileSpec<T> fileSpec
 		)
 		{
 			this.OutputFolderRoot = (string.IsNullOrWhiteSpace(outputFolderRoot) ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) : outputFolderRoot);
-			this.PathSpec = pathSpec.Replace(@"/", @"\");
 			this.FileSpec = fileSpec;
-		}
 
-		public Generator
-		(
-			string outputFolderRoot,
-			string pathSpec,
-			IFileSpec<T> fileSpec,
-			List<IFieldSpec<T>> fieldSpecs
-		)
-		{
-			this.OutputFolderRoot = (string.IsNullOrWhiteSpace(outputFolderRoot) ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) : outputFolderRoot);
-			this.PathSpec = pathSpec.Replace(@"/", @"\");
-			this.FileSpec = fileSpec;
-			this.FieldSpecs = fieldSpecs;
+			this.DateLoop = this.FileSpec.DateStart;
 		}
 
 		#endregion
@@ -142,12 +74,7 @@ namespace Generator
 		{
 			List<T> result = new List<T>();
 
-			// Prep loop date/time property if one was specified
-			SetPropertyForLoopDateTime();
-
-			bool hasDateLooping = GetHasDateLooping();
-
-			if (!hasDateLooping)
+			if (!this.FileSpec.HasDateLooping)
 			{
 				result.AddRange(GetItems());
 
@@ -157,7 +84,7 @@ namespace Generator
 			{
 				Func<DateTime> func = GetDateLoopFunc();
 
-				while (this.DateLoop <= this.DateEnd)
+				while (this.DateLoop <= this.FileSpec.DateEnd)
 				{
 					List<T> items = GetItems();
 
@@ -172,52 +99,17 @@ namespace Generator
 			return result;
 		}
 
-		private void SetPropertyForLoopDateTime()
-		{
-			// Check whether there is a valid date/time property specified
-			if (this.PropertyForLoopDateTime == null && !string.IsNullOrWhiteSpace(this.PropertyNameForLoopDateTime))
-			{
-				this.PropertyForLoopDateTime = TypeHelper.GetPrimitiveProps(typeof(T))
-					.Where
-					(p =>
-						p.Name == this.PropertyNameForLoopDateTime
-						&&
-						p.CanWrite
-						&&
-						(p.PropertyType.Equals(TypeHelper.TypeDateTime) || p.PropertyType.Equals(TypeHelper.TypeDateTimeNullable))
-					)
-					.FirstOrDefault()
-				;
-			}
-		}
-
-		private bool GetHasDateLooping()
-		{
-			bool pathSpecHasDateLooping =
-			(
-				this.PathSpec.Contains(YYYY) ||
-				this.PathSpec.Contains(YY) ||
-				this.PathSpec.Contains(MM) ||
-				this.PathSpec.Contains(DD) ||
-				this.PathSpec.Contains(HH)
-			);
-
-			bool dateLoopingDatesSpecified = (this.DateStart != null && this.DateEnd != null && this.DateStart.Value <= this.DateEnd.Value);
-
-			return pathSpecHasDateLooping && dateLoopingDatesSpecified;
-		}
-
 		private Func<DateTime> GetDateLoopFunc()
 		{
 			Func<DateTime> func = null;
 
-			if (this.PathSpec.Contains(HH))
+			if (this.FileSpec.PathSpec.Contains(Constants.HH))
 				func = () => this.DateLoop.Value.AddHours(1);
-			else if (this.PathSpec.Contains(DD))
+			else if (this.FileSpec.PathSpec.Contains(Constants.DD))
 				func = () => this.DateLoop.Value.AddDays(1);
-			else if (this.PathSpec.Contains(MM))
+			else if (this.FileSpec.PathSpec.Contains(Constants.MM))
 				func = () => this.DateLoop.Value.AddMonths(1);
-			else if (this.PathSpec.Contains(YY) || this.PathSpec.Contains(YYYY))
+			else if (this.FileSpec.PathSpec.Contains(Constants.YY) || this.FileSpec.PathSpec.Contains(Constants.YYYY))
 				func = () => this.DateLoop.Value.AddYears(1);
 
 			return func;
@@ -239,12 +131,12 @@ namespace Generator
 				T item = new T();
 
 				// Set values per the supplied field specifications
-				foreach (IFieldSpec<T> fieldSpec in this.FieldSpecs)
+				foreach (IFieldSpec<T> fieldSpec in this.FileSpec.FieldSpecs)
 					fieldSpec.SetValue(item);
 
 				// Set looping date if so specified
-				if (this.PropertyForLoopDateTime != null)
-					this.PropertyForLoopDateTime.SetValueEx(item, this.DateLoop);
+				if (this.FileSpec.PropertyForLoopDateTime != null)
+					this.FileSpec.PropertyForLoopDateTime.SetValueEx(item, this.DateLoop);
 
 				result.Add(item);
 			}
@@ -261,27 +153,29 @@ namespace Generator
 
 		public string GetPath(DateTime? dateTime)
 		{
-			string path = Path.Combine(this.OutputFolderRoot, this.PathSpec);
+			string path = Path.Combine(this.OutputFolderRoot, this.FileSpec.PathSpec);
 
 			if (dateTime == null)
 				dateTime = DateTime.UtcNow;
+			else if (dateTime.Value.Kind != DateTimeKind.Utc)
+				dateTime = dateTime.Value.ToUniversalTime();
 
 			if (dateTime != null)
 			{
 				path = path
-					.Replace(YYYY, dateTime.Value.Year.ToString())
-					.Replace(YY, dateTime.Value.Year.ToString().Substring(2))
-					.Replace(MM, GetPadded(dateTime.Value.Month))
-					.Replace(DD, GetPadded(dateTime.Value.Day))
-					.Replace(HH, GetPadded(dateTime.Value.Hour))
+					.Replace(Constants.YYYY, dateTime.Value.Year.ToString())
+					.Replace(Constants.YY, dateTime.Value.Year.ToString().Substring(2))
+					.Replace(Constants.MM, Util.GetPadded(dateTime.Value.Month))
+					.Replace(Constants.DD, Util.GetPadded(dateTime.Value.Day))
+					.Replace(Constants.HH, Util.GetPadded(dateTime.Value.Hour))
 				;
 			}
 
 			if (string.IsNullOrWhiteSpace(Path.GetFileName(path)))
-				path = Path.Combine(path, DEFAULT_FILE_NAME);
+				path = Path.Combine(path, Constants.DEFAULT_FILE_NAME);
 
 			if (!Path.HasExtension(path))
-				path += DEFAULT_FILE_EXTENSION;
+				path += Constants.DEFAULT_FILE_EXTENSION;
 
 			return path;
 		}
@@ -307,11 +201,6 @@ namespace Generator
 			catch (Exception ex)
 			{
 			}
-		}
-
-		private string GetPadded(int someTwoDigitNumber)
-		{
-			return (someTwoDigitNumber < 10 ? "0" : string.Empty) + someTwoDigitNumber.ToString();
 		}
 
 		#endregion

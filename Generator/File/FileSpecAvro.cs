@@ -12,7 +12,8 @@ using pelazem.Common;
 
 namespace Generator
 {
-	public class FileSpecAvro<T> : IFileSpec<T>
+	public class FileSpecAvro<T> : FileSpecBase<T>
+		where T : new()
 	{
 		private const int SYNCNUM = 24;
 
@@ -20,21 +21,21 @@ namespace Generator
 
 		private FileSpecAvro() { }
 
-		public FileSpecAvro(int? recordsPerFileMin = null, int? recordsPerFileMax = null)
+		public FileSpecAvro(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec)
 		{
-			this.RecordsPerFileMin = recordsPerFileMin;
-			this.RecordsPerFileMax = recordsPerFileMax;
+		}
+
+		public FileSpecAvro(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd)
+		{
 		}
 
 		#endregion
 
 		#region IFileSpec implementation
 
-		public int? RecordsPerFileMin { get; private set; }
-
-		public int? RecordsPerFileMax { get; private set; }
-
-		public Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(List<T> items)
 		{
 			if (items == null || items.Count == 0)
 				return null;

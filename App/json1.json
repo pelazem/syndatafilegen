@@ -1,0 +1,119 @@
+﻿{
+  "Generator": {
+    "OutputFolderRoot": "d:\\test\\",
+    "DateStart": "1/1/2017",
+    "DateEnd": "3/31/2017"
+  },
+  "FileSpecs": [
+    {
+      "FileTypeName": "Avro",
+      "PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.avro",
+      "RecordsPerFileMin": 100,
+      "RecordsPerFileMax": 200,
+      "FieldSpecs": [
+        {
+          "Type": "Categorical",
+          "Name": "PropName1",
+          "EnforceUniqueValues": false,
+          "FormatString": "",
+          "FixedWidthLength": 10,
+          "FixedWidthAddPadding": "AtStart",
+          "FixedWidthTruncate": "AtEnd",
+          "FixedWidthPaddingChar": " ",
+          "Categories": [
+            {
+              "Value": "1",
+              "Weight": 0.0
+            },
+            {
+              "Value": "2",
+              "Weight": 0.0
+            },
+            {
+              "Value": "3",
+              "Weight": 0.0
+            },
+            {
+              "Value": "4",
+              "Weight": 0.0
+            },
+            {
+              "Value": "5",
+              "Weight": 0.0
+            },
+            {
+              "Value": "6",
+              "Weight": 0.0
+            },
+            {
+              "Value": "7",
+              "Weight": 0.0
+            },
+            {
+              "Value": "8",
+              "Weight": 0.0
+            },
+            {
+              "Value": "9",
+              "Weight": 0.0
+            },
+            {
+              "Value": "10",
+              "Weight": 0.0
+            }
+          ]
+        },
+        {
+          "Type": "ContinuousDateTime",
+          "Name": "PropName2",
+          "DateStart": "1/1/2017",
+          "DateEnd": "3/31/2017",
+          "EnforceUniqueValues": true,
+          "FormatString": "{0:n}",
+          "FixedWidthLength": 10,
+          "FixedWidthAddPadding": "AtStart",
+          "FixedWidthTruncate": "AtEnd",
+          "FixedWidthPaddingChar": " "
+        },
+        {
+          "Type": "ContinuousNumeric",
+          "Name": "PropName3",
+          "MaxDigitsAfterDecimalPoint": 1,
+          "EnforceUniqueValues": true,
+          "FormatString": "{0:n}",
+          "FixedWidthLength": 10,
+          "FixedWidthAddPadding": "AtStart",
+          "FixedWidthTruncate": "AtEnd",
+          "FixedWidthPaddingChar": " ",
+          "Distribution": {
+            "Type": "Uniform",
+            "MinValue": 1000.0,
+            "MaxValue": 2000.0
+          }
+        },
+							{
+								"Type": "CopyField",
+								"Name": "PropName4",
+								"NameWhoseValueToCopy": "PropName3",
+								"FormatString": "{0:n}",
+								"FixedWidthLength": 10,
+								"FixedWidthAddPadding": "AtStart",
+								"FixedWidthTruncate": "AtEnd",
+								"FixedWidthPaddingChar": " "
+							},
+        {
+          "Type": "Dynamic",
+          "Name": "PropName5",
+          "Func": "() => GetUtcDate.ToString()",
+          "EnforceUniqueValues": true,
+          "FormatString": "{0:n}",
+          "FixedWidthLength": 10,
+          "FixedWidthAddPadding": "AtStart",
+          "FixedWidthTruncate": "AtEnd",
+          "FixedWidthPaddingChar": " "
+        }
+      ]
+    }
+  ]
+}
+

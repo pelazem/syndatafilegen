@@ -9,6 +9,7 @@ using pelazem.Common;
 namespace Generator
 {
 	public abstract class FieldSpecBase<T> : IFieldSpec<T>
+		where T : new()
 	{
 		#region IFieldSpec implementation
 
@@ -18,13 +19,15 @@ namespace Generator
 
 		public string FormatString { get; protected set; }
 
-		public int? LengthIfFixedWidth { get; protected set; }
 
-		public Util.Location? AddPaddingAtIfFixedWidth { get; protected set; } = null;
+		public int? FixedWidthLength { get; protected set; }
 
-		public Util.Location? TruncateTooLongAtIfFixedWidth { get; protected set; } = null;
+		public char? FixedWidthPaddingChar { get; private set; } = null;
 
-		public char? PaddingCharIfFixedWidth { get; private set; } = null;
+		public Util.Location? FixedWidthAddPadding { get; protected set; } = null;
+
+		public Util.Location? FixedWidthTruncate { get; protected set; } = null;
+
 
 		public abstract void SetValue(T item);
 
@@ -58,18 +61,18 @@ namespace Generator
 		/// </summary>
 		/// <param name="prop"></param>
 		/// <param name="formatString"></param>
-		/// <param name="paddingCharIfFixedWidth"></param>
-		/// <param name="lengthIfFixedWidth"></param>
-		/// <param name="addPaddingAtIfFixedWidth"></param>
-		/// <param name="truncateTooLongAtIfFixedWidth"></param>
+		/// <param name="fixedWidthLength"></param>
+		/// <param name="fixedWidthPaddingChar"></param>
+		/// <param name="fixedWidthAddPadding"></param>
+		/// <param name="fixedWidthTruncate"></param>
 		/// <param name="enforceUniqueValues"></param>
-		public FieldSpecBase(PropertyInfo prop, bool enforceUniqueValues, string formatString, int? lengthIfFixedWidth, Util.Location? addPaddingAtIfFixedWidth, Util.Location? truncateTooLongAtIfFixedWidth, char? paddingCharIfFixedWidth)
+		public FieldSpecBase(PropertyInfo prop, bool enforceUniqueValues, string formatString, int? fixedWidthLength, char? fixedWidthPaddingChar, Util.Location? fixedWidthAddPadding, Util.Location? fixedWidthTruncate)
 			: this(prop, enforceUniqueValues, formatString)
 		{
-			this.LengthIfFixedWidth = lengthIfFixedWidth;
-			this.AddPaddingAtIfFixedWidth = addPaddingAtIfFixedWidth;
-			this.TruncateTooLongAtIfFixedWidth = truncateTooLongAtIfFixedWidth;
-			this.PaddingCharIfFixedWidth = paddingCharIfFixedWidth;
+			this.FixedWidthLength = fixedWidthLength;
+			this.FixedWidthPaddingChar = fixedWidthPaddingChar;
+			this.FixedWidthAddPadding = fixedWidthAddPadding;
+			this.FixedWidthTruncate = fixedWidthTruncate;
 		}
 
 		#endregion

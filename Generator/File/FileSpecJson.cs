@@ -9,7 +9,8 @@ using Newtonsoft.Json;
 
 namespace Generator
 {
-	public class FileSpecJson<T> : IFileSpec<T>
+	public class FileSpecJson<T> : FileSpecBase<T>
+		where T : new()
 	{
 		#region Properties
 
@@ -21,22 +22,23 @@ namespace Generator
 
 		private FileSpecJson() { }
 
-		public FileSpecJson(Encoding encoding, int? recordsPerFileMin = null, int? recordsPerFileMax = null)
+		public FileSpecJson(Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec)
 		{
 			this.Encoding = encoding;
-			this.RecordsPerFileMin = recordsPerFileMin;
-			this.RecordsPerFileMax = recordsPerFileMax;
+		}
+
+		public FileSpecJson(Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd)
+		{
+			this.Encoding = encoding;
 		}
 
 		#endregion
 
 		#region IFileSpec implementation
 
-		public int? RecordsPerFileMin { get; private set; }
-
-		public int? RecordsPerFileMax { get; private set; }
-
-		public Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(List<T> items)
 		{
 			var result = new MemoryStream();
 
