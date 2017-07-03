@@ -76,6 +76,5 @@ namespace SynDataFileGen.Lib
 		{
 			return (someTwoDigitNumber < 10 ? "0" : string.Empty) + someTwoDigitNumber.ToString();
 		}
-
 	}
 }

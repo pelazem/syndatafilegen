@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>generator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Samples\ExpandedAvro.json" />
+    <None Remove="Samples\ExpandedDelimited.json" />
+    <None Remove="Samples\ExpandedFixedWidth.json" />
+    <None Remove="Samples\ExpandedJson.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Samples\ExpandedAvro.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Samples\ExpandedDelimited.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Samples\ExpandedFixedWidth.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Samples\ExpandedJson.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="pelazem.util" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

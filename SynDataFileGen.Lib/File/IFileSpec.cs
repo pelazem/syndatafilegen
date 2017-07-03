@@ -9,11 +9,9 @@ namespace SynDataFileGen.Lib
 		where T : new()
 	{
 		int? RecordsPerFileMin { get; }
-
 		int? RecordsPerFileMax { get; }
 
 		string PathSpec { get; }
-
 
 		bool HasDateLooping { get; }
 		PropertyInfo PropertyForLoopDateTime { get; }

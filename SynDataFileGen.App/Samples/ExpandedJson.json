@@ -1,0 +1,16 @@
+﻿{
+	"Generator":
+	{
+		"OutputFolderRoot": "d:\\test\\",
+		"DateStart": "1/1/2017",
+		"DateEnd": "3/1/2017"
+	},
+	"FileSpec":
+	{
+		"FileTypeName": "Json",
+		"PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.json",
+		"EncodingName": "UTF8",
+		"RecordsPerFileMin": 100,
+		"RecordsPerFileMax": 200
+	}
+}

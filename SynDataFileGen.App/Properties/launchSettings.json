@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SynDataFileGen.App": {
+      "commandName": "Project",
+      "commandLineArgs": "Samples/ExpandedAvro.json"
+    }
+  }
+}

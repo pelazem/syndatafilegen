@@ -23,19 +23,6 @@ namespace SynDataFileGen.Lib
 
 		private Generator() { }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="outputFolderRoot">Root folder into which to write folder(s)/file(s).</param>
-		/// <param name="pathSpec">Folder/file specification. Can use the following tokens: {yyyy},{yy},{mm},{dd},{hh} in folder path and/or filename. Other tokens will be ignored. If none specified or if specified path does not contain any date tokens, no date looping will be used.</param>
-		/// <param name="fileEncoding"></param>
-		/// <param name="recordsPerFileMin"></param>
-		/// <param name="recordsPerFileMax"></param>
-		/// <param name="fileSpec"></param>
-		/// <param name="fieldSpecs"></param>
-		/// <param name="dateStart">Start date for looping output. Param pathSpec must also contain date tokens.</param>
-		/// <param name="dateEnd">End date for looping output. Param pathSpec must also contain date tokens.</param>
-		/// <param name="propertyNameForLoopDateTime">If generated records should contain the loop date/time, specify a property name to have the loop date/time written to.</param>
 		public Generator
 		(
 			string outputFolderRoot,

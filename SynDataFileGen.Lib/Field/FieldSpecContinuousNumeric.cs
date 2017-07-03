@@ -6,7 +6,6 @@ namespace SynDataFileGen.Lib
 {
 	public class FieldSpecContinuousNumeric<T> : FieldSpecBase<T>
 		where T : new()
-
 	{
 		#region FieldSpecBase implementation
 
