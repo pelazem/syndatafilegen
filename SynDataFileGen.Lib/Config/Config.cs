@@ -10,6 +10,6 @@ namespace SynDataFileGen.Lib
 
 		public FileSpecConfig FileSpec { get; } = new FileSpecConfig();
 
-		public FieldSpecsListConfig Fields { get; } = new FieldSpecsListConfig();
+		public List<FieldSpecConfig> FieldSpecs { get; } = new List<FieldSpecConfig>();
 	}
 }

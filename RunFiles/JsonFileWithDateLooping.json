@@ -1,9 +1,0 @@
-﻿{
-	"OutputFolderRoot": "d:\\test\\jsonloop\\",
-	"PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.json",
-	"EncodingName": "UTF8",
-	"RecordsPerFileMin": 100,
-	"RecordsPerFileMax": 200,
-	"DateStart": "2017-01-01T00:00:00Z",
-	"DateEnd": "2017-03-01T00:00:00Z"
-}

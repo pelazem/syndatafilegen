@@ -1,7 +1,0 @@
-﻿{
-	"OutputFolderRoot": "d:\\test\\avro\\",
-	"PathSpec": "test.avro",
-	"EncodingName": "UTF8",
-	"RecordsPerFileMin": 100,
-	"RecordsPerFileMax": 200
-}

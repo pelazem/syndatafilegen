@@ -39,21 +39,21 @@ namespace SynDataFileGen.Lib
 		/// Valid values: AtStart, AtEnd
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public Util.Location FixedWidthAddPadding { get; set; }
+		public string FixedWidthAddPadding { get; set; }
 
 		/// <summary>
 		/// Truncate this field. when exceeding MaxLength, at start (i.e. chop off from the left) or at end (i.e. chop off from the right).
 		/// Valid values: AtStart, AtEnd
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public Util.Location FixedWidthTruncate { get; set; }
+		public string FixedWidthTruncate { get; set; }
 
 		#region Categorical
 
 		/// <summary>
 		/// Array of category values. Only used for categorical fields.
 		/// </summary>
-		public object[] Categories { get; } = { };
+		public List<object> Categories { get; } = new List<object>();
 
 		#endregion
 
@@ -73,13 +73,7 @@ namespace SynDataFileGen.Lib
 
 		#region Continuous Numeric
 
-		/// <summary>
-		/// Numeric distribution to use to generate values for this field.
-		/// Valid values: Beta, Cauchy, ChiSquare, Exponential, Gamma, Incrementing, InverseGamma, Laplace, LogNormal, Normal, StudentT, Uniform, Weibull
-		/// If any other value is specified, Uniform will be used.
-		/// Used only with Continuous Numeric fields. Ignored otherwise.
-		/// </summary>
-		public string NumericDistributionName { get; set; }
+		public DistributionConfig NumericDistribution { get; set; } = null;
 
 		/// <summary>
 		/// Max digits after the decimal point. If not set, values output as is.

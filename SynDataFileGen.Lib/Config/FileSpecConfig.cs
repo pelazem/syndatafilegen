@@ -80,7 +80,7 @@ namespace SynDataFileGen.Lib
 		/// Can be overridden at the field config level for individual fields, if needed.
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public Util.Location FixedWidthAddPadding { get; set; }
+		public string FixedWidthAddPadding { get; set; }
 
 		/// <summary>
 		/// Truncate fields in this file, when exceeding field max length, at start (i.e. chop off from the left) or at end (i.e. chop off from the right).
@@ -88,6 +88,6 @@ namespace SynDataFileGen.Lib
 		/// Can be overridden at the field config level for individual fields, if needed.
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public Util.Location FixedWidthTruncate { get; set; }
+		public string FixedWidthTruncate { get; set; }
 	}
 }
