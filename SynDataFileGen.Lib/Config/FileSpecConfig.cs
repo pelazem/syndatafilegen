@@ -63,9 +63,10 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		public string EncodingName
 		{
+			get { return this.Encoding.EncodingName ?? string.Empty; }
 			set { this.Encoding = Util.GetEncoding(value); }
 		}
-		public Encoding Encoding { get; set; }
+		internal Encoding Encoding { get; set; }
 
 		/// <summary>
 		/// Character that will be used to pad fields in this file.
@@ -89,5 +90,7 @@ namespace SynDataFileGen.Lib
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
 		public string FixedWidthTruncate { get; set; }
+
+		public List<FieldSpecConfig> FieldSpecs { get; } = new List<FieldSpecConfig>();
 	}
 }

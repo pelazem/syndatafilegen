@@ -8,8 +8,6 @@ namespace SynDataFileGen.Lib
 	{
 		public GeneratorConfig Generator { get; } = new GeneratorConfig();
 
-		public FileSpecConfig FileSpec { get; } = new FileSpecConfig();
-
-		public List<FieldSpecConfig> FieldSpecs { get; } = new List<FieldSpecConfig>();
+		public List<FileSpecConfig> FileSpecs { get; } = new List<FileSpecConfig>();
 	}
 }
