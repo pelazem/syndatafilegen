@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using SynDataFileGen.Lib;
 using Newtonsoft.Json;
+using pelazem.util;
 
 namespace SynDataFileGen.RunFileUtil
 {
@@ -16,8 +17,8 @@ namespace SynDataFileGen.RunFileUtil
 			if (!Directory.Exists(outputFolder))
 				Directory.CreateDirectory(outputFolder);
 
-			File.WriteAllText(Path.Combine(outputFolder, "delimited.json"), GetRunFile_Delimited());
-			File.WriteAllText(Path.Combine(outputFolder, "fixedWidth.json"), GetRunFile_Delimited());
+			File.WriteAllText(Path.Combine(outputFolder, @"Delimited\runFile.json"), GetRunFile_Delimited());
+			File.WriteAllText(Path.Combine(outputFolder, @"FixedWidth\runFile.json"), GetRunFile_FixedWidth());
 
 		}
 
@@ -30,7 +31,7 @@ namespace SynDataFileGen.RunFileUtil
 			return config;
 		}
 
-		private static string GetRunFile_Delimited()
+		private static string GetRunFile_FullTemplate()
 		{
 			Config config = new Config();
 
@@ -38,20 +39,21 @@ namespace SynDataFileGen.RunFileUtil
 
 			FileSpecConfig fileSpecConfig = new FileSpecConfig()
 			{
+				FileType = "Delimited",
+				RecordsPerFileMin = 100,
+				RecordsPerFileMax = 200,
+				PathSpec = @"{yyyy}\{mm}\{dd}\{hh}.txt",
+				FieldNameForLoopDateTime = "EventDateTime",
 				DateStart = new DateTime(2017, 1, 1),
 				DateEnd = new DateTime(2017, 3, 31),
+				IncludeHeaderRow = false,
 				Delimiter = "|",
 				Encloser = "'",
 				EncodingName = "UTF8",
-				FileType = "Delimited",
+
 				//FixedWidthAddPadding = "AtStart",
 				//FixedWidthPaddingChar = ' ',
 				//FixedWidthTruncate = "AtEnd",
-				IncludeHeaderRow = false,
-				PathSpec = @"{yyyy}\{mm}\{dd}\{hh}.txt",
-				PropertyNameForLoopDateTime = "EventDateTime",
-				RecordsPerFileMin = 100,
-				RecordsPerFileMax = 200
 			};
 			config.FileSpecs.Add(fileSpecConfig);
 
@@ -108,6 +110,88 @@ namespace SynDataFileGen.RunFileUtil
 			return JsonConvert.SerializeObject(config);
 		}
 
+		private static string GetRunFile_Delimited()
+		{
+			Config config = new Config();
+
+
+			// Generator
+			config.Generator.OutputFolderRoot = @"d:\temp\";
+
+
+			// File Spec
+			FileSpecConfig fileSpecConfig = new FileSpecConfig()
+			{
+				FileType = "Delimited",
+				RecordsPerFileMin = 100,
+				RecordsPerFileMax = 200,
+				PathSpec = @"{yyyy}\{mm}\{dd}\{hh}.txt",
+				FieldNameForLoopDateTime = "EventDateTime",
+				DateStart = new DateTime(2017, 1, 1),
+				DateEnd = new DateTime(2017, 3, 31),
+				IncludeHeaderRow = false,
+				Delimiter = "|",
+				Encloser = "'",
+				EncodingName = "UTF8"
+			};
+			config.FileSpecs.Add(fileSpecConfig);
+
+
+			// Field Specs
+			FieldSpecConfig fieldSpecConfig1 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
+				Name = "Id",
+				EnforceUniqueValues = false,
+				MaxDigitsAfterDecimalPoint = 0,
+				NumericDistribution = new DistributionConfig()
+				{
+					DistributionName = ConfigValues.DISTRIBUTION_INCREMENTING,
+					Seed = 1000000,
+					Increment = 1
+				}
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig1);
+
+			FieldSpecConfig fieldSpecConfig2 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
+				Name = "Qty",
+				EnforceUniqueValues = false,
+				FormatString = "{0:" + pelazem.util.Constants.FORMAT_NUM_0 + "}",
+				MaxDigitsAfterDecimalPoint = 0,
+				NumericDistribution = new DistributionConfig()
+				{
+					DistributionName = ConfigValues.DISTRIBUTION_UNIFORM,
+					Min = 1000000,
+					Max = 9999999
+				}
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2);
+
+			FieldSpecConfig fieldSpecConfig3 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_CATEGORICAL,
+				EnforceUniqueValues = false
+			};
+			fieldSpecConfig3.Categories.AddRange
+			(
+				new List<Category>()
+				{
+					new Category { Value = "Monday", Weight = 0 },
+					new Category { Value = "Tuesday", Weight = 0 },
+					new Category { Value = "Wednesday", Weight = 0 },
+					new Category { Value = "Thursday", Weight = 0 },
+					new Category { Value = "Friday", Weight = 0 },
+					new Category { Value = "Saturday", Weight = 0 },
+					new Category { Value = "Sunday", Weight = 0 }
+				}
+			);
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig3);
+
+			return JsonConvert.SerializeObject(config);
+		}
+
 		private static string GetRunFile_FixedWidth()
 		{
 			Config config = new Config();
@@ -125,7 +209,7 @@ namespace SynDataFileGen.RunFileUtil
 				FixedWidthTruncate = "AtEnd",
 				IncludeHeaderRow = false,
 				PathSpec = @"{yyyy}-{mm}-{dd}-{hh}.txt",
-				PropertyNameForLoopDateTime = "EventDateTime",
+				FieldNameForLoopDateTime = "EventDateTime",
 				RecordsPerFileMin = 300,
 				RecordsPerFileMax = 400
 			};

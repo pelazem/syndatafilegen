@@ -8,6 +8,20 @@ namespace SynDataFileGen.Lib
 	{
 		#region Constants
 
+		public const string DISTRIBUTION_BETA = "beta";
+		public const string DISTRIBUTION_CAUCHY = "cauchy";
+		public const string DISTRIBUTION_CHISQUARE = "chisquare";
+		public const string DISTRIBUTION_EXPONENTIAL = "exponential";
+		public const string DISTRIBUTION_GAMMA = "gamma";
+		public const string DISTRIBUTION_INCREMENTING = "incrementing";
+		public const string DISTRIBUTION_INVERSEGAMMA = "inversegamma";
+		public const string DISTRIBUTION_LAPLACE = "laplace";
+		public const string DISTRIBUTION_LOGNORMAL = "lognormal";
+		public const string DISTRIBUTION_NORMAL = "normal";
+		public const string DISTRIBUTION_STUDENTT = "studentt";
+		public const string DISTRIBUTION_UNIFORM = "uniform";
+		public const string DISTRIBUTION_WEIBULL = "weibull";
+
 		public const string ENCODING_ASCII = "ascii";
 		public const string ENCODING_UTF8 = "utf8";
 		public const string ENCODING_UTF32 = "utf32";
@@ -31,6 +45,7 @@ namespace SynDataFileGen.Lib
 
 		#region Lists
 
+		internal static List<string> ValidDistributionNames = new List<string>() { DISTRIBUTION_BETA, DISTRIBUTION_CAUCHY, DISTRIBUTION_CHISQUARE, DISTRIBUTION_EXPONENTIAL, DISTRIBUTION_GAMMA, DISTRIBUTION_INCREMENTING, DISTRIBUTION_INVERSEGAMMA, DISTRIBUTION_LAPLACE, DISTRIBUTION_LOGNORMAL, DISTRIBUTION_NORMAL, DISTRIBUTION_STUDENTT, DISTRIBUTION_UNIFORM, DISTRIBUTION_WEIBULL };
 		internal static List<string> ValidEncodingNames = new List<string>() { ENCODING_ASCII, ENCODING_UTF8, ENCODING_UTF32 };
 		internal static List<string> ValidFieldTypes = new List<string>() { FIELDTYPE_CATEGORICAL, FIELDTYPE_CONTINUOUSDATETIME, FIELDTYPE_CONTINUOUSNUMERIC, FIELDTYPE_COPYFIELD, FIELDTYPE_DYNAMIC, FIELDTYPE_IDEMPOTENT };
 		internal static List<string> ValidFileTypes = new List<string>() { FILETYPE_AVRO, FILETYPE_DELIMITED, FILETYPE_FIXEDWIDTH, FILETYPE_JSON };

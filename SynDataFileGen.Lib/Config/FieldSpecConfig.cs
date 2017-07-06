@@ -26,6 +26,11 @@ namespace SynDataFileGen.Lib
 		}
 
 		/// <summary>
+		/// Field name. If header row output is specified, this will be written to the header row.
+		/// </summary>
+		public string Name { get; set; }
+
+		/// <summary>
 		/// Whether repeated values in the output should be prevented.
 		/// Note that for categorical fields, if the number of results exceeds the number of categories, duplicate values will occur despite this setting.
 		/// </summary>

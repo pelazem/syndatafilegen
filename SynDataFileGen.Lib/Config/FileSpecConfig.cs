@@ -42,7 +42,7 @@ namespace SynDataFileGen.Lib
 		/// For looping date/time file series, if the loop date/time should also be written into the output files, specify the field name to which to write the loop date/time.
 		/// If a non-existent field name is specified, the loop date/time will not be written to the output files.
 		/// </summary>
-		public string PropertyNameForLoopDateTime { get; set; }
+		public string FieldNameForLoopDateTime { get; set; }
 
 		/// <summary>
 		/// Specify a valid date less than DateEnd to get date looping output. Leave null to output a single file.
