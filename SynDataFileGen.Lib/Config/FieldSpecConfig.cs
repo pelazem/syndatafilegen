@@ -6,10 +6,24 @@ namespace SynDataFileGen.Lib
 {
 	public class FieldSpecConfig
 	{
+		private string _fieldType = string.Empty;
+		private string _fixedWidthAddPadding = string.Empty;
+		private string _fixedWidthTruncate = string.Empty;
+
 		/// <summary>
-		/// Valid values: Categorical, ContinuousDateTime, ContinuousNumeric, CopyField, Dynamic, Idempotent
+		/// Valid values: Categorical, ContinuousDateTime, ContinuousNumeric, CopyField, Dynamic, Idempotent. Anything else will be ignored and ContinuousNumeric will be used instead.
 		/// </summary>
-		public string FieldSpecTypeName { get; set; }
+		public string FieldType
+		{
+			get { return _fieldType; }
+			set
+			{
+				if (ConfigValues.ValidFieldTypes.Contains(value.ToLowerInvariant()))
+					_fieldType = value;
+				else
+					_fieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC;
+			}
+		}
 
 		/// <summary>
 		/// Whether repeated values in the output should be prevented.
@@ -36,17 +50,37 @@ namespace SynDataFileGen.Lib
 
 		/// <summary>
 		/// Pad this field at start (i.e. right-justify field) or at end (i.e. left-justify field).
-		/// Valid values: AtStart, AtEnd
+		/// Valid values: AtStart, AtEnd. Anything else will be ignored and AtStart will be used.
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public string FixedWidthAddPadding { get; set; }
+		public string FixedWidthAddPadding
+		{
+			get { return _fixedWidthAddPadding; }
+			set
+			{
+				if (ConfigValues.ValidLocations.Contains(value.ToLowerInvariant()))
+					_fixedWidthAddPadding = value;
+				else
+					_fixedWidthAddPadding = ConfigValues.LOCATION_ATSTART;
+			}
+		}
 
 		/// <summary>
 		/// Truncate this field. when exceeding MaxLength, at start (i.e. chop off from the left) or at end (i.e. chop off from the right).
-		/// Valid values: AtStart, AtEnd
+		/// Valid values: AtStart, AtEnd. Anything else will be ignored and AtEnd will be used.
 		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public string FixedWidthTruncate { get; set; }
+		public string FixedWidthTruncate
+		{
+			get { return _fixedWidthTruncate; }
+		set
+			{
+				if (ConfigValues.ValidLocations.Contains(value.ToLowerInvariant()))
+					_fixedWidthTruncate = value;
+				else
+					_fixedWidthTruncate = ConfigValues.LOCATION_ATEND;
+			}
+		}
 
 		#region Categorical
 

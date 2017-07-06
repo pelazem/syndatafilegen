@@ -6,11 +6,24 @@ namespace SynDataFileGen.Lib
 {
 	public class FileSpecConfig
 	{
+		private string _fileType = string.Empty;
+		private string _encodingName = string.Empty;
+
 		/// <summary>
 		/// Valid values: Avro, Delimited, FixedWidth, Json
 		/// Other values will be ignored and replaced by Json.
 		/// </summary>
-		public string FileTypeName { get; set; }
+		public string FileType
+		{
+			get { return _fileType; }
+			set
+			{
+				if (ConfigValues.ValidFileTypes.Contains(value.ToLowerInvariant()))
+					_fileType = value;
+				else
+					_fileType = ConfigValues.FILETYPE_JSON;
+			}
+		}
 
 		public int RecordsPerFileMin { get; set; }
 		public int RecordsPerFileMax { get; set; }
@@ -20,6 +33,8 @@ namespace SynDataFileGen.Lib
 		/// For date looping, this path should contain any of the following tokens: hh, dd, mm, yy, yyyy
 		/// Example: "{yyyy}\{mm}\{dd}\{hh}.txt"
 		/// Example with repeated tokens (also valid): {yyyy}\{yyyy}_{mm}_{dd}_{hh}.txt
+		/// Can also be an explicit path and file name if no date looping will be used.
+		/// Example: c:\temp\output\myFile.txt
 		/// </summary>
 		public string PathSpec { get; set; }
 
@@ -58,13 +73,21 @@ namespace SynDataFileGen.Lib
 		public string Encloser { get; set; }
 
 		/// <summary>
-		/// Valid values: ASCII, UTF8, UTF16, UTF32
+		/// Valid values: ASCII, UTF8, UTF32. Anything else will be ignored and UTF8 will be used by default.
 		/// Only used for text files. Ignored for non-text (binary) files.
 		/// </summary>
 		public string EncodingName
 		{
-			get { return this.Encoding.EncodingName ?? string.Empty; }
-			set { this.Encoding = Util.GetEncoding(value); }
+			get { return _encodingName; }
+			set
+			{
+				if (ConfigValues.ValidEncodingNames.Contains(value.ToLowerInvariant()))
+					_encodingName = value;
+				else
+					_encodingName = ConfigValues.ENCODING_UTF8;
+
+				this.Encoding = Util.GetEncoding(_encodingName);
+			}
 		}
 		internal Encoding Encoding { get; set; }
 
