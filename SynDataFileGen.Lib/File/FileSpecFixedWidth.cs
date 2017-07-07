@@ -24,12 +24,12 @@ namespace SynDataFileGen.Lib
 		/// <summary>
 		/// Pad a value that is shorter than Field length at the start or end. Defaults to end.
 		/// </summary>
-		public Util.Location AddPaddingAt { get; private set; }
+		public Util.Location AddPaddingAt { get; private set; } = Util.Location.AtStart;
 
 		/// <summary>
 		/// Truncate a value that is longer than Field length at the start or end. Defaults to end.
 		/// </summary>
-		public Util.Location TruncateTooLongAt { get; private set; }
+		public Util.Location TruncateTooLongAt { get; private set; } = Util.Location.AtEnd;
 
 		public Encoding Encoding { get; } = Encoding.UTF8;
 

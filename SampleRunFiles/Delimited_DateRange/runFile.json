@@ -1,0 +1,221 @@
+{
+	"Generator":
+	{
+		"OutputFolderRoot": "d:\\temp\\"
+	},
+	"FileSpecs":
+	[
+		{
+			"FileType": "Delimited",
+			"RecordsPerFileMin": 100,
+			"RecordsPerFileMax": 200,
+			"PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.txt",
+			"FieldNameForLoopDateTime": "EventDateTime",
+			"DateStart": "2017-01-01T00:00:00",
+			"DateEnd": "2017-03-31T00:00:00",
+			"IncludeHeaderRow": true,
+			"Delimiter": "|",
+			"Encloser": "'",
+			"EncodingName": "UTF8",
+			"FixedWidthPaddingChar": null,
+			"FixedWidthAddPadding": null,
+			"FixedWidthTruncate": null,
+			"FieldSpecs":
+			[
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "Id",
+					"EnforceUniqueValues": false,
+					"FormatString": null,
+					"FixedWidthLength": null,
+					"FixedWidthPaddingChar": null,
+					"FixedWidthAddPadding": "",
+					"FixedWidthTruncate": "",
+					"Categories":
+					[
+					],
+					"DateStart": "0001-01-01T00:00:00",
+					"DateEnd": "0001-01-01T00:00:00",
+					"NumericDistribution":
+					{
+						"DistributionName": "incrementing",
+						"A": 0.0,
+						"B": 0.0,
+						"Median": 0.0,
+						"Scale": 0.0,
+						"DegreesOfFreedom": 0.0,
+						"Mean": 0.0,
+						"Shape": 0.0,
+						"Seed": 1000000.0,
+						"Increment": 1.0,
+						"Mu": 0.0,
+						"Sigma": 0.0,
+						"StandardDeviation": 0.0,
+						"Min": 0.0,
+						"Max": 0.0
+					},
+					"MaxDigitsAfterDecimalPoint": 0,
+					"FieldNameToCopy": null,
+					"DynamicFunc": null
+				},
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "Qty",
+					"EnforceUniqueValues": false,
+					"FormatString": "{0:n1}",
+					"FixedWidthLength": null,
+					"FixedWidthPaddingChar": null,
+					"FixedWidthAddPadding": "",
+					"FixedWidthTruncate": "",
+					"Categories":
+					[
+					],
+					"DateStart": "0001-01-01T00:00:00",
+					"DateEnd": "0001-01-01T00:00:00",
+					"NumericDistribution":
+					{
+						"DistributionName": "normal",
+						"A": 0.0,
+						"B": 0.0,
+						"Median": 0.0,
+						"Scale": 0.0,
+						"DegreesOfFreedom": 0.0,
+						"Mean": 80.0,
+						"Shape": 0.0,
+						"Seed": 0.0,
+						"Increment": 0.0,
+						"Mu": 0.0,
+						"Sigma": 0.0,
+						"StandardDeviation": 35.0,
+						"Min": 0.0,
+						"Max": 0.0
+					},
+					"MaxDigitsAfterDecimalPoint": 0,
+					"FieldNameToCopy": null,
+					"DynamicFunc": null
+				},
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "UnitPrice",
+					"EnforceUniqueValues": false,
+					"FormatString": "{0:c}",
+					"FixedWidthLength": null,
+					"FixedWidthPaddingChar": null,
+					"FixedWidthAddPadding": "",
+					"FixedWidthTruncate": "",
+					"Categories":
+					[
+					],
+					"DateStart": "0001-01-01T00:00:00",
+					"DateEnd": "0001-01-01T00:00:00",
+					"NumericDistribution":
+					{
+						"DistributionName": "uniform",
+						"A": 0.0,
+						"B": 0.0,
+						"Median": 0.0,
+						"Scale": 0.0,
+						"DegreesOfFreedom": 0.0,
+						"Mean": 0.0,
+						"Shape": 0.0,
+						"Seed": 0.0,
+						"Increment": 0.0,
+						"Mu": 0.0,
+						"Sigma": 0.0,
+						"StandardDeviation": 0.0,
+						"Min": 0.15,
+						"Max": 149.99
+					},
+					"MaxDigitsAfterDecimalPoint": 2,
+					"FieldNameToCopy": null,
+					"DynamicFunc": null
+				},
+				{
+					"FieldType": "categorical",
+					"Name": "DayOfWeek",
+					"EnforceUniqueValues": false,
+					"FormatString": null,
+					"FixedWidthLength": null,
+					"FixedWidthPaddingChar": null,
+					"FixedWidthAddPadding": "",
+					"FixedWidthTruncate": "",
+					"Categories":
+					[
+						{
+							"Value": "Monday",
+							"Weight": 0.0
+						},
+						{
+							"Value": "Tuesday",
+							"Weight": 0.0
+						},
+						{
+							"Value": "Wednesday",
+							"Weight": 0.0
+						},
+						{
+							"Value": "Thursday",
+							"Weight": 0.0
+						},
+						{
+							"Value": "Friday",
+							"Weight": 0.0
+						},
+						{
+							"Value": "Saturday",
+							"Weight": 0.0
+						},
+						{
+							"Value": "Sunday",
+							"Weight": 0.0
+						}
+					],
+					"DateStart": "0001-01-01T00:00:00",
+					"DateEnd": "0001-01-01T00:00:00",
+					"NumericDistribution": null,
+					"MaxDigitsAfterDecimalPoint": null,
+					"FieldNameToCopy": null,
+					"DynamicFunc": null
+				},
+				{
+					"FieldType": "dynamic",
+					"Name": "Guid",
+					"EnforceUniqueValues": false,
+					"FormatString": null,
+					"FixedWidthLength": null,
+					"FixedWidthPaddingChar": null,
+					"FixedWidthAddPadding": "",
+					"FixedWidthTruncate": "",
+					"Categories":
+					[
+					],
+					"DateStart": "0001-01-01T00:00:00",
+					"DateEnd": "0001-01-01T00:00:00",
+					"NumericDistribution": null,
+					"MaxDigitsAfterDecimalPoint": null,
+					"FieldNameToCopy": null,
+					"DynamicFunc": "() => Guid.NewGuid().ToString()"
+				},
+				{
+					"FieldType": "dynamic",
+					"Name": "EventDateTime",
+					"EnforceUniqueValues": false,
+					"FormatString": "{0:yyyy-MM-ddTHH:mm:ssK}",
+					"FixedWidthLength": null,
+					"FixedWidthPaddingChar": null,
+					"FixedWidthAddPadding": "",
+					"FixedWidthTruncate": "",
+					"Categories":
+					[
+					],
+					"DateStart": "0001-01-01T00:00:00",
+					"DateEnd": "0001-01-01T00:00:00",
+					"NumericDistribution": null,
+					"MaxDigitsAfterDecimalPoint": null,
+					"FieldNameToCopy": null,
+					"DynamicFunc": null
+				}
+			]
+		}
+	]
+}

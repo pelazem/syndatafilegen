@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Generator;
 using pelazem.Common;
 
-
 namespace CCLF
 {
 	public static class CCLFData

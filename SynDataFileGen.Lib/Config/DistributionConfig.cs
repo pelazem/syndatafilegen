@@ -6,13 +6,25 @@ namespace SynDataFileGen.Lib
 {
 	public class DistributionConfig
 	{
+		private string _distributionName = string.Empty;
+
 		/// <summary>
 		/// Numeric distribution to use to generate values for this field.
 		/// Valid values: Beta, Cauchy, ChiSquare, Exponential, Gamma, Incrementing, InverseGamma, Laplace, LogNormal, Normal, StudentT, Uniform, Weibull
 		/// If any other value is specified, Uniform will be used.
 		/// Used only with Continuous Numeric fields. Ignored otherwise.
 		/// </summary>
-		public string DistributionName { get; set; }
+		public string DistributionName
+		{
+			get { return _distributionName; }
+			set
+			{
+				if (ConfigValues.ValidDistributionNames.Contains(value.ToLowerInvariant()))
+					_distributionName = value;
+				else
+					_distributionName = ConfigValues.DISTRIBUTION_UNIFORM;
+			}
+		}
 
 		/// <summary>
 		/// Used with Beta

@@ -87,6 +87,7 @@ namespace SynDataFileGen.Lib
 		{
 			Func<DateTime> func = null;
 
+			// We iterate through date/time tokens the path spec may contain, from smallest to largest, and the first one we find will dictate the increment of our date loop.
 			if (this.FileSpec.PathSpec.Contains(Constants.HH))
 				func = () => this.DateLoop.Value.AddHours(1);
 			else if (this.FileSpec.PathSpec.Contains(Constants.DD))

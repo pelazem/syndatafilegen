@@ -17,8 +17,9 @@ namespace SynDataFileGen.RunFileUtil
 			if (!Directory.Exists(outputFolder))
 				Directory.CreateDirectory(outputFolder);
 
-			File.WriteAllText(Path.Combine(outputFolder, @"Delimited\runFile.json"), GetRunFile_Delimited());
-			File.WriteAllText(Path.Combine(outputFolder, @"FixedWidth\runFile.json"), GetRunFile_FixedWidth());
+			WriteRunFile(Path.Combine(outputFolder, @"FullTemplate\runFile.json"), GetRunFile_FullTemplate());
+			//WriteRunFile(Path.Combine(outputFolder, @"Delimited_DateRange\runFile.json"), GetRunFile_Delimited_DateRange());
+			//WriteRunFile(Path.Combine(outputFolder, @"FixedWidth_DateRange\runFile.json"), GetRunFile_FixedWidth_DateRange());
 
 		}
 
@@ -31,86 +32,35 @@ namespace SynDataFileGen.RunFileUtil
 			return config;
 		}
 
+		private static void WriteRunFile(string path, string contents)
+		{
+			string folderPath = Path.GetDirectoryName(path);
+
+			if (!Directory.Exists(folderPath))
+				Directory.CreateDirectory(folderPath);
+
+			File.WriteAllText(path, contents);
+		}
+
 		private static string GetRunFile_FullTemplate()
 		{
 			Config config = new Config();
 
-			config.Generator.OutputFolderRoot = @"d:\temp\";
-
-			FileSpecConfig fileSpecConfig = new FileSpecConfig()
-			{
-				FileType = "Delimited",
-				RecordsPerFileMin = 100,
-				RecordsPerFileMax = 200,
-				PathSpec = @"{yyyy}\{mm}\{dd}\{hh}.txt",
-				FieldNameForLoopDateTime = "EventDateTime",
-				DateStart = new DateTime(2017, 1, 1),
-				DateEnd = new DateTime(2017, 3, 31),
-				IncludeHeaderRow = false,
-				Delimiter = "|",
-				Encloser = "'",
-				EncodingName = "UTF8",
-
-				//FixedWidthAddPadding = "AtStart",
-				//FixedWidthPaddingChar = ' ',
-				//FixedWidthTruncate = "AtEnd",
-			};
+			FileSpecConfig fileSpecConfig = new FileSpecConfig();
 			config.FileSpecs.Add(fileSpecConfig);
 
-			FieldSpecConfig fieldSpecConfig1 = new FieldSpecConfig()
-			{
-				FieldType = "ContinuousNumeric",
-				EnforceUniqueValues = false,
-				FormatString = "{0:n}",
-				MaxDigitsAfterDecimalPoint = 0,
-				NumericDistribution = new DistributionConfig()
-				{
-					DistributionName = "Incrementing",
-					Seed = 1000000,
-					Increment = 1
-				}
-			};
-			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig1);
+			FieldSpecConfig fieldSpecConfig = new FieldSpecConfig();
+			fieldSpecConfig.NumericDistribution = new DistributionConfig();
+			fieldSpecConfig.Categories.Add(new Category() { Value = "Category 1", Weight = 0.25 });
+			fieldSpecConfig.Categories.Add(new Category() { Value = "Category 2", Weight = 0.75 });
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig);
 
-			FieldSpecConfig fieldSpecConfig2 = new FieldSpecConfig()
-			{
-				FieldType = "ContinuousNumeric",
-				EnforceUniqueValues = false,
-				FormatString = "{0:n}",
-				MaxDigitsAfterDecimalPoint = 0,
-				NumericDistribution = new DistributionConfig()
-				{
-					DistributionName = "Uniform",
-					Min = 1000000,
-					Max = 9999999
-				}
-			};
-			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2);
-
-			FieldSpecConfig fieldSpecConfig3 = new FieldSpecConfig()
-			{
-				FieldType = "Categorical",
-				EnforceUniqueValues = false
-			};
-			fieldSpecConfig3.Categories.AddRange
-			(
-				new List<Category>()
-				{
-					new Category { Value = "Monday", Weight = 0 },
-					new Category { Value = "Tuesday", Weight = 0 },
-					new Category { Value = "Wednesday", Weight = 0 },
-					new Category { Value = "Thursday", Weight = 0 },
-					new Category { Value = "Friday", Weight = 0 },
-					new Category { Value = "Saturday", Weight = 0 },
-					new Category { Value = "Sunday", Weight = 0 }
-				}
-			);
-			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig3);
-
-			return JsonConvert.SerializeObject(config);
+			JsonSerializerSettings settings = new JsonSerializerSettings();
+			settings.DefaultValueHandling = DefaultValueHandling.Include;
+			return JsonConvert.SerializeObject(config, settings);
 		}
 
-		private static string GetRunFile_Delimited()
+		private static string GetRunFile_Delimited_DateRange()
 		{
 			Config config = new Config();
 
@@ -129,7 +79,7 @@ namespace SynDataFileGen.RunFileUtil
 				FieldNameForLoopDateTime = "EventDateTime",
 				DateStart = new DateTime(2017, 1, 1),
 				DateEnd = new DateTime(2017, 3, 31),
-				IncludeHeaderRow = false,
+				IncludeHeaderRow = true,
 				Delimiter = "|",
 				Encloser = "'",
 				EncodingName = "UTF8"
@@ -153,7 +103,8 @@ namespace SynDataFileGen.RunFileUtil
 			};
 			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig1);
 
-			FieldSpecConfig fieldSpecConfig2 = new FieldSpecConfig()
+
+			FieldSpecConfig fieldSpecConfig2a = new FieldSpecConfig()
 			{
 				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
 				Name = "Qty",
@@ -162,16 +113,35 @@ namespace SynDataFileGen.RunFileUtil
 				MaxDigitsAfterDecimalPoint = 0,
 				NumericDistribution = new DistributionConfig()
 				{
-					DistributionName = ConfigValues.DISTRIBUTION_UNIFORM,
-					Min = 1000000,
-					Max = 9999999
+					DistributionName = ConfigValues.DISTRIBUTION_NORMAL,
+					Mean = 80,
+					StandardDeviation = 35
 				}
 			};
-			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2);
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2a);
+
+
+			FieldSpecConfig fieldSpecConfig2b = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
+				Name = "UnitPrice",
+				EnforceUniqueValues = false,
+				FormatString = "{0:" + pelazem.util.Constants.FORMAT_CURRENCY + "}",
+				MaxDigitsAfterDecimalPoint = 2,
+				NumericDistribution = new DistributionConfig()
+				{
+					DistributionName = ConfigValues.DISTRIBUTION_UNIFORM,
+					Min = 0.15,
+					Max = 149.99
+				}
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2b);
+
 
 			FieldSpecConfig fieldSpecConfig3 = new FieldSpecConfig()
 			{
 				FieldType = ConfigValues.FIELDTYPE_CATEGORICAL,
+				Name = "DayOfWeek",
 				EnforceUniqueValues = false
 			};
 			fieldSpecConfig3.Categories.AddRange
@@ -189,65 +159,114 @@ namespace SynDataFileGen.RunFileUtil
 			);
 			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig3);
 
+
+			FieldSpecConfig fieldSpecConfig4 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_DYNAMIC,
+				Name = "Guid",
+				DynamicFunc = "() => Guid.NewGuid().ToString()"
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig4);
+
+
+			FieldSpecConfig fieldSpecConfig5 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_DYNAMIC,
+				Name = "EventDateTime",
+				DynamicFunc = null,
+				FormatString = "{0:yyyy-MM-ddTHH:mm:ssK}"
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig5);
+
+
 			return JsonConvert.SerializeObject(config);
 		}
 
-		private static string GetRunFile_FixedWidth()
+		private static string GetRunFile_FixedWidth_DateRange()
 		{
 			Config config = new Config();
 
+
+			// Generator
 			config.Generator.OutputFolderRoot = @"d:\temp\";
 
+
+			// File Spec
 			FileSpecConfig fileSpecConfig = new FileSpecConfig()
 			{
 				FileType = "FixedWidth",
-				DateStart = new DateTime(2017, 1, 1),
-				DateEnd = new DateTime(2017, 3, 31),
-				EncodingName = "ASCII",
-				FixedWidthAddPadding = "AtStart",
-				FixedWidthPaddingChar = ' ',
-				FixedWidthTruncate = "AtEnd",
-				IncludeHeaderRow = false,
+				RecordsPerFileMin = 300,
+				RecordsPerFileMax = 400,
 				PathSpec = @"{yyyy}-{mm}-{dd}-{hh}.txt",
 				FieldNameForLoopDateTime = "EventDateTime",
-				RecordsPerFileMin = 300,
-				RecordsPerFileMax = 400
+				DateStart = new DateTime(2017, 1, 1),
+				DateEnd = new DateTime(2017, 3, 31),
+				IncludeHeaderRow = false,
+				Delimiter = "|",
+				Encloser = "'",
+				EncodingName = "ASCII",
+				FixedWidthPaddingChar = ' ',
+				FixedWidthAddPadding = "AtStart",
+				FixedWidthTruncate = "AtEnd"
 			};
 			config.FileSpecs.Add(fileSpecConfig);
 
+
+			// Field Specs
 			FieldSpecConfig fieldSpecConfig1 = new FieldSpecConfig()
 			{
-				FieldType = "ContinuousNumeric",
+				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
+				Name = "Id",
 				EnforceUniqueValues = false,
-				FormatString = "{0:n}",
-				MaxDigitsAfterDecimalPoint = 2,
+				MaxDigitsAfterDecimalPoint = 0,
 				NumericDistribution = new DistributionConfig()
 				{
-					DistributionName = "Incrementing",
+					DistributionName = ConfigValues.DISTRIBUTION_INCREMENTING,
 					Seed = 1000000,
 					Increment = 1
 				}
 			};
 			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig1);
 
-			FieldSpecConfig fieldSpecConfig2 = new FieldSpecConfig()
+
+			FieldSpecConfig fieldSpecConfig2a = new FieldSpecConfig()
 			{
-				FieldType = "ContinuousNumeric",
+				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
+				Name = "Qty",
 				EnforceUniqueValues = false,
-				FormatString = "{0:n}",
+				FormatString = "{0:" + pelazem.util.Constants.FORMAT_NUM_0 + "}",
 				MaxDigitsAfterDecimalPoint = 0,
 				NumericDistribution = new DistributionConfig()
 				{
-					DistributionName = "Normal",
-					Mean = 1000,
-					StandardDeviation = 300
+					DistributionName = ConfigValues.DISTRIBUTION_NORMAL,
+					Mean = 800,
+					StandardDeviation = 350
 				}
 			};
-			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2);
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2a);
+
+
+			FieldSpecConfig fieldSpecConfig2b = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC,
+				Name = "UnitPrice",
+				EnforceUniqueValues = false,
+				FormatString = "{0:" + pelazem.util.Constants.FORMAT_CURRENCY + "}",
+				MaxDigitsAfterDecimalPoint = 2,
+				NumericDistribution = new DistributionConfig()
+				{
+					DistributionName = ConfigValues.DISTRIBUTION_UNIFORM,
+					Min = 123.45,
+					Max = 180000.66
+				}
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig2b);
+
 
 			FieldSpecConfig fieldSpecConfig3 = new FieldSpecConfig()
 			{
-				FieldType = "Categorical",
+				FieldType = ConfigValues.FIELDTYPE_CATEGORICAL,
+				Name = "DayOfWeek",
 				EnforceUniqueValues = false
 			};
 			fieldSpecConfig3.Categories.AddRange
@@ -258,10 +277,32 @@ namespace SynDataFileGen.RunFileUtil
 					new Category { Value = "Nitrogen", Weight = 5 },
 					new Category { Value = "Oxygen", Weight = 8 },
 					new Category { Value = "Aluminum", Weight = 0.1 },
-					new Category { Value = "Gold", Weight = 0.01 }
+					new Category { Value = "Gold", Weight = 0.01 },
+					new Category {Value = "Plutonium", Weight = 0.1}
 				}
 			);
 			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig3);
+
+
+			FieldSpecConfig fieldSpecConfig4 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_DYNAMIC,
+				Name = "Guid",
+				DynamicFunc = "() => Guid.NewGuid().ToString()"
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig4);
+
+
+			FieldSpecConfig fieldSpecConfig5 = new FieldSpecConfig()
+			{
+				FieldType = ConfigValues.FIELDTYPE_DYNAMIC,
+				Name = "EventDateTime",
+				DynamicFunc = null,
+				FormatString = "{0:yyyy-MM-ddTHH:mm:ssK}"
+			};
+			fileSpecConfig.FieldSpecs.Add(fieldSpecConfig5);
+
+
 
 			return JsonConvert.SerializeObject(config);
 		}

@@ -1,0 +1,74 @@
+// Where a constrained list of valid values is specified, the default is marked with a *. This will be used if no value is given, or if a value not in the list of valid values is given.
+// Template is not case-sensitive for values. For example, "Avro", "avro", and "AVRO" are all equivalent.
+{
+	"Generator":
+	{
+		"OutputFolderRoot": "" // Root folder where generated folders/files will be written
+	},
+	"FileSpecs":
+	[
+		{
+			"FileType": "Delimited", // Output file(s) type. One of: Avro, Delimited, FixedWidth, Json*
+			"RecordsPerFileMin": 100, // Minimum number of records to generate per file. The actual number of records will be randomly generated for each generated file in the open range min-max.
+			"RecordsPerFileMax": 200, // Maximum number of records to generate per file.
+			"PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.txt", // Path specification for output folders/files. Can be explicit (e.g. data.txt) or tokenized. Valid tokens: {yy} or {yyyy} for year, {mm} for month, {dd} for day, {hh} for hour. Each token valid in folder and/or file name and can be used multiple times (e.g. {yyyy}\{yyyy}.txt).
+			"FieldNameForLoopDateTime": "EventDateTime", // Optional: a field name in the output to which the looping date/time should be written, i.e. if you want the loop date time inside the file as well as in the path. Example: simulating telemetry or event logs.
+			"DateStart": "2017-01-01T00:00:00", // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
+			"DateEnd": "2017-03-31T00:00:00", // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
+			"IncludeHeaderRow": false, // Specifies whether generated files should include a first row with field names. NOTE that for fixed-width files, if the field name length exceeds the field width, the field name will be truncated!
+			"Delimiter": ",", // Optional: a string that will separate values in delimited and fixed-width files. Example: specifying | will yield a row like this: ValueA|ValueB|ValueC etc.
+			"Encloser": "", // Optional: a string that will enclose values in delimited and fixed-width files. Example: specifying * will yield a row like this: *ValueA**ValueB**ValueC* etc.
+			"EncodingName": "UTF8", // For text file formats (delimited, fixed-width, Json), the string encoding to use. One of: ASCII, UTF8*, UTF32
+			"FixedWidthPaddingChar": " ", // Character to use in fixed-width files to pad values that are shorter than the field size. If not specified, space is used. This setting can be overridden per field, if needed.
+			"FixedWidthAddPadding": "AtStart", // In fixed-width files, where to pad values that are shorter than the field size. One of: AtStart*, AtEnd
+			"FixedWidthTruncate": "AtEnd", // In fixed-width files, where to truncate values that are longer than the field size. One of: AtStart, AtEnd*
+			"FieldSpecs": // List of fields to output
+			[
+				{
+					"FieldType": "", // Type of field. One of: Categorical, ContinuousDateTime, ContinuousNumeric*, CopyField, Dynamic, Idempotent
+					"Name": "", // Field name. --Make sure that if you specify FieldNameForLoopDateTime at the FileSpec level, that field is included in the list.
+					"EnforceUniqueValues": false, // Sets whether repeated values are prevented in this field for a given file. Note that for categorical fields, if the number of rows exceeds the number of distinct categories provided, this setting will be ignored and duplicate values will be allowed.
+					"FormatString": "", // Optional: a .NET format string for the output. See https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types. Example: c for currency, n for integer, etc.
+					"FixedWidthLength": 50, // In a fixed-width file, size of the field. Ignored for file types other than fixed-width.
+					"FixedWidthPaddingChar": "", // Optional. Field-level override of the file-level setting. If not specified, the file-level setting is used.
+					"FixedWidthAddPadding": "", // Optional. Field-level override of the file-level setting. If not specified, the file-level setting is used.
+					"FixedWidthTruncate": "", // Optional. Field-level override of the file-level setting. If not specified, the file-level setting is used.
+					"Categories": // For categorical fields, the list of categorical values from which to choose.
+					[
+						{
+							"Value": "Category 1", // The actual value to be written to the output file.
+							"Weight": 0.25 // The relative weight for this category. Used internally when deciding, for each row, which category value to select. If the weights across all categories do not add up to exactly 1, they will be normalized (similar to a z-score).
+						},
+						{
+							"Value": "Category 2", // The actual value to be written to the output file.
+							"Weight": 0.75 // The relative weight for this category. Used internally when deciding, for each row, which category value to select. If the weights across all categories do not add up to exactly 1, they will be normalized (similar to a z-score).
+						}
+					],
+					"DateStart": "2017-01-01T00:00:00", // For a ContinuousDateTime field, the start date of the open range from which to select values to output. Ignored for other field types.
+					"DateEnd": "2017-03-31T00:00:00", // For a ContinuousDateTime field, the end date of the open range from which to select values to output. Ignored for other field types.
+					"NumericDistribution":
+					{
+						"DistributionName": "Uniform", // Type of distribution to use for ContinuousNumeric fields; ignored for other field types. One of: Beta, Cauchy, ChiSquare, Exponential, Gamma, Incrementing, InverseGamma, Laplace, LogNormal, Normal, StudentT, Uniform*, Weibull.
+						"A": 0.0, // Used with Beta; ignored otherwise
+						"B": 0.0, // Used with Beta; ignored otherwise
+						"Median": 0.0, // Used with Cauchy; ignored otherwise
+						"Scale": 0.0, // Used with Cauchy, Gamma, InverseGamma, Laplace, Weibull; ignored otherwise
+						"DegreesOfFreedom": 0.0, // Used with ChiSquare, StudentT; ignored otherwise
+						"Mean": 0.0, // Used with Exponential, Laplace, Normal; ignored otherwise
+						"Shape": 0.0, // Used with Gamma, InverseGamma, Weibull; ignored otherwise
+						"Seed": 0.0, // Used with Incrementing; ignored otherwise
+						"Increment": 0.0, // Used with Incrementing; ignored otherwise
+						"Mu": 0.0, // Used with LogNormal; ignored otherwise
+						"Sigma": 0.0, // Used with LogNormal; ignored otherwise
+						"StandardDeviation": 0.0, // Used with Normal; ignored otherwise
+						"Min": 0.0, // Used with Uniform; ignored otherwise
+						"Max": 0.0 // Used with Uniform; ignored otherwise
+					},
+					"MaxDigitsAfterDecimalPoint": "", // Number of digits after decimal point for numeric values.
+					"FieldNameToCopy": "", // Use this when the value to be output should be identical to the value in a different field on the same record
+					"DynamicFunc": "" // A C# dynamic function expression to use to generate values for this field. Example: "() => Guid.NewGuid().ToString()"
+				}
+			]
+		}
+	]
+}

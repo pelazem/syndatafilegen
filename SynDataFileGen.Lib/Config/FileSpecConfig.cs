@@ -95,6 +95,7 @@ namespace SynDataFileGen.Lib
 		/// Character that will be used to pad fields in this file.
 		/// Can be overridden at the field config level for individual fields, if needed.
 		///  Only used for fixed-width files, ignored otherwise.
+		///  If not specified, space is used.
 		/// </summary>
 		public char? FixedWidthPaddingChar { get; set; } = null;
 
