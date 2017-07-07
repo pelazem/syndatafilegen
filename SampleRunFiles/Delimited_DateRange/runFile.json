@@ -34,8 +34,8 @@
 					"Categories":
 					[
 					],
-					"DateStart": "0001-01-01T00:00:00",
-					"DateEnd": "0001-01-01T00:00:00",
+					"DateStart": "2017-01-01T00:00:00",
+					"DateEnd": "2017-03-31T00:00:00",
 					"NumericDistribution":
 					{
 						"DistributionName": "incrementing",

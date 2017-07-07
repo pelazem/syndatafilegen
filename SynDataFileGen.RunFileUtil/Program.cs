@@ -11,15 +11,13 @@ namespace SynDataFileGen.RunFileUtil
 	{
 		static void Main(string[] args)
 		{
-			//Config config = ReadRunFile();
+			string baseFolder = @"..\SampleRunFiles\";
 
-			string outputFolder = @"..\SampleRunFiles\";
-			if (!Directory.Exists(outputFolder))
-				Directory.CreateDirectory(outputFolder);
+			Config config = ReadRunFile(Path.Combine(baseFolder, @"Delimited_DateRange\runFile.json"));
 
-			WriteRunFile(Path.Combine(outputFolder, @"FullTemplate\runFile.json"), GetRunFile_FullTemplate());
-			//WriteRunFile(Path.Combine(outputFolder, @"Delimited_DateRange\runFile.json"), GetRunFile_Delimited_DateRange());
-			//WriteRunFile(Path.Combine(outputFolder, @"FixedWidth_DateRange\runFile.json"), GetRunFile_FixedWidth_DateRange());
+			//WriteRunFile(Path.Combine(baseFolder, @"FullTemplate\runFile.json"), GetRunFile_FullTemplate());
+			//WriteRunFile(Path.Combine(baseFolder, @"Delimited_DateRange\runFile.json"), GetRunFile_Delimited_DateRange());
+			//WriteRunFile(Path.Combine(baseFolder, @"FixedWidth_DateRange\runFile.json"), GetRunFile_FixedWidth_DateRange());
 
 		}
 
