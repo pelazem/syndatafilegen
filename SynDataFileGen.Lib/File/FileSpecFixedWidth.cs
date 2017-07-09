@@ -13,23 +13,45 @@ namespace SynDataFileGen.Lib
 	{
 		#region Properties
 
+		/// <summary>
+		/// Specify whether to include a header row with field names. Only used for delimited or fixed-width file types; ignored otherwise.
+		/// Note that if field name lengths exceed field max lengths (in fixed-width files), field names may be truncated.
+		/// </summary>
 		public bool IncludeHeaderRow { get; private set; }
 
+		/// <summary>
+		/// String value to separate fields (columns) in fixed-width or delimited files.
+		/// If omitted, fields will be immediately adjacent. This property will be ignored for file formats other than fixed-width or delimited.
+		/// </summary>
 		public string Delimiter { get; private set; }
 
+		/// <summary>
+		/// String value to enclose fields (columns) in fixed-width or delimited files.
+		/// This property will be ignored for file formats other than fixed-width or delimited.
+		/// </summary>
 		public string Encloser { get; private set; }
 
+		/// <summary>
+		/// Character that will be used to pad fields in this file.
+		/// Can be overridden at the field config level for individual fields, if needed.
+		///  Only used for fixed-width files, ignored otherwise.
+		///  If not specified, space is used.
+		/// </summary>
 		public char PaddingCharacter { get; private set; }
 
 		/// <summary>
-		/// Pad a value that is shorter than Field length at the start or end. Defaults to end.
+		/// Pad fields in this file at start (i.e. right-justify field) or at end (i.e. left-justify field).
+		/// Can be overridden at the field config level for individual fields, if needed.
+		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public Util.Location AddPaddingAt { get; private set; } = Util.Location.AtStart;
+		public Util.Location AddPadding { get; private set; } = Util.Location.AtStart;
 
 		/// <summary>
-		/// Truncate a value that is longer than Field length at the start or end. Defaults to end.
+		/// Truncate fields in this file, when exceeding field max length, at start (i.e. chop off from the left) or at end (i.e. chop off from the right).
+		/// Can be overridden at the field config level for individual fields, if needed.
+		/// Only used for fixed-width files, ignored otherwise.
 		/// </summary>
-		public Util.Location TruncateTooLongAt { get; private set; } = Util.Location.AtEnd;
+		public Util.Location Truncate { get; private set; } = Util.Location.AtEnd;
 
 		public Encoding Encoding { get; } = Encoding.UTF8;
 
@@ -46,8 +68,8 @@ namespace SynDataFileGen.Lib
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.PaddingCharacter = (paddingCharacter.ToString().Trim().Length == 1 ? paddingCharacter : ' ');
-			this.AddPaddingAt = addPaddingAt;
-			this.TruncateTooLongAt = truncateTooLongAt;
+			this.AddPadding = addPaddingAt;
+			this.Truncate = truncateTooLongAt;
 			this.Encoding = encoding;
 		}
 
@@ -58,8 +80,8 @@ namespace SynDataFileGen.Lib
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.PaddingCharacter = (paddingCharacter.ToString().Trim().Length == 1 ? paddingCharacter : ' ');
-			this.AddPaddingAt = addPaddingAt;
-			this.TruncateTooLongAt = truncateTooLongAt;
+			this.AddPadding = addPaddingAt;
+			this.Truncate = truncateTooLongAt;
 			this.Encoding = encoding;
 		}
 
@@ -118,7 +140,7 @@ namespace SynDataFileGen.Lib
 					if (fieldSpec.FixedWidthAddPadding != null)
 						padAt = fieldSpec.FixedWidthAddPadding.Value;
 					else
-						padAt = this.AddPaddingAt;
+						padAt = this.AddPadding;
 
 					switch (padAt.Value)
 					{
@@ -138,7 +160,7 @@ namespace SynDataFileGen.Lib
 					if (fieldSpec.FixedWidthTruncate != null)
 						truncateAt = fieldSpec.FixedWidthTruncate.Value;
 					else
-						truncateAt = this.TruncateTooLongAt;
+						truncateAt = this.Truncate;
 
 					switch (truncateAt)
 					{
@@ -177,7 +199,7 @@ namespace SynDataFileGen.Lib
 				{
 					char paddingChar = fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter;
 
-					Util.Location? padAt = fieldSpec.FixedWidthAddPadding ?? this.AddPaddingAt;
+					Util.Location? padAt = fieldSpec.FixedWidthAddPadding ?? this.AddPadding;
 
 					switch (padAt.Value)
 					{
@@ -197,7 +219,7 @@ namespace SynDataFileGen.Lib
 				}
 				else if (finalValue.Length > fieldWidthNetEncloser)
 				{
-					Util.Location? truncateAt = fieldSpec.FixedWidthTruncate ?? this.TruncateTooLongAt;
+					Util.Location? truncateAt = fieldSpec.FixedWidthTruncate ?? this.Truncate;
 
 					switch (truncateAt)
 					{

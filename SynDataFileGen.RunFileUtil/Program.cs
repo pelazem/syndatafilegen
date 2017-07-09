@@ -19,6 +19,7 @@ namespace SynDataFileGen.RunFileUtil
 			//WriteRunFile(Path.Combine(baseFolder, @"Delimited_DateRange\runFile.json"), GetRunFile_Delimited_DateRange());
 			//WriteRunFile(Path.Combine(baseFolder, @"FixedWidth_DateRange\runFile.json"), GetRunFile_FixedWidth_DateRange());
 
+			Console.Read();
 		}
 
 		private static Config ReadRunFile(string path)

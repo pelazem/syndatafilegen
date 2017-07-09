@@ -12,10 +12,22 @@ namespace SynDataFileGen.Lib
 	{
 		#region Properties
 
+		/// <summary>
+		/// Specify whether to include a header row with field names. Only used for delimited or fixed-width file types; ignored otherwise.
+		/// Note that if field name lengths exceed field max lengths (in fixed-width files), field names may be truncated.
+		/// </summary>
 		public bool IncludeHeaderRow { get; private set; }
 
+		/// <summary>
+		/// String value to separate fields (columns) in fixed-width or delimited files.
+		/// If omitted, fields will be immediately adjacent. This property will be ignored for file formats other than fixed-width or delimited.
+		/// </summary>
 		public string Delimiter { get; private set; }
 
+		/// <summary>
+		/// String value to enclose fields (columns) in fixed-width or delimited files.
+		/// This property will be ignored for file formats other than fixed-width or delimited.
+		/// </summary>
 		public string Encloser { get; private set; }
 
 		public Encoding Encoding { get; } = Encoding.UTF8;

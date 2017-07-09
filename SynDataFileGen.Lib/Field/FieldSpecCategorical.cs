@@ -23,6 +23,9 @@ namespace SynDataFileGen.Lib
 
 		#region Properties
 
+		/// <summary>
+		/// List of category values.
+		/// </summary>
 		public List<Category> Categories { get; private set;  } = null;
 
 		private List<object> Values { get; set; } = new List<object>();

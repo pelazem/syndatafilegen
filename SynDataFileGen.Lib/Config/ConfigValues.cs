@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace SynDataFileGen.Lib
 {
@@ -28,6 +28,7 @@ namespace SynDataFileGen.Lib
 
 		public const string FIELDTYPE_CATEGORICAL = "categorical";
 		public const string FIELDTYPE_CONTINUOUSDATETIME = "continuousdatetime";
+		public const string FIELDTYPE_CONTINUOUSNONNUMERIC = "continuousnonnumeric";
 		public const string FIELDTYPE_CONTINUOUSNUMERIC = "continuousnumeric";
 		public const string FIELDTYPE_COPYFIELD = "copyfield";
 		public const string FIELDTYPE_DYNAMIC = "dynamic";
@@ -52,5 +53,23 @@ namespace SynDataFileGen.Lib
 		internal static List<string> ValidLocations = new List<string>() { LOCATION_ATSTART, LOCATION_ATEND };
 
 		#endregion
+
+		//public static List<string> GetValidFileSpecTypeNames()
+		//{
+		//	Type t1 = typeof(FileSpecBase<object>);
+
+		//	var result =
+		//		typeof(Util)
+		//		.GetTypeInfo()
+		//		.Assembly
+		//		.DefinedTypes
+		//		.Where(t => t.IsGenericType && t.MakeGenericType(typeof(object)).GetTypeInfo().IsSubclassOf(t1))
+		//		.Select(t2 => (t2. as IFileSpec<object>)?.ConfigName ?? string.Empty)
+		//		.ToList()
+		//	;
+
+		//	return result;
+		//}
+
 	}
 }

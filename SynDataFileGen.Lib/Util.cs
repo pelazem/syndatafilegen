@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using pelazem.util;
 
 namespace SynDataFileGen.Lib
@@ -52,15 +51,15 @@ namespace SynDataFileGen.Lib
 
 			if (!string.IsNullOrWhiteSpace(encodingName))
 			{
-				switch (encodingName)
+				switch (encodingName.ToLowerInvariant())
 				{
-					case "ASCII":
+					case ConfigValues.ENCODING_ASCII:
 						result = Encoding.ASCII;
 						break;
-					case "UTF32":
+					case ConfigValues.ENCODING_UTF32:
 						result = Encoding.UTF32;
 						break;
-					case "UTF8":
+					case ConfigValues.ENCODING_UTF8:
 					default:
 						result = Encoding.UTF8;
 						break;

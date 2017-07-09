@@ -30,34 +30,14 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		public string Name { get; set; }
 
-		/// <summary>
-		/// Whether repeated values in the output should be prevented.
-		/// Note that for categorical fields, if the number of results exceeds the number of categories, duplicate values will occur despite this setting.
-		/// </summary>
 		public bool EnforceUniqueValues { get; set; } = false;
 
-		/// <summary>
-		/// String to format output. Optional.
-		/// </summary>
 		public string FormatString { get; set; }
 
-		/// <summary>
-		/// Length of this field. Values will be padded or truncated (as needed) to this length.
-		/// </summary>
 		public int? FixedWidthLength { get; set; }
 
-		/// <summary>
-		/// Character that will be used to pad this field. Only used for fixed-width files.
-		/// Typically a whitespace character like space (' ').
-		/// If not specified/null, the default set on the file config will be used.
-		/// </summary>
 		public char? FixedWidthPaddingChar { get; set; } = null;
 
-		/// <summary>
-		/// Pad this field at start (i.e. right-justify field) or at end (i.e. left-justify field).
-		/// Valid values: AtStart, AtEnd. Anything else will be ignored and AtStart will be used.
-		/// Only used for fixed-width files, ignored otherwise.
-		/// </summary>
 		public string FixedWidthAddPadding
 		{
 			get { return _fixedWidthAddPadding; }
@@ -70,11 +50,6 @@ namespace SynDataFileGen.Lib
 			}
 		}
 
-		/// <summary>
-		/// Truncate this field. when exceeding MaxLength, at start (i.e. chop off from the left) or at end (i.e. chop off from the right).
-		/// Valid values: AtStart, AtEnd. Anything else will be ignored and AtEnd will be used.
-		/// Only used for fixed-width files, ignored otherwise.
-		/// </summary>
 		public string FixedWidthTruncate
 		{
 			get { return _fixedWidthTruncate; }
@@ -90,7 +65,7 @@ namespace SynDataFileGen.Lib
 		#region Categorical
 
 		/// <summary>
-		/// Array of category values. Only used for categorical fields.
+		/// List of category values. Only used for categorical fields.
 		/// </summary>
 		public List<object> Categories { get; } = new List<object>();
 

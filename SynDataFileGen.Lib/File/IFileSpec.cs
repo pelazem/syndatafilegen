@@ -18,7 +18,6 @@ namespace SynDataFileGen.Lib
 		DateTime? DateStart { get; }
 		DateTime? DateEnd { get; }
 
-
 		List<IFieldSpec<T>> FieldSpecs { get; }
 
 		Stream GetFileContent(List<T> items);
