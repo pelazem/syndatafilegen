@@ -1,7 +1,7 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "d:\\temp\\"
+		"OutputFolderRoot": "d:\\test\\"
 	},
 	"FileSpecs":
 	[
@@ -190,7 +190,7 @@
 					"NumericDistribution": null,
 					"MaxDigitsAfterDecimalPoint": null,
 					"FieldNameToCopy": null,
-					"DynamicFunc": "() => Guid.NewGuid().ToString()"
+					"DynamicFunc": "() => System.Guid.NewGuid().ToString()"
 				},
 				{
 					"FieldType": "dynamic",

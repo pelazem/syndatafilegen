@@ -2,7 +2,7 @@
   "profiles": {
     "SynDataFileGen.App": {
       "commandName": "Project",
-      "commandLineArgs": "Samples/ExpandedAvro.json"
+      "commandLineArgs": "..\\SampleRunFiles\\Delimited_DateRange\\runFile.json"
     }
   }
 }

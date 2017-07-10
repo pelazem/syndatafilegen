@@ -211,11 +211,11 @@ namespace SynDataFileGen.Lib
 				switch (this.AddPadding)
 				{
 					case Util.Location.AtStart:
-						result.Add(string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop).PadLeft(fieldSize, this.PaddingCharacter));
+						result.Add(string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop).PadLeft(fieldSize, this.PaddingCharacter));
 						break;
 					case Util.Location.AtEnd:
 					default:
-						result.Add(string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop).PadRight(fieldSize, this.PaddingCharacter));
+						result.Add(string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop).PadRight(fieldSize, this.PaddingCharacter));
 						break;
 				}
 			}

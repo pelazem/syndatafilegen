@@ -17,13 +17,13 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecAvro() { }
 
-		public FileSpecAvro(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec)
+		public FileSpecAvro(List<IFieldSpec> fieldSpecs, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
 		{
 		}
 
-		public FileSpecAvro(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd)
+		public FileSpecAvro(List<IFieldSpec> fieldSpecs, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
 		{
 		}
 
@@ -58,7 +58,7 @@ namespace SynDataFileGen.Lib
 							dynamic avroRecord = new AvroRecord(rootSchema);
 
 							if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-								avroRecord[this.FieldNameForLoopDateTime] = string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop);
+								avroRecord[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
 
 							foreach (var fieldSpec in this.FieldSpecs)
 								avroRecord[fieldSpec.Name] = fieldSpec.Value;

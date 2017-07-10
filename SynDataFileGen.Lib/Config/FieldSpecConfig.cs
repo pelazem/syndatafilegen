@@ -67,7 +67,7 @@ namespace SynDataFileGen.Lib
 		/// <summary>
 		/// List of category values. Only used for categorical fields.
 		/// </summary>
-		public List<object> Categories { get; } = new List<object>();
+		public List<Category> Categories { get; } = new List<Category>();
 
 		#endregion
 
@@ -106,7 +106,9 @@ namespace SynDataFileGen.Lib
 		#region Dynamic
 
 		/// <summary>
-		/// (Advanced) A C# Func<object> expression.
+		/// (Advanced) A C# Func<object> in this form: () => your C# code to output a value object.
+		/// Example: () => System.Guid.NewGuid().ToString()
+		/// Example: () => DateTime.UtcNow
 		/// </summary>
 		public string DynamicFunc { get; set; }
 

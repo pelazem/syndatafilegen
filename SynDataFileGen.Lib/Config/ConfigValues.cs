@@ -9,6 +9,8 @@ namespace SynDataFileGen.Lib
 	{
 		#region Constants
 
+		public const char DEFAULT_PADDING_CHAR = ' ';
+
 		public const string DISTRIBUTION_BETA = "beta";
 		public const string DISTRIBUTION_CAUCHY = "cauchy";
 		public const string DISTRIBUTION_CHISQUARE = "chisquare";

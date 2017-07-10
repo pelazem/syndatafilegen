@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using Newtonsoft.Json;
+using SynDataFileGen.Lib;
 
 namespace SynDataFileGen.App
 {
@@ -19,16 +21,20 @@ namespace SynDataFileGen.App
 				return;
 			}
 
-			var config = ReadRunFile(args[0]);
+			Config config = ReadRunFile(args[0]);
+
+			List<Generator> generators = Factory.Get(config);
+
+			generators.ForEach(g => g.Run());
 
 			Console.Read();
 		}
 
-		private static ExpandoObject ReadRunFile(string path)
+		private static Config ReadRunFile(string path)
 		{
 			string runFileContent = File.ReadAllText(path);
 
-			return JsonConvert.DeserializeObject<ExpandoObject>(runFileContent);
+			return JsonConvert.DeserializeObject<Config>(runFileContent);
 		}
 	}
 }

@@ -37,8 +37,6 @@ namespace SynDataFileGen.Lib
 
 		public void Run()
 		{
-			WriteFile(GetPath(), this.FileSpec.GetFileContent(this.DateLoop));
-
 			if (!this.FileSpec.HasDateLooping)
 			{
 				WriteFile(GetPath(), this.FileSpec.GetFileContent(this.DateLoop));

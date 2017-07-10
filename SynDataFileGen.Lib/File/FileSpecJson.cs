@@ -20,14 +20,14 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecJson() { }
 
-		public FileSpecJson(Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec)
+		public FileSpecJson(List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
 		{
 			this.Encoding = encoding;
 		}
 
-		public FileSpecJson(Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd)
+		public FileSpecJson(List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
 		{
 			this.Encoding = encoding;
 		}
@@ -53,7 +53,7 @@ namespace SynDataFileGen.Lib
 						JObject record = new JObject();
 
 						if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
-							record.Add(this.FieldNameForLoopDateTime, dateLoop);
+							record.Add(this.FieldNameForLoopDateTime, string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop));
 
 						foreach (var fieldSpec in this.FieldSpecs)
 							record.Add(fieldSpec.Name, fieldSpec.Value.ToString());

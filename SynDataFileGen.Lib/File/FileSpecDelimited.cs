@@ -76,11 +76,11 @@ namespace SynDataFileGen.Lib
 						sw.WriteLine(GetRecord(dateLoop));
 
 					sw.Flush();
+
+					interim.Seek(0, SeekOrigin.Begin);
+
+					interim.CopyTo(result);
 				}
-
-				interim.Seek(0, SeekOrigin.Begin);
-
-				interim.CopyTo(result);
 			}
 
 			return result;
@@ -107,7 +107,7 @@ namespace SynDataFileGen.Lib
 			List<string> fields = new List<string>();
 
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-				fields.Add(string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop));
+				fields.Add(string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop));
 
 			fields.AddRange(this.FieldSpecs.Select(f => f.Value.ToString()));
 
