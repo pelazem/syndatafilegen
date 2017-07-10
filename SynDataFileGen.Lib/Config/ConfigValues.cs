@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
@@ -28,11 +29,11 @@ namespace SynDataFileGen.Lib
 
 		public const string FIELDTYPE_CATEGORICAL = "categorical";
 		public const string FIELDTYPE_CONTINUOUSDATETIME = "continuousdatetime";
-		public const string FIELDTYPE_CONTINUOUSNONNUMERIC = "continuousnonnumeric";
+		// public const string FIELDTYPE_CONTINUOUSNONNUMERIC = "continuousnonnumeric";
 		public const string FIELDTYPE_CONTINUOUSNUMERIC = "continuousnumeric";
-		public const string FIELDTYPE_COPYFIELD = "copyfield";
+		// public const string FIELDTYPE_COPYFIELD = "copyfield";
 		public const string FIELDTYPE_DYNAMIC = "dynamic";
-		public const string FIELDTYPE_IDEMPOTENT = "idempotent";
+		// public const string FIELDTYPE_IDEMPOTENT = "idempotent";
 
 		public const string FILETYPE_AVRO = "avro";
 		public const string FILETYPE_DELIMITED = "delimited";
@@ -48,28 +49,10 @@ namespace SynDataFileGen.Lib
 
 		internal static List<string> ValidDistributionNames = new List<string>() { DISTRIBUTION_BETA, DISTRIBUTION_CAUCHY, DISTRIBUTION_CHISQUARE, DISTRIBUTION_EXPONENTIAL, DISTRIBUTION_GAMMA, DISTRIBUTION_INCREMENTING, DISTRIBUTION_INVERSEGAMMA, DISTRIBUTION_LAPLACE, DISTRIBUTION_LOGNORMAL, DISTRIBUTION_NORMAL, DISTRIBUTION_STUDENTT, DISTRIBUTION_UNIFORM, DISTRIBUTION_WEIBULL };
 		internal static List<string> ValidEncodingNames = new List<string>() { ENCODING_ASCII, ENCODING_UTF8, ENCODING_UTF32 };
-		internal static List<string> ValidFieldTypes = new List<string>() { FIELDTYPE_CATEGORICAL, FIELDTYPE_CONTINUOUSDATETIME, FIELDTYPE_CONTINUOUSNUMERIC, FIELDTYPE_COPYFIELD, FIELDTYPE_DYNAMIC, FIELDTYPE_IDEMPOTENT };
+		internal static List<string> ValidFieldTypes = new List<string>() { FIELDTYPE_CATEGORICAL, FIELDTYPE_CONTINUOUSDATETIME, FIELDTYPE_CONTINUOUSNUMERIC, FIELDTYPE_DYNAMIC };
 		internal static List<string> ValidFileTypes = new List<string>() { FILETYPE_AVRO, FILETYPE_DELIMITED, FILETYPE_FIXEDWIDTH, FILETYPE_JSON };
 		internal static List<string> ValidLocations = new List<string>() { LOCATION_ATSTART, LOCATION_ATEND };
 
 		#endregion
-
-		//public static List<string> GetValidFileSpecTypeNames()
-		//{
-		//	Type t1 = typeof(FileSpecBase<object>);
-
-		//	var result =
-		//		typeof(Util)
-		//		.GetTypeInfo()
-		//		.Assembly
-		//		.DefinedTypes
-		//		.Where(t => t.IsGenericType && t.MakeGenericType(typeof(object)).GetTypeInfo().IsSubclassOf(t1))
-		//		.Select(t2 => (t2. as IFileSpec<object>)?.ConfigName ?? string.Empty)
-		//		.ToList()
-		//	;
-
-		//	return result;
-		//}
-
 	}
 }

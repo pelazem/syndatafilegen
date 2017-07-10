@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FileSpecJson<T> : FileSpecBase<T>
-		where T : new()
+	public class FileSpecJson : FileSpecBase
 	{
 		#region Properties
 
@@ -25,8 +26,8 @@ namespace SynDataFileGen.Lib
 			this.Encoding = encoding;
 		}
 
-		public FileSpecJson(Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd)
+		public FileSpecJson(Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd)
 		{
 			this.Encoding = encoding;
 		}
@@ -35,29 +36,39 @@ namespace SynDataFileGen.Lib
 
 		#region IFileSpec implementation
 
-		public override Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(DateTime? dateLoop = null)
 		{
+			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
+
 			var result = new MemoryStream();
 
 			using (var interim = new MemoryStream())
 			{
 				using (var sw = new StreamWriter(interim, this.Encoding))
 				{
-					if (items != null && items.Count > 0)
+					JArray records = new JArray();
+
+					for (int i = 1; i <= numOfItems; i++)
 					{
-						JsonSerializerSettings settings = new JsonSerializerSettings();
-						settings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
-						settings.Formatting = Formatting.Indented;
+						JObject record = new JObject();
 
-						sw.Write(JsonConvert.SerializeObject(items, settings));
+						if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
+							record.Add(this.FieldNameForLoopDateTime, dateLoop);
 
-						sw.Flush();
+						foreach (var fieldSpec in this.FieldSpecs)
+							record.Add(fieldSpec.Name, fieldSpec.Value.ToString());
 
-						interim.Seek(0, SeekOrigin.Begin);
-
-						interim.CopyTo(result);
+						records.Add(record);
 					}
+
+					sw.Write(records.ToString());
+
+					sw.Flush();
 				}
+
+				interim.Seek(0, SeekOrigin.Begin);
+
+				interim.CopyTo(result);
 			}
 
 			return result;

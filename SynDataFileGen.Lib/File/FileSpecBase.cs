@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public abstract class FileSpecBase<T> : IFileSpec<T>
-		where T : new()
+	public abstract class FileSpecBase : IFileSpec
 	{
 		#region Variables
-
-		private string _propertyNameForLoopDateTime = string.Empty;
 
 		private DateTime? _dateStart;
 		private DateTime? _dateEnd;
@@ -59,20 +54,7 @@ namespace SynDataFileGen.Lib
 		/// For looping date/time file series, if the loop date/time should also be written into the output files, specify the field name to which to write the loop date/time.
 		/// If a non-existent field name is specified, the loop date/time will not be written to the output files.
 		/// </summary>
-		public string PropertyNameForLoopDateTime
-		{
-			get { return _propertyNameForLoopDateTime; }
-
-			protected set
-			{
-				_propertyNameForLoopDateTime = value;
-
-				if (!string.IsNullOrWhiteSpace(_propertyNameForLoopDateTime))
-					SetPropertyForLoopDateTime();
-			}
-		}
-
-		public PropertyInfo PropertyForLoopDateTime { get; protected set; }
+		public string FieldNameForLoopDateTime { get; protected set; }
 
 		/// <summary>
 		/// Specify a valid date less than DateEnd to get date looping output. Leave null to output a single file.
@@ -115,9 +97,9 @@ namespace SynDataFileGen.Lib
 		}
 
 
-		public abstract Stream GetFileContent(List<T> items);
+		public List<IFieldSpec> FieldSpecs { get; } = new List<IFieldSpec>();
 
-		public List<IFieldSpec<T>> FieldSpecs { get; } = new List<IFieldSpec<T>>();
+		public abstract Stream GetFileContent(DateTime? dateLoop = null);
 
 		#endregion
 
@@ -125,7 +107,7 @@ namespace SynDataFileGen.Lib
 
 		protected FileSpecBase() { }
 
-		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec<T>> fieldSpecs = null)
+		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec> fieldSpecs = null)
 		{
 			this.RecordsPerFileMin = recordsPerFileMin;
 			this.RecordsPerFileMax = recordsPerFileMax;
@@ -134,40 +116,17 @@ namespace SynDataFileGen.Lib
 			this.FieldSpecs.AddRange(fieldSpecs);
 		}
 
-		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd, IEnumerable<IFieldSpec<T>> fieldSpecs = null)
+		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd, IEnumerable<IFieldSpec> fieldSpecs = null)
 		{
 			this.RecordsPerFileMin = recordsPerFileMin;
 			this.RecordsPerFileMax = recordsPerFileMax;
 			this.PathSpec = pathSpec.Replace(@"/", @"\");
 
-			this.PropertyNameForLoopDateTime = propertyNameForLoopDateTime;
+			this.FieldNameForLoopDateTime = fieldNameForLoopDateTime;
 			this.DateStart = dateStart;
 			this.DateEnd = dateEnd;
 
 			this.FieldSpecs.AddRange(fieldSpecs);
-		}
-
-		#endregion
-
-		#region Utility
-
-		private void SetPropertyForLoopDateTime()
-		{
-			// Check whether there is a valid date/time property specified
-			if (this.PropertyForLoopDateTime == null && !string.IsNullOrWhiteSpace(this.PropertyNameForLoopDateTime))
-			{
-				this.PropertyForLoopDateTime = TypeUtil.GetPrimitiveProps(typeof(T))
-					.Where
-					(p =>
-						p.Name == this.PropertyNameForLoopDateTime
-						&&
-						p.CanWrite
-						&&
-						(p.PropertyType.Equals(TypeUtil.TypeDateTime) || p.PropertyType.Equals(TypeUtil.TypeDateTimeNullable))
-					)
-					.FirstOrDefault()
-				;
-			}
 		}
 
 		#endregion

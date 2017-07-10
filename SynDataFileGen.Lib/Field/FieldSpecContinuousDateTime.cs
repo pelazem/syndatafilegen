@@ -1,24 +1,10 @@
 ﻿using System;
-using System.Reflection;
 using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecContinuousDateTime<T> : FieldSpecBase<T>
-		where T : new()
+	public class FieldSpecContinuousDateTime : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		public override void SetValue(T item)
-		{
-			if (this.Prop.PropertyType.Equals(TypeUtil.TypeString) && !string.IsNullOrWhiteSpace(this.FormatString))
-				this.Prop.SetValueEx(item, string.Format(this.FormatString, GetValue()));
-			else
-				this.Prop.SetValueEx(item, GetValue());
-		}
-
-		#endregion
-
 		#region Properties
 
 		public IDistribution Distribution { get; } = new DistUniform();
@@ -33,15 +19,15 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecContinuousDateTime() { }
 
-		public FieldSpecContinuousDateTime(PropertyInfo prop, DateTime dateStart, DateTime dateEnd, bool enforceUniqueValues, string formatString)
-			: base(prop, enforceUniqueValues, formatString)
+		public FieldSpecContinuousDateTime(string name, DateTime dateStart, DateTime dateEnd, bool enforceUniqueValues, string formatString)
+			: base(name, enforceUniqueValues, formatString)
 		{
 			this.DateStart = dateStart;
 			this.DateEnd = (dateEnd >= dateStart ? dateEnd : dateStart);
 		}
 
-		public FieldSpecContinuousDateTime(PropertyInfo prop, DateTime dateStart, DateTime dateEnd, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(prop, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecContinuousDateTime(string name, DateTime dateStart, DateTime dateEnd, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			this.DateStart = dateStart;
 			this.DateEnd = (dateEnd >= dateStart ? dateEnd : dateStart);
@@ -49,7 +35,9 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		private DateTime GetValue()
+		#region FieldSpecBase implementation
+
+		protected override object GetValue()
 		{
 			if (this.DateStart == this.DateEnd)
 				return this.DateStart;
@@ -68,5 +56,7 @@ namespace SynDataFileGen.Lib
 
 			return this.DateStart.AddTicks(Converter.GetInt64(value * diffTicks));
 		}
+
+		#endregion
 	}
 }

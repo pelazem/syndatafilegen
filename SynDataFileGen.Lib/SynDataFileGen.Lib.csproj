@@ -5,9 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Field\FieldSpecContinuousNonNumeric.cs" />
+    <Compile Remove="Field\FieldSpecCopyField.cs" />
+    <Compile Remove="Field\FieldSpecIdempotent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Hadoop.Avro2" Version="1.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="pelazem.util" Version="1.1.0" />
+    <PackageReference Include="pelazem.util" Version="1.2.0" />
   </ItemGroup>
 
 </Project>

@@ -1,32 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecCategorical<T> : FieldSpecBase<T>
-		where T : new()
+	public class FieldSpecCategorical : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		public override void SetValue(T item)
-		{
-			if (this.Prop.PropertyType.Equals(TypeUtil.TypeString) && !string.IsNullOrWhiteSpace(this.FormatString))
-				this.Prop.SetValueEx(item, string.Format(this.FormatString, GetValue()));
-			else
-				this.Prop.SetValueEx(item, GetValue());
-		}
-
-		#endregion
-
 		#region Properties
 
 		/// <summary>
 		/// List of category values.
 		/// </summary>
-		public List<Category> Categories { get; private set;  } = null;
+		public List<Category> Categories { get; private set; } = null;
 
 		private List<object> Values { get; set; } = new List<object>();
 
@@ -36,16 +22,16 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecCategorical() { }
 
-		public FieldSpecCategorical(PropertyInfo prop, List<Category> categories, bool enforceUniqueValues, string formatString)
-			: base(prop, enforceUniqueValues, formatString)
+		public FieldSpecCategorical(string name, List<Category> categories, bool enforceUniqueValues, string formatString)
+			: base(name, enforceUniqueValues, formatString)
 		{
 			PrepareValues(categories);
 
 			this.Categories = categories;
 		}
 
-		public FieldSpecCategorical(PropertyInfo prop, List<Category> categories, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(prop, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecCategorical(string name, List<Category> categories, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			PrepareValues(categories);
 
@@ -54,7 +40,9 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		private object GetValue()
+		#region FieldSpecBase implementation
+
+		protected override object GetValue()
 		{
 			// If unique values was set but all of them have been used, turn off unique values so we can continue generating with repeated categorical values.
 			if (this.EnforceUniqueValues && this.Categories.Count == this.UniqueValues.Count)
@@ -79,6 +67,8 @@ namespace SynDataFileGen.Lib
 
 			return result;
 		}
+
+		#endregion
 
 		private void PrepareValues(List<Category> categories)
 		{

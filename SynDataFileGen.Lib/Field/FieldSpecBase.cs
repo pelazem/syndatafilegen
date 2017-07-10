@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
-	public abstract class FieldSpecBase<T> : IFieldSpec<T>
-		where T : new()
+	public abstract class FieldSpecBase : IFieldSpec
 	{
 		#region IFieldSpec implementation
 
 		/// <summary>
-		/// If header row output is specified, property name will be written to the header row.
+		/// If header row output is specified, name will be written to the header row.
 		/// </summary>
-		public PropertyInfo Prop { get; protected set; }
+		public string Name { get; protected set; }
 
 		/// <summary>
 		/// Whether repeated values in the output should be prevented.
@@ -51,8 +49,16 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		public Util.Location? FixedWidthTruncate { get; protected set; } = null;
 
-
-		public abstract void SetValue(T item);
+		public object Value
+		{
+			get
+			{
+				if (!string.IsNullOrWhiteSpace(this.FormatString))
+					return string.Format(this.FormatString, GetValue());
+				else
+					return GetValue();
+			}
+		}
 
 		#endregion
 
@@ -72,9 +78,9 @@ namespace SynDataFileGen.Lib
 		/// <param name="prop"></param>
 		/// <param name="formatString"></param>
 		/// <param name="enforceUniqueValues"></param>
-		public FieldSpecBase(PropertyInfo prop, bool enforceUniqueValues, string formatString)
+		public FieldSpecBase(string name, bool enforceUniqueValues, string formatString)
 		{
-			this.Prop = prop;
+			this.Name = name;
 			this.FormatString = formatString;
 			this.EnforceUniqueValues = enforceUniqueValues;
 		}
@@ -89,8 +95,8 @@ namespace SynDataFileGen.Lib
 		/// <param name="fixedWidthAddPadding"></param>
 		/// <param name="fixedWidthTruncate"></param>
 		/// <param name="enforceUniqueValues"></param>
-		public FieldSpecBase(PropertyInfo prop, bool enforceUniqueValues, string formatString, int? fixedWidthLength, char? fixedWidthPaddingChar, Util.Location? fixedWidthAddPadding, Util.Location? fixedWidthTruncate)
-			: this(prop, enforceUniqueValues, formatString)
+		public FieldSpecBase(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, char? fixedWidthPaddingChar, Util.Location? fixedWidthAddPadding, Util.Location? fixedWidthTruncate)
+			: this(name, enforceUniqueValues, formatString)
 		{
 			this.FixedWidthLength = fixedWidthLength;
 			this.FixedWidthPaddingChar = fixedWidthPaddingChar;
@@ -99,5 +105,7 @@ namespace SynDataFileGen.Lib
 		}
 
 		#endregion
+
+		protected abstract object GetValue();
 	}
 }

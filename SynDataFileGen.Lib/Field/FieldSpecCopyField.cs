@@ -4,24 +4,8 @@ using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecCopyField<T> : FieldSpecBase<T>
-		where T : new()
+	public class FieldSpecCopyField : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		public override void SetValue(T item)
-		{
-			if (this.PropToCopy == null)
-				return;
-
-			if (this.Prop.PropertyType.Equals(TypeUtil.TypeString) && !string.IsNullOrWhiteSpace(this.FormatString))
-				this.Prop.SetValueEx(item, string.Format(this.FormatString, GetValue(item)));
-			else
-				this.Prop.SetValueEx(item, GetValue(item));
-		}
-
-		#endregion
-
 		#region Properties
 
 		public PropertyInfo PropToCopy { get; private set; }
@@ -46,9 +30,13 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		private object GetValue(T item)
+		#region FieldSpecBase implementation
+
+		protected override object GetValue()
 		{
 			return this.PropToCopy.GetValueEx(item);
 		}
+
+		#endregion
 	}
 }

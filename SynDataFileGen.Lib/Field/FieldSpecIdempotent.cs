@@ -3,12 +3,11 @@ using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecIdempotent<T> : FieldSpecBase<T>
-		where T : new()
+	public class FieldSpecIdempotent : FieldSpecBase
 	{
 		#region FieldSpecBase implementation
 
-		public override void SetValue(T item)
+		public override void SetValue(object item)
 		{
 			// no op as we will just want to read the already-set value on the property - i.e. this is for pre-loaded items
 		}

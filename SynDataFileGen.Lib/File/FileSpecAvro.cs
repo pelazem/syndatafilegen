@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using Microsoft.Hadoop.Avro;
 using Microsoft.Hadoop.Avro.Container;
 using Microsoft.Hadoop.Avro.Schema;
@@ -10,8 +9,7 @@ using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FileSpecAvro<T> : FileSpecBase<T>
-		where T : new()
+	public class FileSpecAvro : FileSpecBase
 	{
 		private const int SYNCNUM = 24;
 
@@ -24,8 +22,8 @@ namespace SynDataFileGen.Lib
 		{
 		}
 
-		public FileSpecAvro(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd)
+		public FileSpecAvro(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd)
 		{
 		}
 
@@ -33,45 +31,48 @@ namespace SynDataFileGen.Lib
 
 		#region IFileSpec implementation
 
-		public override Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(DateTime? dateLoop = null)
 		{
-			if (items == null || items.Count == 0)
-				return null;
+			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
 			var result = new MemoryStream();
 
-			var props = TypeUtil.GetPrimitiveProps(typeof(T));
-
 			// We get a JSON schema for the passed type. Normally, the AvroSerializer expects a type passed that has DataContract/DataMember attributes, but I don't want users of this utility
 			// to have to modify their POCOs in any way, hence building a schema here and proceeding with that.
-			string schema = GetJsonSchema(props);
+			string schema = GetJsonSchema();
 
 			var serializer = AvroSerializer.CreateGeneric(schema);
 			var rootSchema = serializer.WriterSchema as RecordSchema;
 
+
 			// We'll write the Avro content to a memory stream
-			using (var outputStream = new MemoryStream())
+			using (var interim = new MemoryStream())
 			{
 				// Avro serializer with deflate
-				using (var avroWriter = AvroContainer.CreateGenericWriter(schema, outputStream, Codec.Deflate))
+				using (var avroWriter = AvroContainer.CreateGenericWriter(schema, interim, Codec.Deflate))
 				{
 					using (var seqWriter = new SequentialWriter<object>(avroWriter, SYNCNUM))
 					{
-						foreach (T item in items)
+						for (int i = 1; i <= numOfItems; i++)
 						{
 							dynamic avroRecord = new AvroRecord(rootSchema);
 
-							foreach (PropertyInfo prop in props)
-								avroRecord[prop.Name] = prop.GetValueEx(item);
+							if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
+								avroRecord[this.FieldNameForLoopDateTime] = string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop);
+
+							foreach (var fieldSpec in this.FieldSpecs)
+								avroRecord[fieldSpec.Name] = fieldSpec.Value;
 
 							seqWriter.Write(avroRecord);
 						}
+
+						seqWriter.Flush();
 					}
 				}
 
-				outputStream.Seek(0, SeekOrigin.Begin);
+				interim.Seek(0, SeekOrigin.Begin);
 
-				outputStream.CopyTo(result);
+				interim.CopyTo(result);
 			}
 
 			return result;
@@ -81,19 +82,28 @@ namespace SynDataFileGen.Lib
 
 		#region Utility
 
-		private string GetJsonSchema(List<PropertyInfo> props)
+		/// <summary>
+		/// Microsoft.Hadoop.Avro2 serializer has very limited list of supported primitive types. Their aliases are neither .NET nor C#-compliant.
+		/// See https://github.com/dougmsft/microsoft-avro/blob/master/Microsoft.Hadoop.Avro/Schema/JsonSchemaBuilder.cs
+		/// </summary>
+		private string GetJsonSchema()
 		{
 			var schema = new AvroSchema();
-			schema.Name = typeof(T).Name;
+			schema.Name = nameof(AvroSchema);
 
-			foreach (PropertyInfo prop in props)
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
+				schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "string"));
+
+			foreach (var fieldSpec in this.FieldSpecs)
 			{
-				string typeAlias = Util.GetAvroPrimitiveTypeAlias(prop.PropertyType);
+				Type type = fieldSpec.Value.GetType();
 
-				if (string.IsNullOrWhiteSpace(typeAlias))
-					throw new Exception("FileSpecAvro.GetJsonSchema: The Microsoft.Hadoop.Avro2 serializer does not support this type: " + prop.PropertyType.Name);
-
-				schema.fields.Add(new AvroSchemaTuple(prop.Name, typeAlias));
+				if (TypeUtil.IsNumeric(type))
+					schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "double"));
+				else if (TypeUtil.IsPrimitive(type))
+					schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "string"));
+				else
+					schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "bytes"));
 			}
 
 			return JsonConvert.SerializeObject(schema, Newtonsoft.Json.Formatting.None);

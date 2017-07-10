@@ -7,8 +7,7 @@ using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FileSpecDelimited<T> : FileSpecBase<T>
-		where T : new()
+	public class FileSpecDelimited : FileSpecBase
 	{
 		#region Properties
 
@@ -16,7 +15,7 @@ namespace SynDataFileGen.Lib
 		/// Specify whether to include a header row with field names. Only used for delimited or fixed-width file types; ignored otherwise.
 		/// Note that if field name lengths exceed field max lengths (in fixed-width files), field names may be truncated.
 		/// </summary>
-		public bool IncludeHeaderRow { get; private set; }
+		public bool IncludeHeaderRecord { get; private set; }
 
 		/// <summary>
 		/// String value to separate fields (columns) in fixed-width or delimited files.
@@ -38,19 +37,19 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecDelimited() { }
 
-		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
 			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
 		{
-			this.IncludeHeaderRow = includeHeaderRow;
+			this.IncludeHeaderRecord = includeHeaderRow;
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.Encoding = encoding;
 		}
 
-		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
 		{
-			this.IncludeHeaderRow = includeHeaderRow;
+			this.IncludeHeaderRecord = includeHeaderRow;
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.Encoding = encoding;
@@ -60,29 +59,28 @@ namespace SynDataFileGen.Lib
 
 		#region IFileSpec implementation
 
-		public override Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(DateTime? dateLoop = null)
 		{
+			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
+
 			var result = new MemoryStream();
 
 			using (var interim = new MemoryStream())
 			{
 				using (var sw = new StreamWriter(interim, this.Encoding))
 				{
-					if (items != null && items.Count > 0)
-					{
-						if (this.IncludeHeaderRow)
-							sw.WriteLine(GetHeaderRecord());
+					if (this.IncludeHeaderRecord)
+						sw.WriteLine(GetHeaderRecord());
 
-						foreach (T item in items)
-							sw.WriteLine(GetRecord(item));
+					for (int i = 1; i <= numOfItems; i++)
+						sw.WriteLine(GetRecord(dateLoop));
 
-						sw.Flush();
-
-						interim.Seek(0, SeekOrigin.Begin);
-
-						interim.CopyTo(result);
-					}
+					sw.Flush();
 				}
+
+				interim.Seek(0, SeekOrigin.Begin);
+
+				interim.CopyTo(result);
 			}
 
 			return result;
@@ -94,29 +92,26 @@ namespace SynDataFileGen.Lib
 
 		private string GetHeaderRecord()
 		{
-			return TypeUtil.GetPrimitiveProps(typeof(T)).Select(p => this.Encloser + p.Name + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
+			List<string> fieldNames = new List<string>();
+
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
+				fieldNames.Add(this.FieldNameForLoopDateTime);
+
+			fieldNames.AddRange(this.FieldSpecs.Select(f => f.Name));
+
+			return fieldNames.Select(fn => this.Encloser + fn + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 		}
 
-		private string GetRecord(T item)
+		private string GetRecord(DateTime? dateLoop = null)
 		{
-			List<string> result = new List<string>();
+			List<string> fields = new List<string>();
 
-			foreach (IFieldSpec<T> fieldSpec in this.FieldSpecs)
-			{
-				object rawValue = fieldSpec.Prop.GetValueEx(item);
-				string value;
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
+				fields.Add(string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop));
 
-				if (rawValue == null)
-					value = this.Encloser + this.Encloser;
-				else if (string.IsNullOrWhiteSpace(fieldSpec.FormatString))
-					value = this.Encloser + rawValue.ToString() + this.Encloser;
-				else
-					value = this.Encloser + string.Format(fieldSpec.FormatString, rawValue) + this.Encloser;
+			fields.AddRange(this.FieldSpecs.Select(f => f.Value.ToString()));
 
-				result.Add(value);
-			}
-
-			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
+			return fields.Select(fn => this.Encloser + fn + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 		}
 
 		#endregion

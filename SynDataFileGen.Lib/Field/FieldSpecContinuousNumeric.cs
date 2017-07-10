@@ -4,38 +4,8 @@ using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecContinuousNumeric<T> : FieldSpecBase<T>
-		where T : new()
+	public class FieldSpecContinuousNumeric : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		public override void SetValue(T item)
-		{
-			double value = GetValue();
-
-			Type propType = this.Prop.PropertyType;
-
-			if (this.MaxDigitsAfterDecimalPoint != null)
-				value = Math.Round(value, this.MaxDigitsAfterDecimalPoint.Value);
-
-			if (propType.Equals(TypeUtil.TypeString) && !string.IsNullOrWhiteSpace(this.FormatString))
-					this.Prop.SetValueEx(item, string.Format(this.FormatString, value));					
-			else if (propType.Equals(TypeUtil.TypeDouble) || propType.Equals(TypeUtil.TypeDoubleNullable))
-				this.Prop.SetValueEx(item, value);
-			else if (propType.Equals(TypeUtil.TypeSingle) || propType.Equals(TypeUtil.TypeSingleNullable))
-				this.Prop.SetValueEx(item, Converter.GetSingle(value));
-			else if (propType.Equals(TypeUtil.TypeInt32) || propType.Equals(TypeUtil.TypeInt32Nullable))
-				this.Prop.SetValueEx(item, Converter.GetInt32(value));
-			else if (propType.Equals(TypeUtil.TypeInt64) || propType.Equals(TypeUtil.TypeInt64Nullable))
-				this.Prop.SetValueEx(item, Converter.GetInt64(value));
-			else if (propType.Equals(TypeUtil.TypeBool) || propType.Equals(TypeUtil.TypeBoolNullable))
-				this.Prop.SetValueEx(item, Converter.GetBool(value));
-			else
-				this.Prop.SetValueEx(item, value);
-		}
-
-		#endregion
-
 		#region Properties
 
 		public IDistribution Distribution { get; private set; }
@@ -48,8 +18,8 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecContinuousNumeric() { }
 
-		public FieldSpecContinuousNumeric(PropertyInfo prop, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString)
-			: base(prop, enforceUniqueValues, formatString)
+		public FieldSpecContinuousNumeric(string name, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString)
+			: base(name, enforceUniqueValues, formatString)
 		{
 			this.Distribution = distribution;
 
@@ -59,8 +29,8 @@ namespace SynDataFileGen.Lib
 				this.MaxDigitsAfterDecimalPoint = maxDigitsAfterDecimalPoint;
 		}
 
-		public FieldSpecContinuousNumeric(PropertyInfo prop, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(prop, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecContinuousNumeric(string name, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			this.Distribution = distribution;
 
@@ -72,7 +42,9 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		private double GetValue()
+		#region FieldSpecBase implementation
+
+		protected override object GetValue()
 		{
 			double result = this.Distribution.GetValue();
 
@@ -84,7 +56,12 @@ namespace SynDataFileGen.Lib
 				this.UniqueValues.Add(result, false);
 			}
 
+			if (this.MaxDigitsAfterDecimalPoint != null)
+				result = Math.Round(result, this.MaxDigitsAfterDecimalPoint.Value);
+
 			return result;
 		}
+
+		#endregion
 	}
 }

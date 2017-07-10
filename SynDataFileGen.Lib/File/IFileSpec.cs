@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
-	public interface IFileSpec<T>
-		where T : new()
+	public interface IFileSpec
 	{
 		int? RecordsPerFileMin { get; }
 		int? RecordsPerFileMax { get; }
@@ -14,12 +12,14 @@ namespace SynDataFileGen.Lib
 		string PathSpec { get; }
 
 		bool HasDateLooping { get; }
-		PropertyInfo PropertyForLoopDateTime { get; }
+
+		string FieldNameForLoopDateTime { get; }
+
 		DateTime? DateStart { get; }
 		DateTime? DateEnd { get; }
 
-		List<IFieldSpec<T>> FieldSpecs { get; }
+		List<IFieldSpec> FieldSpecs { get; }
 
-		Stream GetFileContent(List<T> items);
+		Stream GetFileContent(DateTime? dateLoop = null);
 	}
 }

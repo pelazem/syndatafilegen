@@ -99,7 +99,7 @@ namespace SynDataFileGen.Lib
 
 		#region CopyField
 
-		public string FieldNameToCopy { get; set; }
+		//public string FieldNameToCopy { get; set; }
 
 		#endregion
 

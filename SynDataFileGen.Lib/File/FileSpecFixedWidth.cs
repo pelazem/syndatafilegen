@@ -8,8 +8,7 @@ using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FileSpecFixedWidth<T> : FileSpecBase<T>
-		where T : new()
+	public class FileSpecFixedWidth : FileSpecBase
 	{
 		#region Properties
 
@@ -17,7 +16,7 @@ namespace SynDataFileGen.Lib
 		/// Specify whether to include a header row with field names. Only used for delimited or fixed-width file types; ignored otherwise.
 		/// Note that if field name lengths exceed field max lengths (in fixed-width files), field names may be truncated.
 		/// </summary>
-		public bool IncludeHeaderRow { get; private set; }
+		public bool IncludeHeaderRecord { get; private set; }
 
 		/// <summary>
 		/// String value to separate fields (columns) in fixed-width or delimited files.
@@ -61,10 +60,10 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecFixedWidth() { }
 
-		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
+		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
 			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
 		{
-			this.IncludeHeaderRow = includeHeaderRow;
+			this.IncludeHeaderRecord = includeHeaderRow;
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.PaddingCharacter = (paddingCharacter.ToString().Trim().Length == 1 ? paddingCharacter : ' ');
@@ -73,10 +72,10 @@ namespace SynDataFileGen.Lib
 			this.Encoding = encoding;
 		}
 
-		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec<T>> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string propertyNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, propertyNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
 		{
-			this.IncludeHeaderRow = includeHeaderRow;
+			this.IncludeHeaderRecord = includeHeaderRow;
 			this.Delimiter = delimiter;
 			this.Encloser = encloser;
 			this.PaddingCharacter = (paddingCharacter.ToString().Trim().Length == 1 ? paddingCharacter : ' ');
@@ -89,29 +88,28 @@ namespace SynDataFileGen.Lib
 
 		#region IFileSpec implementation
 
-		public override Stream GetFileContent(List<T> items)
+		public override Stream GetFileContent(DateTime? dateLoop = null)
 		{
+			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
+
 			var result = new MemoryStream();
 
 			using (var interim = new MemoryStream())
 			{
 				using (var sw = new StreamWriter(interim, this.Encoding))
 				{
-					if (items != null && items.Count > 0)
-					{
-						if (this.IncludeHeaderRow)
-							sw.WriteLine(GetHeaderRecord(items));
+					if (this.IncludeHeaderRecord)
+						sw.WriteLine(GetHeaderRecord());
 
-						foreach (T item in items)
-							sw.WriteLine(GetRecord(item, items));
+					for (int i = 1; i <= numOfItems; i++)
+						sw.WriteLine(GetRecord(dateLoop));
 
-						sw.Flush();
-
-						interim.Seek(0, SeekOrigin.Begin);
-
-						interim.CopyTo(result);
-					}
+					sw.Flush();
 				}
+
+				interim.Seek(0, SeekOrigin.Begin);
+
+				interim.CopyTo(result);
 			}
 
 			return result;
@@ -121,19 +119,40 @@ namespace SynDataFileGen.Lib
 
 		#region Utility
 
-		private string GetHeaderRecord(List<T> items)
+		private string GetHeaderRecord()
 		{
 			List<string> result = new List<string>();
 
-			foreach (IFieldSpec<T> fieldSpec in this.FieldSpecs)
+			// Loop date/time
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
 			{
-				string propName = this.Encloser + fieldSpec.Prop.Name + this.Encloser;
+				// 30 is a magic number; a full date/time in ISO format with timezone + a little padding
+				int fieldSize = Math.Max(30, this.FieldNameForLoopDateTime.Length);
 
-				int fieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : Math.Max(propName.Length, items.Take(Math.Min(items.Count, 1000)).Select(i => fieldSpec.Prop.GetValueEx(i).ToString().Length).Max()));
+				if (this.FieldNameForLoopDateTime.Length < fieldSize)
+				{
+					switch (this.AddPadding)
+					{
+						case Util.Location.AtStart:
+							result.Add(this.FieldNameForLoopDateTime.PadLeft(fieldSize, this.PaddingCharacter));
+							break;
+						case Util.Location.AtEnd:
+						default:
+							result.Add(this.FieldNameForLoopDateTime.PadRight(fieldSize, this.PaddingCharacter));
+							break;
+					}
+				}
+			}
 
-				if (propName.Length == fieldWidth)
-					result.Add(propName);
-				else if (propName.Length < fieldWidth)
+			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
+			{
+				string fieldName = this.Encloser + fieldSpec.Name + this.Encloser;
+
+				int fieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : fieldName.Length);
+
+				if (fieldName.Length == fieldWidth)
+					result.Add(fieldName);
+				else if (fieldName.Length < fieldWidth)
 				{
 					Util.Location? padAt = null;
 
@@ -145,15 +164,15 @@ namespace SynDataFileGen.Lib
 					switch (padAt.Value)
 					{
 						case Util.Location.AtStart:
-							result.Add(propName.PadLeft(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
+							result.Add(fieldName.PadLeft(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
 							break;
 						case Util.Location.AtEnd:
 						default:
-							result.Add(propName.PadRight(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
+							result.Add(fieldName.PadRight(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
 							break;
 					}
 				}
-				else if (propName.Length > fieldWidth)
+				else if (fieldName.Length > fieldWidth)
 				{
 					Util.Location? truncateAt = null;
 
@@ -165,37 +184,52 @@ namespace SynDataFileGen.Lib
 					switch (truncateAt)
 					{
 						case Util.Location.AtStart:
-							result.Add(propName.Substring(propName.Length - fieldWidth));
+							result.Add(fieldName.Substring(fieldName.Length - fieldWidth));
 							break;
 						case Util.Location.AtEnd:
 						default:
-							result.Add(propName.Substring(0, fieldWidth));
+							result.Add(fieldName.Substring(0, fieldWidth));
 							break;
 					}
 				}
 			}
 
+
 			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
 		}
 
-		private string GetRecord(T item, List<T> items)
+		private string GetRecord(DateTime? dateLoop)
 		{
 			List<string> result = new List<string>();
 
-			foreach (IFieldSpec<T> fieldSpec in this.FieldSpecs)
+			// Loop date/time
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
 			{
-				int fullFieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : Math.Max((this.IncludeHeaderRow ? fieldSpec.Prop.Name.Length : 0), items.Take(Math.Min(items.Count, 1000)).Select(i => fieldSpec.Prop.GetValueEx(i).ToString().Length).Max()));
+				// 30 is a magic number; a full date/time in ISO format with timezone + a little padding
+				int fieldSize = Math.Max(30, this.FieldNameForLoopDateTime.Length);
+
+				switch (this.AddPadding)
+				{
+					case Util.Location.AtStart:
+						result.Add(string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop).PadLeft(fieldSize, this.PaddingCharacter));
+						break;
+					case Util.Location.AtEnd:
+					default:
+						result.Add(string.Format(pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL, dateLoop).PadRight(fieldSize, this.PaddingCharacter));
+						break;
+				}
+			}
+
+
+			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
+			{
+				int fullFieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : fieldSpec.Name.Length);
 				int fieldWidthNetEncloser = Math.Max(0, fullFieldWidth - (2 * this.Encloser.Length));
 
-				object rawValue = fieldSpec.Prop.GetValueEx(item);
+				string value = fieldSpec.Value.ToString();
 
-
-				// First we get a formatted string
-				string finalValue = GetString(rawValue, fieldSpec.FormatString);
-
-
-				// Second we handle padding or truncation
-				if (finalValue.Length < fieldWidthNetEncloser)
+				// Handle padding or truncation
+				if (value.Length < fieldWidthNetEncloser)
 				{
 					char paddingChar = fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter;
 
@@ -206,59 +240,42 @@ namespace SynDataFileGen.Lib
 						case Util.Location.AtStart:
 							// Edge Case
 							// If we're left-padding with a non-whitespace character, and the value is a negative number: we need to move the - to the front so we get -000123.45 and not 000-123.45
-							if (!char.IsWhiteSpace(paddingChar) && TypeUtil.IsNumeric(fieldSpec.Prop) && Converter.GetDouble(rawValue) < 0)
-								finalValue = GetPaddedValueForNegativeNumber(finalValue, paddingChar, fieldWidthNetEncloser);
+							if (!char.IsWhiteSpace(paddingChar) && Converter.GetDouble(fieldSpec.Value) < 0)
+								value = GetPaddedValueForNegativeNumber(value, paddingChar, fieldWidthNetEncloser);
 							else
-								finalValue = finalValue.PadLeft(fieldWidthNetEncloser, paddingChar);
+								value = value.PadLeft(fieldWidthNetEncloser, paddingChar);
 							break;
 						case Util.Location.AtEnd:
 						default:
-							finalValue = finalValue.PadRight(fieldWidthNetEncloser, paddingChar);
+							value = value.PadRight(fieldWidthNetEncloser, paddingChar);
 							break;
 					}
 				}
-				else if (finalValue.Length > fieldWidthNetEncloser)
+				else if (value.Length > fieldWidthNetEncloser)
 				{
 					Util.Location? truncateAt = fieldSpec.FixedWidthTruncate ?? this.Truncate;
 
 					switch (truncateAt)
 					{
 						case Util.Location.AtStart:
-							finalValue = finalValue.Substring(finalValue.Length - fieldWidthNetEncloser);
+							value = value.Substring(value.Length - fieldWidthNetEncloser);
 							break;
 						case Util.Location.AtEnd:
 						default:
-							finalValue = finalValue.Substring(0, fieldWidthNetEncloser);
+							value = value.Substring(0, fieldWidthNetEncloser);
 							break;
 					}
 				}
 
 				// Last, we prepend and append encloser, if specified
 				if (!string.IsNullOrWhiteSpace(this.Encloser))
-					finalValue = this.Encloser + finalValue + this.Encloser;
+					value = this.Encloser + value + this.Encloser;
 
 				// Add to the output
-				result.Add(finalValue);
+				result.Add(value);
 			}
 
 			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
-		}
-
-		private string GetString(object rawValue, string formatString)
-		{
-			string result;
-
-			if (rawValue != null)
-			{
-				if (string.IsNullOrWhiteSpace(formatString))
-					result = rawValue.ToString();
-				else
-					result = string.Format(formatString, rawValue);
-			}
-			else
-				result = string.Empty;
-
-			return result;
 		}
 
 		private string GetPaddedValueForNegativeNumber(string rawValue, char paddingChar, int finalLength)

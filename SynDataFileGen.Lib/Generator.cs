@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class Generator<T>
-		where T : new()
+	public class Generator
 	{
 		#region Properties
 
 		public string OutputFolderRoot { get; private set; }
 
-		public IFileSpec<T> FileSpec { get; private set; }
+		public IFileSpec FileSpec { get; private set; }
 
 		private DateTime? DateLoop { get; set; }
 
@@ -26,7 +24,7 @@ namespace SynDataFileGen.Lib
 		public Generator
 		(
 			string outputFolderRoot,
-			IFileSpec<T> fileSpec
+			IFileSpec fileSpec
 		)
 		{
 			this.OutputFolderRoot = outputFolderRoot;
@@ -37,32 +35,13 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		/// <summary>
-		/// Pass in your own items instead of having the generator generate them - i.e. use this as a glorified serializer
-		/// </summary>
-		/// <param name="items"></param>
-		/// <returns></returns>
-		public IEnumerable<T> Run(List<T> items)
+		public void Run()
 		{
-			if (items != null && items.Count() > 0)
-				WriteFile(GetPath(), this.FileSpec.GetFileContent(items));
-
-			return items;
-		}
-
-		/// <summary>
-		/// Generator generates items and returns them
-		/// </summary>
-		/// <returns></returns>
-		public IEnumerable<T> Run()
-		{
-			List<T> result = new List<T>();
+			WriteFile(GetPath(), this.FileSpec.GetFileContent(this.DateLoop));
 
 			if (!this.FileSpec.HasDateLooping)
 			{
-				result.AddRange(GetItems());
-
-				WriteFile(GetPath(), this.FileSpec.GetFileContent(result));
+				WriteFile(GetPath(), this.FileSpec.GetFileContent(this.DateLoop));
 			}
 			else
 			{
@@ -70,17 +49,11 @@ namespace SynDataFileGen.Lib
 
 				while (this.DateLoop <= this.FileSpec.DateEnd)
 				{
-					List<T> items = GetItems();
-
-					result.AddRange(items);
-
-					WriteFile(GetPath(this.DateLoop.Value), this.FileSpec.GetFileContent(items));
+					WriteFile(GetPath(this.DateLoop), this.FileSpec.GetFileContent(this.DateLoop));
 
 					this.DateLoop = func();
 				}
 			}
-
-			return result;
 		}
 
 		private Func<DateTime> GetDateLoopFunc()
@@ -100,43 +73,9 @@ namespace SynDataFileGen.Lib
 			return func;
 		}
 
-		/// <summary>
-		/// Using the supplied column specs and min/max records per file, builds and returns a list of items to be written to file.
-		/// </summary>
-		/// <returns></returns>
-		private List<T> GetItems()
-		{
-			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.FileSpec.RecordsPerFileMin ?? 0, this.FileSpec.RecordsPerFileMax ?? 0));
-
-			List<T> result = new List<T>(numOfItems);
-
-			for (int i = 1; i <= numOfItems; i++)
-			{
-				// Get a new item instance
-				T item = new T();
-
-				// Set values per the supplied field specifications
-				foreach (IFieldSpec<T> fieldSpec in this.FileSpec.FieldSpecs)
-					fieldSpec.SetValue(item);
-
-				// Set looping date if so specified
-				if (this.FileSpec.PropertyForLoopDateTime != null)
-					this.FileSpec.PropertyForLoopDateTime.SetValueEx(item, this.DateLoop);
-
-				result.Add(item);
-			}
-
-			return result;
-		}
-
 		#region Utility
 
-		public string GetPath()
-		{
-			return this.GetPath(null);
-		}
-
-		public string GetPath(DateTime? dateTime)
+		public string GetPath(DateTime? dateTime = null)
 		{
 			string path = Path.Combine(this.OutputFolderRoot, this.FileSpec.PathSpec);
 

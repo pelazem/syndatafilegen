@@ -1,24 +1,12 @@
 ﻿using System;
-using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecContinuousNonNumeric<T> : FieldSpecBase<T>
-		where T : new()
+	/// <summary>
+	/// TODO determine if this class serves a purpose in addition to FieldSpecDynamic. May be retired.
+	/// </summary>
+	public class FieldSpecContinuousNonNumeric : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		public override void SetValue(T item)
-		{
-			object value = GetValue();
-
-			throw new NotImplementedException();
-
-			// TODO what do we do here? A RegEx and magic? Hmmm....
-		}
-
-		#endregion
-
 		#region Properties
 
 		#endregion
@@ -27,21 +15,25 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecContinuousNonNumeric() { }
 
-		public FieldSpecContinuousNonNumeric(PropertyInfo prop, bool enforceUniqueValues, string formatString)
-			: base(prop, enforceUniqueValues, formatString)
+		public FieldSpecContinuousNonNumeric(string name, bool enforceUniqueValues, string formatString)
+			: base(name, enforceUniqueValues, formatString)
 		{
 		}
 
-		public FieldSpecContinuousNonNumeric(PropertyInfo prop, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(prop, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecContinuousNonNumeric(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 		}
 
 		#endregion
 
-		private object GetValue()
+		#region FieldSpecBase implementation
+
+		protected override object GetValue()
 		{
 			return null;
 		}
+
+		#endregion
 	}
 }

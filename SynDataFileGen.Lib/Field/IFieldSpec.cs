@@ -3,10 +3,9 @@ using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
-	public interface IFieldSpec<T>
-		where T : new()
+	public interface IFieldSpec
 	{
-		PropertyInfo Prop { get; }
+		string Name { get; }
 
 		bool EnforceUniqueValues { get; }
 
@@ -22,6 +21,6 @@ namespace SynDataFileGen.Lib
 		Util.Location? FixedWidthTruncate { get; }
 
 
-		void SetValue(T item);
+		object Value { get; }
 	}
 }

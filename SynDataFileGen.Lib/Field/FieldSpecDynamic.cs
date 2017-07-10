@@ -4,21 +4,8 @@ using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
-	public class FieldSpecDynamic<T> : FieldSpecBase<T>
-		where T : new()
+	public class FieldSpecDynamic : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		public override void SetValue(T item)
-		{
-			if (this.Prop.PropertyType.Equals(TypeUtil.TypeString) && !string.IsNullOrWhiteSpace(this.FormatString))
-				this.Prop.SetValueEx(item, string.Format(this.FormatString, GetValue()));
-			else
-				this.Prop.SetValueEx(item, GetValue());
-		}
-
-		#endregion
-
 		#region Properties
 
 		public Func<object> FuncToGenerateValue { get; private set; }
@@ -29,21 +16,23 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecDynamic() { }
 
-		public FieldSpecDynamic(PropertyInfo prop, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString)
-			: base(prop, enforceUniqueValues, formatString)
+		public FieldSpecDynamic(string name, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString)
+			: base(name, enforceUniqueValues, formatString)
 		{
 			this.FuncToGenerateValue = funcToGenerateValue;
 		}
 
-		public FieldSpecDynamic(PropertyInfo prop, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(prop, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecDynamic(string name, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			this.FuncToGenerateValue = funcToGenerateValue;
 		}
 
 		#endregion
 
-		private object GetValue()
+		#region FieldSpecBase implementation
+
+		protected override object GetValue()
 		{
 			if (this.FuncToGenerateValue == null)
 				return string.Empty;
@@ -60,5 +49,7 @@ namespace SynDataFileGen.Lib
 
 			return result;
 		}
+
+		#endregion
 	}
 }
