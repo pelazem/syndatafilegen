@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -102,14 +103,20 @@ namespace SynDataFileGen.Lib
 						sw.WriteLine(GetHeaderRecord());
 
 					for (int i = 1; i <= numOfItems; i++)
-						sw.WriteLine(GetRecord(dateLoop));
+					{
+						var record = GetRecord(dateLoop);
+
+						this.Results.Add(record);
+
+						sw.WriteLine(SerializeRecord(record));
+					}
 
 					sw.Flush();
+
+					interim.Seek(0, SeekOrigin.Begin);
+
+					interim.CopyTo(result);
 				}
-
-				interim.Seek(0, SeekOrigin.Begin);
-
-				interim.CopyTo(result);
 			}
 
 			return result;
@@ -198,9 +205,10 @@ namespace SynDataFileGen.Lib
 			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
 		}
 
-		private string GetRecord(DateTime? dateLoop)
+		private dynamic GetRecord(DateTime? dateLoop = null)
 		{
-			List<string> result = new List<string>();
+			dynamic record = new ExpandoObject();
+			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
 
 			// Loop date/time
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
@@ -208,19 +216,26 @@ namespace SynDataFileGen.Lib
 				// 30 is a magic number; a full date/time in ISO format with timezone + a little padding
 				int fieldSize = Math.Max(30, this.FieldNameForLoopDateTime.Length);
 
-				switch (this.AddPadding)
+				if (dateLoop != null)
 				{
-					case Util.Location.AtStart:
-						result.Add(string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop).PadLeft(fieldSize, this.PaddingCharacter));
-						break;
-					case Util.Location.AtEnd:
-					default:
-						result.Add(string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop).PadRight(fieldSize, this.PaddingCharacter));
-						break;
+					string raw = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
+
+					switch (this.AddPadding)
+					{
+						case Util.Location.AtStart:
+							recordProperties[this.FieldNameForLoopDateTime] = raw.PadLeft(fieldSize, this.PaddingCharacter);
+							break;
+						case Util.Location.AtEnd:
+						default:
+							recordProperties[this.FieldNameForLoopDateTime] = raw.PadRight(fieldSize, this.PaddingCharacter);
+							break;
+					}
 				}
+				else
+					recordProperties[this.FieldNameForLoopDateTime] = " ".PadRight(fieldSize, this.PaddingCharacter);
 			}
 
-
+			// Actual field values
 			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
 			{
 				int fullFieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : fieldSpec.Name.Length);
@@ -267,15 +282,21 @@ namespace SynDataFileGen.Lib
 					}
 				}
 
-				// Last, we prepend and append encloser, if specified
-				if (!string.IsNullOrWhiteSpace(this.Encloser))
-					value = this.Encloser + value + this.Encloser;
-
 				// Add to the output
-				result.Add(value);
+				recordProperties[fieldSpec.Name] = value;
 			}
 
-			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
+			return record;
+		}
+
+		private string SerializeRecord(ExpandoObject record)
+		{
+			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
+
+			if (recordProperties != null)
+				return recordProperties.Values.Select(v => this.Encloser + v.ToString() + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
+			else
+				return string.Empty;
 		}
 
 		private string GetPaddedValueForNegativeNumber(string rawValue, char paddingChar, int finalLength)

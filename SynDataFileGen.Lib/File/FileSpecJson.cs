@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -50,25 +51,36 @@ namespace SynDataFileGen.Lib
 
 					for (int i = 1; i <= numOfItems; i++)
 					{
-						JObject record = new JObject();
+						JObject jsonRecord = new JObject();		// JSON output
+						dynamic record = new ExpandoObject();   // Add to .Results list
+						IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
 
-						if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
-							record.Add(this.FieldNameForLoopDateTime, string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop));
+						if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
+						{
+							string dateString = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
+							jsonRecord.Add(this.FieldNameForLoopDateTime, dateString);
+							recordProperties[this.FieldNameForLoopDateTime] = dateString;
+						}
 
 						foreach (var fieldSpec in this.FieldSpecs)
-							record.Add(fieldSpec.Name, fieldSpec.Value.ToString());
+						{
+							object value = fieldSpec.Value;
+							jsonRecord.Add(fieldSpec.Name, fieldSpec.Value.ToString());
+							recordProperties[fieldSpec.Name] = value;
+						}
 
-						records.Add(record);
+						records.Add(jsonRecord);
+						this.Results.Add(record);
 					}
 
 					sw.Write(records.ToString());
 
 					sw.Flush();
+
+					interim.Seek(0, SeekOrigin.Begin);
+
+					interim.CopyTo(result);
 				}
-
-				interim.Seek(0, SeekOrigin.Begin);
-
-				interim.CopyTo(result);
 			}
 
 			return result;

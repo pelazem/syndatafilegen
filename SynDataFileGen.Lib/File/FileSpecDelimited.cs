@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,7 +74,13 @@ namespace SynDataFileGen.Lib
 						sw.WriteLine(GetHeaderRecord());
 
 					for (int i = 1; i <= numOfItems; i++)
-						sw.WriteLine(GetRecord(dateLoop));
+					{
+						var record = GetRecord(dateLoop);
+
+						this.Results.Add(record);
+
+						sw.WriteLine(SerializeRecord(record));
+					}
 
 					sw.Flush();
 
@@ -102,16 +109,28 @@ namespace SynDataFileGen.Lib
 			return fieldNames.Select(fn => this.Encloser + fn + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 		}
 
-		private string GetRecord(DateTime? dateLoop = null)
+		private dynamic GetRecord(DateTime? dateLoop = null)
 		{
-			List<string> fields = new List<string>();
+			dynamic record = new ExpandoObject();
+			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
 
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-				fields.Add(string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop));
+				recordProperties[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
 
-			fields.AddRange(this.FieldSpecs.Select(f => f.Value.ToString()));
+			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
+				recordProperties[fieldSpec.Name] = fieldSpec.Value;
 
-			return fields.Select(fn => this.Encloser + fn + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
+			return record;
+		}
+
+		private string SerializeRecord(ExpandoObject record)
+		{
+			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
+
+			if (recordProperties != null)
+				return recordProperties.Values.Select(v => this.Encloser + v.ToString() + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
+			else
+				return string.Empty;
 		}
 
 		#endregion

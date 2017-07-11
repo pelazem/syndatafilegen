@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 
@@ -14,6 +15,14 @@ namespace SynDataFileGen.Lib
 		public IFileSpec FileSpec { get; private set; }
 
 		private DateTime? DateLoop { get; set; }
+
+		public List<ExpandoObject> Results
+		{
+			get
+			{
+				return this.FileSpec.Results;
+			}
+		}
 
 		#endregion
 

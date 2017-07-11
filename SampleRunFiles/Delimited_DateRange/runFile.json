@@ -195,25 +195,6 @@
 					"MaxDigitsAfterDecimalPoint": null,
 					"FieldNameToCopy": null,
 					"DynamicFunc": "() => System.Guid.NewGuid().ToString()"
-				},
-				{
-					"FieldType": "dynamic",
-					"Name": "EventDateTime",
-					"EnforceUniqueValues": false,
-					"FormatString": "{0:yyyy-MM-ddTHH:mm:ssK}",
-					"FixedWidthLength": null,
-					"FixedWidthPaddingChar": null,
-					"FixedWidthAddPadding": "",
-					"FixedWidthTruncate": "",
-					"Categories":
-					[
-					],
-					"DateStart": "0001-01-01T00:00:00",
-					"DateEnd": "0001-01-01T00:00:00",
-					"NumericDistribution": null,
-					"MaxDigitsAfterDecimalPoint": null,
-					"FieldNameToCopy": null,
-					"DynamicFunc": null
 				}
 			]
 		}

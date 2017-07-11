@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using Microsoft.Hadoop.Avro;
 using Microsoft.Hadoop.Avro.Container;
@@ -55,24 +56,35 @@ namespace SynDataFileGen.Lib
 					{
 						for (int i = 1; i <= numOfItems; i++)
 						{
-							dynamic avroRecord = new AvroRecord(rootSchema);
+							dynamic avroRecord = new AvroRecord(rootSchema);	// Serialize to Avro file
+							dynamic record = new ExpandoObject();   // Add to .Results list
+							IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
 
 							if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-								avroRecord[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
+							{
+								string dateString = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
+								avroRecord[this.FieldNameForLoopDateTime] = dateString;
+								recordProperties[this.FieldNameForLoopDateTime] = dateString;
+							}
 
 							foreach (var fieldSpec in this.FieldSpecs)
-								avroRecord[fieldSpec.Name] = fieldSpec.Value;
+							{
+								object value = fieldSpec.Value;
+								avroRecord[fieldSpec.Name] = value;
+								recordProperties[fieldSpec.Name] = value;
+							}
 
 							seqWriter.Write(avroRecord);
+							this.Results.Add(record);
 						}
 
 						seqWriter.Flush();
+
+						interim.Seek(0, SeekOrigin.Begin);
+
+						interim.CopyTo(result);
 					}
 				}
-
-				interim.Seek(0, SeekOrigin.Begin);
-
-				interim.CopyTo(result);
 			}
 
 			return result;

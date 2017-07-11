@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 
 namespace SynDataFileGen.Lib
@@ -19,6 +20,8 @@ namespace SynDataFileGen.Lib
 		DateTime? DateEnd { get; }
 
 		List<IFieldSpec> FieldSpecs { get; }
+
+		List<ExpandoObject> Results { get; }
 
 		Stream GetFileContent(DateTime? dateLoop = null);
 	}

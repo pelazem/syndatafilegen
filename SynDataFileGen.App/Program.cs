@@ -27,7 +27,7 @@ namespace SynDataFileGen.App
 
 			generators.ForEach(g => g.Run());
 
-			Console.Read();
+			// Console.Read();
 		}
 
 		private static Config ReadRunFile(string path)
