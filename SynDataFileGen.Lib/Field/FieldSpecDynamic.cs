@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using pelazem.util;
 
 namespace SynDataFileGen.Lib

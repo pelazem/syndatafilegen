@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 
 namespace SynDataFileGen.Lib
 {
@@ -7,14 +6,16 @@ namespace SynDataFileGen.Lib
 	{
 		#region FieldSpecBase implementation
 
-		public override void SetValue(object item)
+		protected override object GetValue()
 		{
-			// no op as we will just want to read the already-set value on the property - i.e. this is for pre-loaded items
+			return this.Value;
 		}
 
 		#endregion
 
 		#region Properties
+
+		public new object Value { get; set; }
 
 		#endregion
 
@@ -22,14 +23,16 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecIdempotent() { }
 
-		public FieldSpecIdempotent(PropertyInfo prop, string formatString)
-			: base(prop, false, formatString)
+		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString)
+			: base(name, enforceUniqueValues, formatString)
 		{
+			
 		}
 
-		public FieldSpecIdempotent(PropertyInfo prop, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(prop, false, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
+			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
+
 		}
 
 		#endregion

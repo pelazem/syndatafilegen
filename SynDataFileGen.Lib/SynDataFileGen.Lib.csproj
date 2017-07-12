@@ -7,7 +7,6 @@
   <ItemGroup>
     <Compile Remove="Field\FieldSpecContinuousNonNumeric.cs" />
     <Compile Remove="Field\FieldSpecCopyField.cs" />
-    <Compile Remove="Field\FieldSpecIdempotent.cs" />
   </ItemGroup>
 
   <ItemGroup>

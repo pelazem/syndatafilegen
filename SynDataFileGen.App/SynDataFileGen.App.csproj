@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
-    <AssemblyName>generator</AssemblyName>
+    <AssemblyName>SynDataFileGen</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
