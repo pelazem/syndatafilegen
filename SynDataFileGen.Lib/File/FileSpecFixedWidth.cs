@@ -87,12 +87,8 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		#region IFileSpec implementation
-
-		public override Stream GetFileContent(DateTime? dateLoop = null)
+		protected override Stream GetFileContent(List<ExpandoObject> records)
 		{
-			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
-
 			var result = new MemoryStream();
 
 			using (var interim = new MemoryStream())
@@ -102,14 +98,8 @@ namespace SynDataFileGen.Lib
 					if (this.IncludeHeaderRecord)
 						sw.WriteLine(GetHeaderRecord());
 
-					for (int i = 1; i <= numOfItems; i++)
-					{
-						var record = GetRecord(dateLoop);
-
-						this.Results.Add(record);
-
+					foreach (var record in records)
 						sw.WriteLine(SerializeRecord(record));
-					}
 
 					sw.Flush();
 
@@ -122,90 +112,7 @@ namespace SynDataFileGen.Lib
 			return result;
 		}
 
-		#endregion
-
-		#region Utility
-
-		private string GetHeaderRecord()
-		{
-			List<string> result = new List<string>();
-
-			// Loop date/time
-			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
-			{
-				// 30 is a magic number; a full date/time in ISO format with timezone + a little padding
-				int fieldSize = Math.Max(30, this.FieldNameForLoopDateTime.Length);
-
-				if (this.FieldNameForLoopDateTime.Length < fieldSize)
-				{
-					switch (this.AddPadding)
-					{
-						case Util.Location.AtStart:
-							result.Add(this.FieldNameForLoopDateTime.PadLeft(fieldSize, this.PaddingCharacter));
-							break;
-						case Util.Location.AtEnd:
-						default:
-							result.Add(this.FieldNameForLoopDateTime.PadRight(fieldSize, this.PaddingCharacter));
-							break;
-					}
-				}
-			}
-
-			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
-			{
-				string fieldName = this.Encloser + fieldSpec.Name + this.Encloser;
-
-				int fieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : fieldName.Length);
-
-				if (fieldName.Length == fieldWidth)
-					result.Add(fieldName);
-				else if (fieldName.Length < fieldWidth)
-				{
-					Util.Location? padAt = null;
-
-					if (fieldSpec.FixedWidthAddPadding != null)
-						padAt = fieldSpec.FixedWidthAddPadding.Value;
-					else
-						padAt = this.AddPadding;
-
-					switch (padAt.Value)
-					{
-						case Util.Location.AtStart:
-							result.Add(fieldName.PadLeft(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
-							break;
-						case Util.Location.AtEnd:
-						default:
-							result.Add(fieldName.PadRight(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
-							break;
-					}
-				}
-				else if (fieldName.Length > fieldWidth)
-				{
-					Util.Location? truncateAt = null;
-
-					if (fieldSpec.FixedWidthTruncate != null)
-						truncateAt = fieldSpec.FixedWidthTruncate.Value;
-					else
-						truncateAt = this.Truncate;
-
-					switch (truncateAt)
-					{
-						case Util.Location.AtStart:
-							result.Add(fieldName.Substring(fieldName.Length - fieldWidth));
-							break;
-						case Util.Location.AtEnd:
-						default:
-							result.Add(fieldName.Substring(0, fieldWidth));
-							break;
-					}
-				}
-			}
-
-
-			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
-		}
-
-		private dynamic GetRecord(DateTime? dateLoop = null)
+		protected override dynamic GetRecord(DateTime? dateLoop = null)
 		{
 			dynamic record = new ExpandoObject();
 			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
@@ -289,11 +196,88 @@ namespace SynDataFileGen.Lib
 			return record;
 		}
 
+		private string GetHeaderRecord()
+		{
+			List<string> result = new List<string>();
+
+			// Loop date/time
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
+			{
+				// 30 is a magic number; a full date/time in ISO format with timezone + a little padding
+				int fieldSize = Math.Max(30, this.FieldNameForLoopDateTime.Length);
+
+				if (this.FieldNameForLoopDateTime.Length < fieldSize)
+				{
+					switch (this.AddPadding)
+					{
+						case Util.Location.AtStart:
+							result.Add(this.FieldNameForLoopDateTime.PadLeft(fieldSize, this.PaddingCharacter));
+							break;
+						case Util.Location.AtEnd:
+						default:
+							result.Add(this.FieldNameForLoopDateTime.PadRight(fieldSize, this.PaddingCharacter));
+							break;
+					}
+				}
+			}
+
+			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
+			{
+				string fieldName = this.Encloser + fieldSpec.Name + this.Encloser;
+
+				int fieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : fieldName.Length);
+
+				if (fieldName.Length == fieldWidth)
+					result.Add(fieldName);
+				else if (fieldName.Length < fieldWidth)
+				{
+					Util.Location? padAt = null;
+
+					if (fieldSpec.FixedWidthAddPadding != null)
+						padAt = fieldSpec.FixedWidthAddPadding.Value;
+					else
+						padAt = this.AddPadding;
+
+					switch (padAt.Value)
+					{
+						case Util.Location.AtStart:
+							result.Add(fieldName.PadLeft(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
+							break;
+						case Util.Location.AtEnd:
+						default:
+							result.Add(fieldName.PadRight(fieldWidth, (fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter)));
+							break;
+					}
+				}
+				else if (fieldName.Length > fieldWidth)
+				{
+					Util.Location? truncateAt = null;
+
+					if (fieldSpec.FixedWidthTruncate != null)
+						truncateAt = fieldSpec.FixedWidthTruncate.Value;
+					else
+						truncateAt = this.Truncate;
+
+					switch (truncateAt)
+					{
+						case Util.Location.AtStart:
+							result.Add(fieldName.Substring(fieldName.Length - fieldWidth));
+							break;
+						case Util.Location.AtEnd:
+						default:
+							result.Add(fieldName.Substring(0, fieldWidth));
+							break;
+					}
+				}
+			}
+
+
+			return result.GetDelimitedList(this.Delimiter, string.Empty, true);
+		}
+
 		private string SerializeRecord(ExpandoObject record)
 		{
-			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
-
-			if (recordProperties != null)
+			if (record is IDictionary<string, object> recordProperties)
 				return recordProperties.Values.Select(v => this.Encloser + v.ToString() + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 			else
 				return string.Empty;
@@ -327,7 +311,5 @@ namespace SynDataFileGen.Lib
 
 			return final;
 		}
-
-		#endregion
 	}
 }

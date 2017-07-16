@@ -58,12 +58,8 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		#region IFileSpec implementation
-
-		public override Stream GetFileContent(DateTime? dateLoop = null)
+		protected override Stream GetFileContent(List<ExpandoObject> records)
 		{
-			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
-
 			var result = new MemoryStream();
 
 			using (var interim = new MemoryStream())
@@ -73,14 +69,8 @@ namespace SynDataFileGen.Lib
 					if (this.IncludeHeaderRecord)
 						sw.WriteLine(GetHeaderRecord());
 
-					for (int i = 1; i <= numOfItems; i++)
-					{
-						var record = GetRecord(dateLoop);
-
-						this.Results.Add(record);
-
+					foreach (var record in records)
 						sw.WriteLine(SerializeRecord(record));
-					}
 
 					sw.Flush();
 
@@ -92,10 +82,6 @@ namespace SynDataFileGen.Lib
 
 			return result;
 		}
-
-		#endregion
-
-		#region Utility
 
 		private string GetHeaderRecord()
 		{
@@ -109,30 +95,12 @@ namespace SynDataFileGen.Lib
 			return fieldNames.Select(fn => this.Encloser + fn + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 		}
 
-		private dynamic GetRecord(DateTime? dateLoop = null)
-		{
-			dynamic record = new ExpandoObject();
-			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
-
-			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-				recordProperties[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
-
-			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
-				recordProperties[fieldSpec.Name] = fieldSpec.Value;
-
-			return record;
-		}
-
 		private string SerializeRecord(ExpandoObject record)
 		{
-			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
-
-			if (recordProperties != null)
+			if (record is IDictionary<string, object> recordProperties)
 				return recordProperties.Values.Select(v => this.Encloser + v.ToString() + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 			else
 				return string.Empty;
 		}
-
-		#endregion
 	}
 }

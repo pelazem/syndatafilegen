@@ -21,8 +21,6 @@ namespace SynDataFileGen.Lib
 
 		List<IFieldSpec> FieldSpecs { get; }
 
-		List<ExpandoObject> Results { get; }
-
-		Stream GetFileContent(DateTime? dateLoop = null);
+		List<ExpandoObject> GenerateFile(string fullFilePath, DateTime? dateLoop = null);
 	}
 }

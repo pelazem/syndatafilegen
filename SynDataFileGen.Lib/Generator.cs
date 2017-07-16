@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
@@ -16,13 +18,7 @@ namespace SynDataFileGen.Lib
 
 		private DateTime? DateLoop { get; set; }
 
-		public List<ExpandoObject> Results
-		{
-			get
-			{
-				return this.FileSpec.Results;
-			}
-		}
+		public List<ExpandoObject> Results { get; } = new List<ExpandoObject>();
 
 		#endregion
 
@@ -49,6 +45,8 @@ namespace SynDataFileGen.Lib
 			if (!this.FileSpec.HasDateLooping)
 			{
 				WriteFile(GetPath(), this.FileSpec.GetFileContent(this.DateLoop));
+
+				this.Results.AddRange(this.FileSpec.Results);
 			}
 			else
 			{
@@ -57,6 +55,8 @@ namespace SynDataFileGen.Lib
 				while (this.DateLoop <= this.FileSpec.DateEnd)
 				{
 					WriteFile(GetPath(this.DateLoop), this.FileSpec.GetFileContent(this.DateLoop));
+
+					this.Results.AddRange(this.FileSpec.Results);
 
 					this.DateLoop = func();
 				}
@@ -135,5 +135,47 @@ namespace SynDataFileGen.Lib
 		}
 
 		#endregion
+
+		public List<T> GetResults<T>()
+			where T : new()
+		{
+			List<T> genericResults = new List<T>();
+
+			if (this.Results.Count == 0)
+				return genericResults;
+
+			// Properties of the passed-in generic type
+			List<PropertyInfo> props = TypeUtil.GetPrimitiveProps(typeof(T));
+
+			// Keys - i.e. field names which correspond to property names - of results
+			ICollection<string> fieldNames = (this.Results.First() as IDictionary<string, object>).Keys;
+
+			// Map result field names to matching properties
+			Dictionary<string, PropertyInfo> fieldsAndThePropsToWriteTo = new Dictionary<string, PropertyInfo>();
+
+			foreach (string fieldName in fieldNames)
+			{
+				PropertyInfo prop = props.SingleOrDefault(p => p.Name.ToLowerInvariant() == fieldName.ToLowerInvariant());
+
+				if (prop != null)
+					fieldsAndThePropsToWriteTo.Add(fieldName, prop);
+			}
+
+			foreach (IDictionary<string, object> expandoResult in this.Results.Select(r => r as IDictionary<string, object>))
+			{
+				T genericInstance = new T();
+
+				foreach (KeyValuePair<string, PropertyInfo> fieldAndProp in fieldsAndThePropsToWriteTo)
+				{
+					string fieldName = fieldAndProp.Key;
+					PropertyInfo prop = fieldAndProp.Value;
+					prop.SetValueEx(genericInstance, expandoResult[fieldName]);
+				}
+
+				genericResults.Add(genericInstance);
+			}
+
+			return genericResults;
+		}
 	}
 }

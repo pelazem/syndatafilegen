@@ -30,12 +30,8 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		#region IFileSpec implementation
-
-		public override Stream GetFileContent(DateTime? dateLoop = null)
+		protected override Stream GetFileContent(List<ExpandoObject> records)
 		{
-			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
-
 			var result = new MemoryStream();
 
 			// We get a JSON schema for the passed type. Normally, the AvroSerializer expects a type passed that has DataContract/DataMember attributes, but I don't want users of this utility
@@ -45,7 +41,6 @@ namespace SynDataFileGen.Lib
 			var serializer = AvroSerializer.CreateGeneric(schema);
 			var rootSchema = serializer.WriterSchema as RecordSchema;
 
-
 			// We'll write the Avro content to a memory stream
 			using (var interim = new MemoryStream())
 			{
@@ -54,28 +49,15 @@ namespace SynDataFileGen.Lib
 				{
 					using (var seqWriter = new SequentialWriter<object>(avroWriter, SYNCNUM))
 					{
-						for (int i = 1; i <= numOfItems; i++)
+						foreach (var record in records)
 						{
-							dynamic avroRecord = new AvroRecord(rootSchema);	// Serialize to Avro file
-							dynamic record = new ExpandoObject();   // Add to .Results list
 							IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
+							dynamic avroRecord = new AvroRecord(rootSchema);
 
-							if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-							{
-								string dateString = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
-								avroRecord[this.FieldNameForLoopDateTime] = dateString;
-								recordProperties[this.FieldNameForLoopDateTime] = dateString;
-							}
-
-							foreach (var fieldSpec in this.FieldSpecs)
-							{
-								object value = fieldSpec.Value;
-								avroRecord[fieldSpec.Name] = value;
-								recordProperties[fieldSpec.Name] = value;
-							}
+							foreach (KeyValuePair<string, object> recordKVP in recordProperties)
+								avroRecord[recordKVP.Key] = recordKVP.Value;
 
 							seqWriter.Write(avroRecord);
-							this.Results.Add(record);
 						}
 
 						seqWriter.Flush();
@@ -90,10 +72,6 @@ namespace SynDataFileGen.Lib
 			return result;
 		}
 
-		#endregion
-
-		#region Utility
-
 		/// <summary>
 		/// Microsoft.Hadoop.Avro2 serializer has very limited list of supported primitive types. Their aliases are neither .NET nor C#-compliant.
 		/// See https://github.com/dougmsft/microsoft-avro/blob/master/Microsoft.Hadoop.Avro/Schema/JsonSchemaBuilder.cs
@@ -101,7 +79,6 @@ namespace SynDataFileGen.Lib
 		private string GetJsonSchema()
 		{
 			var schema = new AvroSchema();
-			schema.Name = nameof(AvroSchema);
 
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
 				schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "string"));
@@ -120,14 +97,12 @@ namespace SynDataFileGen.Lib
 
 			return JsonConvert.SerializeObject(schema, Newtonsoft.Json.Formatting.None);
 		}
-
-		#endregion
 	}
 
 	internal class AvroSchema
 	{
 		public string Type { get; set; } = "record";
-		public string Name { get; set; }
+		public string Name { get; set; } = nameof(AvroSchema);
 		public List<AvroSchemaTuple> fields = new List<AvroSchemaTuple>();
 	}
 

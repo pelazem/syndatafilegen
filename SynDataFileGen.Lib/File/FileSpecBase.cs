@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
@@ -97,13 +98,21 @@ namespace SynDataFileGen.Lib
 			}
 		}
 
-
 		public List<IFieldSpec> FieldSpecs { get; } = new List<IFieldSpec>();
 
-		public abstract Stream GetFileContent(DateTime? dateLoop = null);
+		public List<ExpandoObject> GenerateFile(string fullFilePath, DateTime? dateLoop = null)
+		{
+			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
+			List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
 
-		public List<ExpandoObject> Results { get; } = new List<ExpandoObject>();
+			for (int i = 1; i <= numOfItems; i++)
+				result.Add(GetRecord(dateLoop));
+
+			WriteFile(fullFilePath, GetFileContent(result));
+
+			return result;
+		}
 
 		#endregion
 
@@ -134,5 +143,45 @@ namespace SynDataFileGen.Lib
 		}
 
 		#endregion
+
+		protected virtual dynamic GetRecord(DateTime? dateLoop = null)
+		{
+			dynamic record = new ExpandoObject();
+
+			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
+
+			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
+				recordProperties[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
+
+			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
+				recordProperties[fieldSpec.Name] = fieldSpec.Value;
+
+			return record;
+		}
+
+		protected abstract Stream GetFileContent(List<ExpandoObject> records);
+
+		protected virtual void WriteFile(string fullFilePath, Stream contents)
+		{
+			if (File.Exists(fullFilePath))
+				File.Delete(fullFilePath);
+
+			string fullFolderPath = Path.GetDirectoryName(fullFilePath);
+
+			if (!Directory.Exists(fullFolderPath))
+				Directory.CreateDirectory(fullFolderPath);
+
+			try
+			{
+				using (FileStream fs = File.Create(fullFilePath))
+				{
+					contents.Seek(0, SeekOrigin.Begin);
+					contents.CopyTo(fs);
+				}
+			}
+			catch (Exception ex)
+			{
+			}
+		}
 	}
 }

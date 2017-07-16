@@ -35,9 +35,7 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		#region IFileSpec implementation
-
-		public override Stream GetFileContent(DateTime? dateLoop = null)
+		protected override Stream GetFileContent(List<ExpandoObject> records)
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
@@ -47,33 +45,20 @@ namespace SynDataFileGen.Lib
 			{
 				using (var sw = new StreamWriter(interim, this.Encoding))
 				{
-					JArray records = new JArray();
+					JArray jsonRecords = new JArray();
 
-					for (int i = 1; i <= numOfItems; i++)
+					foreach (var record in records)
 					{
-						JObject jsonRecord = new JObject();		// JSON output
-						dynamic record = new ExpandoObject();   // Add to .Results list
 						IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
+						JObject jsonRecord = new JObject();     // JSON output
 
-						if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-						{
-							string dateString = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
-							jsonRecord.Add(this.FieldNameForLoopDateTime, dateString);
-							recordProperties[this.FieldNameForLoopDateTime] = dateString;
-						}
+						foreach (KeyValuePair<string, object> recordKVP in recordProperties)
+							jsonRecord.Add(recordKVP.Key, recordKVP.Value.ToString());
 
-						foreach (var fieldSpec in this.FieldSpecs)
-						{
-							object value = fieldSpec.Value;
-							jsonRecord.Add(fieldSpec.Name, fieldSpec.Value.ToString());
-							recordProperties[fieldSpec.Name] = value;
-						}
-
-						records.Add(jsonRecord);
-						this.Results.Add(record);
+						jsonRecords.Add(jsonRecord);
 					}
 
-					sw.Write(records.ToString());
+					sw.Write(jsonRecords.ToString());
 
 					sw.Flush();
 
@@ -85,7 +70,5 @@ namespace SynDataFileGen.Lib
 
 			return result;
 		}
-
-		#endregion
 	}
 }
