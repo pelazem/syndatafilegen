@@ -61,20 +61,8 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecFixedWidth() { }
 
-		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
-		{
-			this.IncludeHeaderRecord = includeHeaderRow;
-			this.Delimiter = delimiter;
-			this.Encloser = encloser;
-			this.PaddingCharacter = (paddingCharacter.ToString().Trim().Length == 1 ? paddingCharacter : ' ');
-			this.AddPadding = addPaddingAt;
-			this.Truncate = truncateTooLongAt;
-			this.Encoding = encoding;
-		}
-
 		public FileSpecFixedWidth(bool includeHeaderRow, string delimiter, string encloser, char paddingCharacter, Util.Location addPaddingAt, Util.Location truncateTooLongAt, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs, fieldNameForLoopDateTime, dateStart, dateEnd)
 		{
 			this.IncludeHeaderRecord = includeHeaderRow;
 			this.Delimiter = delimiter;

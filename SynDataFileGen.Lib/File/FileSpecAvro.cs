@@ -18,13 +18,8 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecAvro() { }
 
-		public FileSpecAvro(List<IFieldSpec> fieldSpecs, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
-		{
-		}
-
 		public FileSpecAvro(List<IFieldSpec> fieldSpecs, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs, fieldNameForLoopDateTime, dateStart, dateEnd)
 		{
 		}
 

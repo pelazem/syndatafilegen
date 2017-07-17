@@ -100,7 +100,7 @@ namespace SynDataFileGen.Lib
 
 		public List<IFieldSpec> FieldSpecs { get; } = new List<IFieldSpec>();
 
-		public List<ExpandoObject> GenerateFile(string fullFilePath, DateTime? dateLoop = null)
+		public List<ExpandoObject> GenerateAndWrite(string fullFilePath, DateTime? dateLoop = null)
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
@@ -120,26 +120,17 @@ namespace SynDataFileGen.Lib
 
 		protected FileSpecBase() { }
 
-		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec> fieldSpecs = null)
+		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec> fieldSpecs, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
 		{
 			this.RecordsPerFileMin = recordsPerFileMin;
 			this.RecordsPerFileMax = recordsPerFileMax;
 			this.PathSpec = pathSpec.Replace(@"/", @"\");
 
 			this.FieldSpecs.AddRange(fieldSpecs);
-		}
-
-		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd, IEnumerable<IFieldSpec> fieldSpecs = null)
-		{
-			this.RecordsPerFileMin = recordsPerFileMin;
-			this.RecordsPerFileMax = recordsPerFileMax;
-			this.PathSpec = pathSpec.Replace(@"/", @"\");
 
 			this.FieldNameForLoopDateTime = fieldNameForLoopDateTime;
 			this.DateStart = dateStart;
 			this.DateEnd = dateEnd;
-
-			this.FieldSpecs.AddRange(fieldSpecs);
 		}
 
 		#endregion

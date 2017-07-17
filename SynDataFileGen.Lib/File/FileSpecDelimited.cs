@@ -38,17 +38,8 @@ namespace SynDataFileGen.Lib
 
 		private FileSpecDelimited() { }
 
-		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs)
-		{
-			this.IncludeHeaderRecord = includeHeaderRow;
-			this.Delimiter = delimiter;
-			this.Encloser = encloser;
-			this.Encoding = encoding;
-		}
-
 		public FileSpecDelimited(bool includeHeaderRow, string delimiter, string encloser, List<IFieldSpec> fieldSpecs, Encoding encoding, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
-			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldNameForLoopDateTime, dateStart, dateEnd, fieldSpecs)
+			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs, fieldNameForLoopDateTime, dateStart, dateEnd)
 		{
 			this.IncludeHeaderRecord = includeHeaderRow;
 			this.Delimiter = delimiter;
