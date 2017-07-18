@@ -8,6 +8,158 @@ namespace CCLF17.Lib
 {
 	public static class CCLFData
 	{
+		#region File Type Names
+
+		public const string CCLF0 = nameof(CCLFData.CCLF0);
+		public const string CCLF1 = nameof(CCLFData.CCLF1);
+		public const string CCLF2 = nameof(CCLFData.CCLF2);
+		public const string CCLF3 = nameof(CCLFData.CCLF3);
+		public const string CCLF4 = nameof(CCLFData.CCLF4);
+		public const string CCLF5 = nameof(CCLFData.CCLF5);
+		public const string CCLF6 = nameof(CCLFData.CCLF6);
+		public const string CCLF7 = nameof(CCLFData.CCLF7);
+		public const string CCLF8 = nameof(CCLFData.CCLF8);
+		public const string CCLF9 = nameof(CCLFData.CCLF9);
+		public const string CCLFA = nameof(CCLFData.CCLFA);
+		public const string CCLFB = nameof(CCLFData.CCLFB);
+
+		#endregion
+
+		#region Field Names
+
+		public const string File_Type = nameof(CCLFData.File_Type);
+		public const string File_Name = nameof(CCLFData.File_Name);
+		public const string Number_Of_Records = nameof(CCLFData.Number_Of_Records);
+		public const string Length_Of_Record = nameof(CCLFData.Length_Of_Record);
+
+		public const string ADMTG_DGNS_CD = nameof(CCLFData.ADMTG_DGNS_CD);
+		public const string ATNDG_PRVDR_NPI_NUM = nameof(CCLFData.ATNDG_PRVDR_NPI_NUM);
+		public const string BENE_1ST_NAME = nameof(CCLFData.BENE_1ST_NAME);
+		public const string BENE_AGE = nameof(CCLFData.BENE_AGE);
+		public const string BENE_DEATH_DT = nameof(CCLFData.BENE_DEATH_DT);
+		public const string BENE_DOB = nameof(CCLFData.BENE_DOB);
+		public const string BENE_DUAL_STUS_CD = nameof(CCLFData.BENE_DUAL_STUS_CD);
+		public const string BENE_ENTLMT_BUYIN_IND = nameof(CCLFData.BENE_ENTLMT_BUYIN_IND);
+		public const string BENE_EQTBL_BIC_HICN_NUM = nameof(CCLFData.BENE_EQTBL_BIC_HICN_NUM);
+		public const string BENE_FIPS_CNTY_CD = nameof(CCLFData.BENE_FIPS_CNTY_CD);
+		public const string BENE_FIPS_STATE_CD = nameof(CCLFData.BENE_FIPS_STATE_CD);
+		public const string BENE_HIC_NUM = nameof(CCLFData.BENE_HIC_NUM);
+		public const string BENE_LAST_NAME = nameof(CCLFData.BENE_LAST_NAME);
+		public const string BENE_MDCR_STUS_CD = nameof(CCLFData.BENE_MDCR_STUS_CD);
+		public const string BENE_MIDL_NAME = nameof(CCLFData.BENE_MIDL_NAME);
+		public const string BENE_ORGNL_ENTLMT_RSN_CD = nameof(CCLFData.BENE_ORGNL_ENTLMT_RSN_CD);
+		public const string BENE_PTNT_STUS_CD = nameof(CCLFData.BENE_PTNT_STUS_CD);
+		public const string BENE_RACE_CD = nameof(CCLFData.BENE_RACE_CD);
+		public const string BENE_RNG_BGN_DT = nameof(CCLFData.BENE_RNG_BGN_DT);
+		public const string BENE_RNG_END_DT = nameof(CCLFData.BENE_RNG_END_DT);
+		public const string BENE_RRB_NUM = nameof(CCLFData.BENE_RRB_NUM);
+		public const string BENE_SEX_CD = nameof(CCLFData.BENE_SEX_CD);
+		public const string BENE_ZIP_CD = nameof(CCLFData.BENE_ZIP_CD);
+		public const string CLM_ACTV_CARE_FROM_DT = nameof(CCLFData.CLM_ACTV_CARE_FROM_DT);
+		public const string CLM_ADJSMT_TYPE_CD = nameof(CCLFData.CLM_ADJSMT_TYPE_CD);
+		public const string CLM_ADMSN_SRC_CD = nameof(CCLFData.CLM_ADMSN_SRC_CD);
+		public const string CLM_ADMSN_TYPE_CD = nameof(CCLFData.CLM_ADMSN_TYPE_CD);
+		public const string CLM_BILL_CLSFCTN_CD = nameof(CCLFData.CLM_BILL_CLSFCTN_CD);
+		public const string CLM_BILL_FAC_TYPE_CD = nameof(CCLFData.CLM_BILL_FAC_TYPE_CD);
+		public const string CLM_BILL_FREQ_CD = nameof(CCLFData.CLM_BILL_FREQ_CD);
+		public const string CLM_CARR_PMT_DNL_CD = nameof(CCLFData.CLM_CARR_PMT_DNL_CD);
+		public const string CLM_CNTL_NUM = nameof(CCLFData.CLM_CNTL_NUM);
+		public const string CLM_DAW_PROD_SLCTN_CD = nameof(CCLFData.CLM_DAW_PROD_SLCTN_CD);
+		public const string CLM_DEMO_1ST_NUM = nameof(CCLFData.CLM_DEMO_1ST_NUM);
+		public const string CLM_DEMO_2ND_NUM = nameof(CCLFData.CLM_DEMO_2ND_NUM);
+		public const string CLM_DEMO_3RD_NUM = nameof(CCLFData.CLM_DEMO_3RD_NUM);
+		public const string CLM_DEMO_4TH_NUM = nameof(CCLFData.CLM_DEMO_4TH_NUM);
+		public const string CLM_DEMO_5TH_NUM = nameof(CCLFData.CLM_DEMO_5TH_NUM);
+		public const string CLM_DGNS_1_CD = nameof(CCLFData.CLM_DGNS_1_CD);
+		public const string CLM_DGNS_2_CD = nameof(CCLFData.CLM_DGNS_2_CD);
+		public const string CLM_DGNS_3_CD = nameof(CCLFData.CLM_DGNS_3_CD);
+		public const string CLM_DGNS_4_CD = nameof(CCLFData.CLM_DGNS_4_CD);
+		public const string CLM_DGNS_5_CD = nameof(CCLFData.CLM_DGNS_5_CD);
+		public const string CLM_DGNS_6_CD = nameof(CCLFData.CLM_DGNS_6_CD);
+		public const string CLM_DGNS_7_CD = nameof(CCLFData.CLM_DGNS_7_CD);
+		public const string CLM_DGNS_8_CD = nameof(CCLFData.CLM_DGNS_8_CD);
+		public const string CLM_DGNS_CD = nameof(CCLFData.CLM_DGNS_CD);
+		public const string CLM_DISP_CD = nameof(CCLFData.CLM_DISP_CD);
+		public const string CLM_DSPNSNG_STUS_CD = nameof(CCLFData.CLM_DSPNSNG_STUS_CD);
+		public const string CLM_EFCTV_DT = nameof(CCLFData.CLM_EFCTV_DT);
+		public const string CLM_FED_TYPE_SRVC_CD = nameof(CCLFData.CLM_FED_TYPE_SRVC_CD);
+		public const string CLM_FROM_DT = nameof(CCLFData.CLM_FROM_DT);
+		public const string CLM_IDR_LD_DT = nameof(CCLFData.CLM_IDR_LD_DT);
+		public const string CLM_LINE_ALOWD_CHRG_AMT = nameof(CCLFData.CLM_LINE_ALOWD_CHRG_AMT);
+		public const string CLM_LINE_BENE_PMT_AMT = nameof(CCLFData.CLM_LINE_BENE_PMT_AMT);
+		public const string CLM_LINE_CVRD_PD_AMT = nameof(CCLFData.CLM_LINE_CVRD_PD_AMT);
+		public const string CLM_LINE_DAYS_SUPLY_QTY = nameof(CCLFData.CLM_LINE_DAYS_SUPLY_QTY);
+		public const string CLM_LINE_DGNS_CD = nameof(CCLFData.CLM_LINE_DGNS_CD);
+		public const string CLM_LINE_FROM_DT = nameof(CCLFData.CLM_LINE_FROM_DT);
+		public const string CLM_LINE_HCPCS_CD = nameof(CCLFData.CLM_LINE_HCPCS_CD);
+		public const string CLM_LINE_INSTNL_REV_CTR_DT = nameof(CCLFData.CLM_LINE_INSTNL_REV_CTR_DT);
+		public const string CLM_LINE_NDC_CD = nameof(CCLFData.CLM_LINE_NDC_CD);
+		public const string CLM_LINE_NGACO_CPTATN_SW = nameof(CCLFData.CLM_LINE_NGACO_CPTATN_SW);
+		public const string CLM_LINE_NGACO_PBPMT_SW = nameof(CCLFData.CLM_LINE_NGACO_PBPMT_SW);
+		public const string CLM_LINE_NGACO_PDSCHRG_HCBS_SW = nameof(CCLFData.CLM_LINE_NGACO_PDSCHRG_HCBS_SW);
+		public const string CLM_LINE_NGACO_SNF_WVR_SW = nameof(CCLFData.CLM_LINE_NGACO_SNF_WVR_SW);
+		public const string CLM_LINE_NGACO_TLHLTH_SW = nameof(CCLFData.CLM_LINE_NGACO_TLHLTH_SW);
+		public const string CLM_LINE_NUM = nameof(CCLFData.CLM_LINE_NUM);
+		public const string CLM_LINE_PRMRY_PYR_CD = nameof(CCLFData.CLM_LINE_PRMRY_PYR_CD);
+		public const string CLM_LINE_PROD_REV_CTR_CD = nameof(CCLFData.CLM_LINE_PROD_REV_CTR_CD);
+		public const string CLM_LINE_RX_FILL_NUM = nameof(CCLFData.CLM_LINE_RX_FILL_NUM);
+		public const string CLM_LINE_RX_SRVC_RFRNC_NUM = nameof(CCLFData.CLM_LINE_RX_SRVC_RFRNC_NUM);
+		public const string CLM_LINE_SRVC_UNIT_QTY = nameof(CCLFData.CLM_LINE_SRVC_UNIT_QTY);
+		public const string CLM_LINE_THRU_DT = nameof(CCLFData.CLM_LINE_THRU_DT);
+		public const string CLM_MDCR_NPMT_RSN_CD = nameof(CCLFData.CLM_MDCR_NPMT_RSN_CD);
+		public const string CLM_NCH_PRMRY_PYR_CD = nameof(CCLFData.CLM_NCH_PRMRY_PYR_CD);
+		public const string CLM_NGACO_CPTATN_SW = nameof(CCLFData.CLM_NGACO_CPTATN_SW);
+		public const string CLM_NGACO_PBPMT_SW = nameof(CCLFData.CLM_NGACO_PBPMT_SW);
+		public const string CLM_NGACO_PDSCHRG_HCBS_SW = nameof(CCLFData.CLM_NGACO_PDSCHRG_HCBS_SW);
+		public const string CLM_NGACO_SNF_WVR_SW = nameof(CCLFData.CLM_NGACO_SNF_WVR_SW);
+		public const string CLM_NGACO_TLHLTH_SW = nameof(CCLFData.CLM_NGACO_TLHLTH_SW);
+		public const string CLM_OP_SRVC_TYPE_CD = nameof(CCLFData.CLM_OP_SRVC_TYPE_CD);
+		public const string CLM_PBP_INCLSN_AMT = nameof(CCLFData.CLM_PBP_INCLSN_AMT);
+		public const string CLM_PBP_RDCTN_AMT = nameof(CCLFData.CLM_PBP_RDCTN_AMT);
+		public const string CLM_PMT_AMT = nameof(CCLFData.CLM_PMT_AMT);
+		public const string CLM_POA_IND = nameof(CCLFData.CLM_POA_IND);
+		public const string CLM_POS_CD = nameof(CCLFData.CLM_POS_CD);
+		public const string CLM_PRCDR_CD = nameof(CCLFData.CLM_PRCDR_CD);
+		public const string CLM_PRCDR_PRFRM_DT = nameof(CCLFData.CLM_PRCDR_PRFRM_DT);
+		public const string CLM_PRCSG_IND_CD = nameof(CCLFData.CLM_PRCSG_IND_CD);
+		public const string CLM_PRMRY_PYR_CD = nameof(CCLFData.CLM_PRMRY_PYR_CD);
+		public const string CLM_PROD_TYPE_CD = nameof(CCLFData.CLM_PROD_TYPE_CD);
+		public const string CLM_PRSBNG_PRVDR_GNRC_ID_NUM = nameof(CCLFData.CLM_PRSBNG_PRVDR_GNRC_ID_NUM);
+		public const string CLM_PRVDR_SPCLTY_CD = nameof(CCLFData.CLM_PRVDR_SPCLTY_CD);
+		public const string CLM_QUERY_CD = nameof(CCLFData.CLM_QUERY_CD);
+		public const string CLM_RNDRG_PRVDR_TAX_NUM = nameof(CCLFData.CLM_RNDRG_PRVDR_TAX_NUM);
+		public const string CLM_SRVC_PRVDR_GNRC_ID_NUM = nameof(CCLFData.CLM_SRVC_PRVDR_GNRC_ID_NUM);
+		public const string CLM_THRU_DT = nameof(CCLFData.CLM_THRU_DT);
+		public const string CLM_TYPE_CD = nameof(CCLFData.CLM_TYPE_CD);
+		public const string CLM_VAL_SQNC_NUM = nameof(CCLFData.CLM_VAL_SQNC_NUM);
+		public const string CRNT_HIC_NUM = nameof(CCLFData.CRNT_HIC_NUM);
+		public const string CUR_CLM_UNIQ_ID = nameof(CCLFData.CUR_CLM_UNIQ_ID);
+		public const string DGNS_DRG_CD = nameof(CCLFData.DGNS_DRG_CD);
+		public const string DGNS_PRCDR_ICD_IND = nameof(CCLFData.DGNS_PRCDR_ICD_IND);
+		public const string FAC_PRVDR_NPI_NUM = nameof(CCLFData.FAC_PRVDR_NPI_NUM);
+		public const string HCPCS_1_MDFR_CD = nameof(CCLFData.HCPCS_1_MDFR_CD);
+		public const string HCPCS_2_MDFR_CD = nameof(CCLFData.HCPCS_2_MDFR_CD);
+		public const string HCPCS_3_MDFR_CD = nameof(CCLFData.HCPCS_3_MDFR_CD);
+		public const string HCPCS_4_MDFR_CD = nameof(CCLFData.HCPCS_4_MDFR_CD);
+		public const string HCPCS_5_MDFR_CD = nameof(CCLFData.HCPCS_5_MDFR_CD);
+		public const string OPRTG_PRVDR_NPI_NUM = nameof(CCLFData.OPRTG_PRVDR_NPI_NUM);
+		public const string ORDRG_PRVDR_NPI_NUM = nameof(CCLFData.ORDRG_PRVDR_NPI_NUM);
+		public const string OTHR_PRVDR_NPI_NUM = nameof(CCLFData.OTHR_PRVDR_NPI_NUM);
+		public const string PAYTO_PRVDR_NPI_NUM = nameof(CCLFData.PAYTO_PRVDR_NPI_NUM);
+		public const string PRNCPL_DGNS_CD = nameof(CCLFData.PRNCPL_DGNS_CD);
+		public const string PRVDR_FAC_FIPS_ST_CD = nameof(CCLFData.PRVDR_FAC_FIPS_ST_CD);
+		public const string PRVDR_OSCAR_NUM = nameof(CCLFData.PRVDR_OSCAR_NUM);
+		public const string PRVDR_PRSBNG_ID_QLFYR_CD = nameof(CCLFData.PRVDR_PRSBNG_ID_QLFYR_CD);
+		public const string PRVDR_SRVC_ID_QLFYR_CD = nameof(CCLFData.PRVDR_SRVC_ID_QLFYR_CD);
+		public const string PRVS_HIC_NUM = nameof(CCLFData.PRVS_HIC_NUM);
+		public const string PRVS_HICN_EFCTV_DT = nameof(CCLFData.PRVS_HICN_EFCTV_DT);
+		public const string PRVS_HICN_OBSLT_DT = nameof(CCLFData.PRVS_HICN_OBSLT_DT);
+		public const string RNDRG_PRVDR_FIPS_ST_CD = nameof(CCLFData.RNDRG_PRVDR_FIPS_ST_CD);
+		public const string RNDRG_PRVDR_NPI_NUM = nameof(CCLFData.RNDRG_PRVDR_NPI_NUM);
+		public const string RNDRG_PRVDR_TYPE_CD = nameof(CCLFData.RNDRG_PRVDR_TYPE_CD);
+
+		#endregion
+
 		#region Categorical Distribution Lists
 
 		// //////////////////////////////////////////////////

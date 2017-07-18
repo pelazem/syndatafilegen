@@ -10,10 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="2.3.0" />
     <PackageReference Include="Microsoft.Hadoop.Avro2" Version="1.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="pelazem.util" Version="1.2.0" />
+    <PackageReference Include="pelazem.util" Version="1.2.1" />
   </ItemGroup>
 
 </Project>

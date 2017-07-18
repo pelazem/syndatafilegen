@@ -27,6 +27,8 @@ namespace SynDataFileGen.Lib
 				}
 				catch (Exception ex)
 				{
+					// TODO log the exception
+					throw ex;
 				}
 			}
 		}

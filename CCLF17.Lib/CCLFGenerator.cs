@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using SynDataFileGen.Lib;
@@ -28,7 +29,7 @@ namespace CCLF17.Lib
 
 		#region Properties
 
-		public string OutputFolderRoot = @"c:\test\cclf\";
+		public string OutputFolderRoot = @"d:\test\cclf17\";
 
 		public bool IncludeHeaderRow { get; set; } = false;
 		public string Delimiter { get; set; } = string.Empty;
@@ -41,83 +42,86 @@ namespace CCLF17.Lib
 		public int RecordsPerFileMin { get; set; } = 100;
 		public int RecordsPerFileMax { get; set; } = 200;
 
+		private DateTime dateStart = new DateTime(2017, 4, 1, 0, 0, 0, DateTimeKind.Utc);
+		private DateTime dateEnd = new DateTime(2017, 6, 30, 0, 0, 0, DateTimeKind.Utc);
+
 		#endregion
 
 		public void Run()
 		{
 			// //////////////////////////////////////////////////
 			// CCLF8 -> CCLF1, CCLF5, CCLF6, CCLF7, CCLF9
-			List<CCLF8> CCLF8S = GenerateCCLF8();
+			List<ExpandoObject> CCLF8S = GenerateCCLF8();
 
-			List<Category> BENE_HIC_NUM = CCLF8S.Select(c => c.BENE_HIC_NUM).Distinct().Select(d => new Category() { Value = d }).ToList();
+			List<Category> BENE_HIC_NUM = CCLF8S.Select(c => (c as IDictionary<string, object>)[CCLFData.BENE_HIC_NUM]).Distinct().Select(d => new Category() { Value = d }).ToList();
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF1 -> CCLF2, CCLF3, CCLF4, CCLFA
-			List<CCLF1> CCLF1S = GenerateCCLF1(BENE_HIC_NUM);
+			List<ExpandoObject> CCLF1S = GenerateCCLF1(BENE_HIC_NUM);
 
-			List<Category> CUR_CLM_UNIQ_ID = CCLF1S.Select(c => c.CUR_CLM_UNIQ_ID).Distinct().Select(d => new Category() { Value = d }).ToList();
+			List<Category> CUR_CLM_UNIQ_ID = CCLF1S.Select(c => (c as IDictionary<string, object>)[CCLFData.CUR_CLM_UNIQ_ID]).Distinct().Select(d => new Category() { Value = d }).ToList();
 
-			List<Category> BENE_EQTBL_BIC_HICN_NUM = CCLF1S.Select(c => c.BENE_EQTBL_BIC_HICN_NUM).Distinct().Select(d => new Category() { Value = d }).ToList();
+			List<Category> BENE_EQTBL_BIC_HICN_NUM = CCLF1S.Select(c => (c as IDictionary<string, object>)[CCLFData.BENE_EQTBL_BIC_HICN_NUM]).Distinct().Select(d => new Category() { Value = d }).ToList();
 
-			List<Category> PRVDR_OSCAR_NUM = CCLF1S.Select(c => c.PRVDR_OSCAR_NUM).Distinct().Select(d => new Category() { Value = d }).ToList();
+			List<Category> PRVDR_OSCAR_NUM = CCLF1S.Select(c => (c as IDictionary<string, object>)[CCLFData.PRVDR_OSCAR_NUM]).Distinct().Select(d => new Category() { Value = d }).ToList();
 
-			List<Category> PRNCPL_DGNS_CD = CCLF1S.Select(c => c.PRNCPL_DGNS_CD).Distinct().Select(d => new Category() { Value = d }).ToList();
+			List<Category> PRNCPL_DGNS_CD = CCLF1S.Select(c => (c as IDictionary<string, object>)[CCLFData.PRNCPL_DGNS_CD]).Distinct().Select(d => new Category() { Value = d }).ToList();
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF2
-			List<CCLF2> CCLF2S = GenerateCCLF2(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRVDR_OSCAR_NUM);
+			List<ExpandoObject> CCLF2S = GenerateCCLF2(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRVDR_OSCAR_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF3
-			List<CCLF3> CCLF3S = GenerateCCLF3(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
+			List<ExpandoObject> CCLF3S = GenerateCCLF3(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF4
-			List<CCLF4> CCLF4S = GenerateCCLF4(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
+			List<ExpandoObject> CCLF4S = GenerateCCLF4(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF5 -> CCLFB
-			List<CCLF5> CCLF5S = GenerateCCLF5(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD);
+			List<ExpandoObject> CCLF5S = GenerateCCLF5(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF6
-			List<CCLF6> CCLF6S = GenerateCCLF6(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM);
+			List<ExpandoObject> CCLF6S = GenerateCCLF6(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF7
-			List<CCLF7> CCLF7S = GenerateCCLF7(CUR_CLM_UNIQ_ID, BENE_HIC_NUM);
+			List<ExpandoObject> CCLF7S = GenerateCCLF7(CUR_CLM_UNIQ_ID, BENE_HIC_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF9
-			List<CCLF9> CCLF9S = GenerateCCLF9(BENE_HIC_NUM);
+			List<ExpandoObject> CCLF9S = GenerateCCLF9(BENE_HIC_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLFA
-			List<CCLFA> CCLFAS = GenerateCCLFA(CUR_CLM_UNIQ_ID, new DateTime(2017, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2017, 3, 1, 0, 0, 0, DateTimeKind.Utc));
+			List<ExpandoObject> CCLFAS = GenerateCCLFA(CUR_CLM_UNIQ_ID, dateStart, dateEnd);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLFB
-			List<CCLFB> CCLFBS = GenerateCCLFB();
+			List<ExpandoObject> CCLFBS = GenerateCCLFB();
 			// //////////////////////////////////////////////////
 
 
@@ -133,163 +137,160 @@ namespace CCLF17.Lib
 			return new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec, null, null, null);
 		}
 
-		private List<CCLF8> GenerateCCLF8()
+		private List<ExpandoObject> GenerateCCLF8()
 		{
 			List<IFieldSpec> fieldSpecs = CCLF8Specs.GetFieldSpecs();
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF8);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF8>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF1> GenerateCCLF1(List<Category> BENE_HIC_NUM)
+		private List<ExpandoObject> GenerateCCLF1(List<Category> BENE_HIC_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF1Specs.GetFieldSpecs(BENE_HIC_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF1);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF1>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF2> GenerateCCLF2(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRVDR_OSCAR_NUM)
+		private List<ExpandoObject> GenerateCCLF2(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRVDR_OSCAR_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF2Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRVDR_OSCAR_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF2);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF2>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF3> GenerateCCLF3(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
+		private List<ExpandoObject> GenerateCCLF3(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF3Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF3);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF3>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF4> GenerateCCLF4(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
+		private List<ExpandoObject> GenerateCCLF4(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF4Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF4);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF4>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF5> GenerateCCLF5(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD)
+		private List<ExpandoObject> GenerateCCLF5(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF5Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF5);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF5>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF6> GenerateCCLF6(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM)
+		private List<ExpandoObject> GenerateCCLF6(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF6Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF6);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF6>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF7> GenerateCCLF7(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM)
+		private List<ExpandoObject> GenerateCCLF7(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF7Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF7);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF7>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLF9> GenerateCCLF9(List<Category> BENE_HIC_NUM)
+		private List<ExpandoObject> GenerateCCLF9(List<Category> BENE_HIC_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF9Specs.GetFieldSpecs(BENE_HIC_NUM);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF9);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF9>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLFA> GenerateCCLFA(List<Category> CUR_CLM_UNIQ_ID, DateTime dateStartClaimAdmission, DateTime dateEndClaimAdmission)
+		private List<ExpandoObject> GenerateCCLFA(List<Category> CUR_CLM_UNIQ_ID, DateTime dateStartClaimAdmission, DateTime dateEndClaimAdmission)
 		{
 			List<IFieldSpec> fieldSpecs = CCLFASpecs.GetFieldSpecs(CUR_CLM_UNIQ_ID, dateStartClaimAdmission, dateEndClaimAdmission);
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFA);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLFA>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
-		private List<CCLFB> GenerateCCLFB()
+		private List<ExpandoObject> GenerateCCLFB()
 		{
 			List<IFieldSpec> fieldSpecs = CCLFBSpecs.GetFieldSpecs();
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFB);
 
-			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLFB>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run();
 		}
 
 		private void GenerateCCLF0
 		(
-			List<CCLF1> CCLF1S,
-			List<CCLF2> CCLF2S,
-			List<CCLF3> CCLF3S,
-			List<CCLF4> CCLF4S,
-			List<CCLF5> CCLF5S,
-			List<CCLF6> CCLF6S,
-			List<CCLF7> CCLF7S,
-			List<CCLF8> CCLF8S,
-			List<CCLF9> CCLF9S,
-			List<CCLFA> CCLFAS,
-			List<CCLFB> CCLFBS
+			List<ExpandoObject> CCLF1S,
+			List<ExpandoObject> CCLF2S,
+			List<ExpandoObject> CCLF3S,
+			List<ExpandoObject> CCLF4S,
+			List<ExpandoObject> CCLF5S,
+			List<ExpandoObject> CCLF6S,
+			List<ExpandoObject> CCLF7S,
+			List<ExpandoObject> CCLF8S,
+			List<ExpandoObject> CCLF9S,
+			List<ExpandoObject> CCLFAS,
+			List<ExpandoObject> CCLFBS
 		)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF0Specs.GetFieldSpecs();
 
 			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(false, "|", string.Empty, this.FixedWidthPaddingCharacter, Util.Location.AtEnd, Util.Location.AtEnd, fieldSpecs, this.Encoding, null, null, PATHSPEC_CCLF0, null, null, null);
 
-			List<CCLF0> items = new List<CCLF0>
+			var foo = new ExpandoObject();
+			var foo2 = foo as IDictionary<string, object>;
+			foo2["bar"] = "gbaz";
+
+			List<ExpandoObject> items = new List<ExpandoObject>
 			{
-				// CCLF1
-				new CCLF0() { File_Type = nameof(CCLF1), File_Name = "Part A Claims Header File", Number_Of_Records = CCLF1S.Count.ToString(), Length_Of_Record = "1" },
+				GetCCLF0Item(CCLFData.CCLF1, "Part A Claims Header File", CCLF1S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF2, "Part A Claims Revenue Center Detail File", CCLF2S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF3, "Part A Procedure Code File", CCLF3S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF4, "Part A Diagnosis Code File", CCLF4S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF5, "Part B Physicians File", CCLF5S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF6, "Part B DME File", CCLF6S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF7, "Part D File", CCLF7S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF8, "Beneficiary Demographics File", CCLF8S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLF9, "BENE XREF File", CCLF9S.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLFA, "Part A BE and Demo Codes File", CCLFAS.Count.ToString()),
+				GetCCLF0Item(CCLFData.CCLFB, "Part B BE and Demo Codes File", CCLFBS.Count.ToString()),
 
-				// CCLF2
-				new CCLF0() { File_Type = nameof(CCLF2), File_Name = "Part A Claims Revenue Center Detail File", Number_Of_Records = CCLF2S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF3
-				new CCLF0() { File_Type = nameof(CCLF3), File_Name = "Part A Procedure Code File", Number_Of_Records = CCLF3S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF4
-				new CCLF0() { File_Type = nameof(CCLF4), File_Name = "Part A Diagnosis Code File", Number_Of_Records = CCLF4S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF5
-				new CCLF0() { File_Type = nameof(CCLF5), File_Name = "Part B Physicians File", Number_Of_Records = CCLF5S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF6
-				new CCLF0() { File_Type = nameof(CCLF6), File_Name = "Part B DME File", Number_Of_Records = CCLF6S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF7
-				new CCLF0() { File_Type = nameof(CCLF7), File_Name = "Part D File", Number_Of_Records = CCLF7S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF8
-				new CCLF0() { File_Type = nameof(CCLF8), File_Name = "Beneficiary Demographics File", Number_Of_Records = CCLF8S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLF9
-				new CCLF0() { File_Type = nameof(CCLF9), File_Name = "BENE XREF File", Number_Of_Records = CCLF9S.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLFA
-				new CCLF0() { File_Type = nameof(CCLFA), File_Name = "Part A BE and Demo Codes File", Number_Of_Records = CCLFAS.Count.ToString(), Length_Of_Record = "1" },
-
-				// CCLFB
-				new CCLF0() { File_Type = nameof(CCLFB), File_Name = "Part B BE and Demo Codes File", Number_Of_Records = CCLFBS.Count.ToString(), Length_Of_Record = "1" }
 			};
 
 			Generator generator = new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile());
 
 			generator.Run(items);
+		}
+
+		private ExpandoObject GetCCLF0Item(string fileType, string fileName, string numOfRecords)
+		{
+			ExpandoObject result = new ExpandoObject();
+
+			IDictionary<string, object> resultKVP = result as IDictionary<string, object>;
+			resultKVP[CCLFData.File_Type] = fileType;
+			resultKVP[CCLFData.File_Name] = fileName;
+			resultKVP[CCLFData.Number_Of_Records] = numOfRecords;
+			resultKVP[CCLFData.Length_Of_Record] = "1";
+
+			return result;
 		}
 
 		#region Utility

@@ -77,22 +77,11 @@ namespace SynDataFileGen.Lib
 		}
 
 		/// <summary>
-		/// Generates items and returns a list of results coerced to the specified generic type. Note that YOU are responsible for ensuring that fields on T and in your FieldSpecs have the same field/property names.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public List<T> Run<T>()
-			where T : new()
-		{
-			return GetResults<T>(Run());
-		}
-
-		/// <summary>
 		/// Writes file for passed-in list of externally generated items. Basically, use this method to write your own items instead of having them generated.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="items"></param>
-		public void Run<T>(List<T> items)
+		public void Run(List<ExpandoObject> items)
 		{
 			string uri = GetPath();
 			var stream = this.FileSpec.GetContentStream(items);
@@ -146,48 +135,6 @@ namespace SynDataFileGen.Lib
 				path += Constants.DEFAULT_FILE_EXTENSION;
 
 			return path;
-		}
-
-		private List<T> GetResults<T>(List<ExpandoObject> rawResults)
-			where T : new()
-		{
-			List<T> genericResults = new List<T>();
-
-			if (rawResults.Count == 0)
-				return genericResults;
-
-			// Properties of the passed-in generic type
-			List<PropertyInfo> props = TypeUtil.GetPrimitiveProps(typeof(T));
-
-			// Keys - i.e. field names which correspond to property names - of results
-			ICollection<string> fieldNames = (rawResults.First() as IDictionary<string, object>).Keys;
-
-			// Map result field names to matching properties
-			Dictionary<string, PropertyInfo> fieldsAndThePropsToWriteTo = new Dictionary<string, PropertyInfo>();
-
-			foreach (string fieldName in fieldNames)
-			{
-				PropertyInfo prop = props.SingleOrDefault(p => p.Name.ToLowerInvariant() == fieldName.ToLowerInvariant());
-
-				if (prop != null)
-					fieldsAndThePropsToWriteTo.Add(fieldName, prop);
-			}
-
-			foreach (IDictionary<string, object> expandoResult in rawResults.Select(r => r as IDictionary<string, object>))
-			{
-				T genericInstance = new T();
-
-				foreach (KeyValuePair<string, PropertyInfo> fieldAndProp in fieldsAndThePropsToWriteTo)
-				{
-					string fieldName = fieldAndProp.Key;
-					PropertyInfo prop = fieldAndProp.Value;
-					prop.SetValueEx(genericInstance, expandoResult[fieldName]);
-				}
-
-				genericResults.Add(genericInstance);
-			}
-
-			return genericResults;
 		}
 
 		#endregion

@@ -211,6 +211,8 @@ namespace SynDataFileGen.Lib
 			catch (Exception ex)
 			{
 				result = null;
+				// TODO log exception
+				throw ex;
 			}
 
 			return result;
