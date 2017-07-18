@@ -30,7 +30,7 @@ namespace SynDataFileGen.Lib
 						break;
 				}
 
-				Generator generator = new Generator(config.Generator.OutputFolderRoot, fileSpec);
+				Generator generator = new Generator(config.Generator.OutputFolderRoot, fileSpec, new WriterLocalFile());
 
 				result.Add(generator);
 			}

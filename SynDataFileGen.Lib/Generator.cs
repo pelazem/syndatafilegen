@@ -16,6 +16,8 @@ namespace SynDataFileGen.Lib
 
 		public IFileSpec FileSpec { get; private set; }
 
+		public IWriter Writer { get; private set; }
+
 		private DateTime? DateLoop { get; set; }
 
 		#endregion
@@ -27,54 +29,75 @@ namespace SynDataFileGen.Lib
 		public Generator
 		(
 			string outputFolderRoot,
-			IFileSpec fileSpec
+			IFileSpec fileSpec,
+			IWriter writer
 		)
 		{
 			this.OutputFolderRoot = outputFolderRoot;
 			this.FileSpec = fileSpec;
-
+			this.Writer = writer;
 			this.DateLoop = this.FileSpec.DateStart;
 		}
 
 		#endregion
 
-		public void Run()
+		public List<ExpandoObject> Run()
 		{
+			List<ExpandoObject> results = new List<ExpandoObject>();
+
 			if (!this.FileSpec.HasDateLooping)
-				this.FileSpec.GetRecords(GetPath(), this.DateLoop);
+			{
+				string uri = GetPath();
+				var records = this.FileSpec.GetRecords();
+				var stream = this.FileSpec.GetContentStream(records);
+
+				this.Writer.Write(uri, stream);
+
+				results.AddRange(records);
+			}
 			else
 			{
 				Func<DateTime> func = GetDateLoopFunc();
 
 				while (this.DateLoop <= this.FileSpec.DateEnd)
 				{
-					this.FileSpec.GetRecords(GetPath(), this.DateLoop);
+					string uri = GetPath(this.DateLoop);
+					var records = this.FileSpec.GetRecords(this.DateLoop);
+					var stream = this.FileSpec.GetContentStream(records);
+
+					this.Writer.Write(uri, stream);
+
+					results.AddRange(records);
 
 					this.DateLoop = func();
 				}
 			}
+
+			return results;
 		}
 
+		/// <summary>
+		/// Generates items and returns a list of results coerced to the specified generic type. Note that YOU are responsible for ensuring that fields on T and in your FieldSpecs have the same field/property names.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
 		public List<T> Run<T>()
 			where T : new()
 		{
-			List<ExpandoObject> rawResults = new List<ExpandoObject>();
+			return GetResults<T>(Run());
+		}
 
-			if (!this.FileSpec.HasDateLooping)
-				rawResults.AddRange(this.FileSpec.GetRecords(GetPath(), this.DateLoop));
-			else
-			{
-				Func<DateTime> func = GetDateLoopFunc();
+		/// <summary>
+		/// Writes file for passed-in list of externally generated items. Basically, use this method to write your own items instead of having them generated.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="items"></param>
+		public void Run<T>(List<T> items)
+		{
+			string uri = GetPath();
+			var stream = this.FileSpec.GetContentStream(items);
 
-				while (this.DateLoop <= this.FileSpec.DateEnd)
-				{
-					rawResults.AddRange(this.FileSpec.GetRecords(GetPath(), this.DateLoop));
-
-					this.DateLoop = func();
-				}
-			}
-
-			return GetResults<T>(rawResults);
+			this.Writer.Write(uri, stream);
 		}
 
 		private Func<DateTime> GetDateLoopFunc()

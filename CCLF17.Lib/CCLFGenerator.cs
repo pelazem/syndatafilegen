@@ -47,7 +47,7 @@ namespace CCLF17.Lib
 		{
 			// //////////////////////////////////////////////////
 			// CCLF8 -> CCLF1, CCLF5, CCLF6, CCLF7, CCLF9
-			List<CCLF8> CCLF8S = GenerateList<CCLF8>(CCLF8Specs.GetFieldSpecs(), PATHSPEC_CCLF8);
+			List<CCLF8> CCLF8S = GenerateCCLF8();
 
 			List<Category> BENE_HIC_NUM = CCLF8S.Select(c => c.BENE_HIC_NUM).Distinct().Select(d => new Category() { Value = d }).ToList();
 			// //////////////////////////////////////////////////
@@ -55,7 +55,7 @@ namespace CCLF17.Lib
 
 			// //////////////////////////////////////////////////
 			// CCLF1 -> CCLF2, CCLF3, CCLF4, CCLFA
-			List<CCLF1> CCLF1S = GenerateCCLF1(PATHSPEC_CCLF1, BENE_HIC_NUM);
+			List<CCLF1> CCLF1S = GenerateCCLF1(BENE_HIC_NUM);
 
 			List<Category> CUR_CLM_UNIQ_ID = CCLF1S.Select(c => c.CUR_CLM_UNIQ_ID).Distinct().Select(d => new Category() { Value = d }).ToList();
 
@@ -69,167 +69,171 @@ namespace CCLF17.Lib
 
 			// //////////////////////////////////////////////////
 			// CCLF2
-			List<CCLF2> CCLF2S = GenerateCCLF2(PATHSPEC_CCLF2, CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRVDR_OSCAR_NUM);
+			List<CCLF2> CCLF2S = GenerateCCLF2(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRVDR_OSCAR_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF3
-			List<CCLF3> CCLF3S = GenerateCCLF3(PATHSPEC_CCLF3, CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
+			List<CCLF3> CCLF3S = GenerateCCLF3(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF4
-			List<CCLF4> CCLF4S = GenerateCCLF4(PATHSPEC_CCLF4, CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
+			List<CCLF4> CCLF4S = GenerateCCLF4(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF5 -> CCLFB
-			List<CCLF5> CCLF5S = GenerateCCLF5(PATHSPEC_CCLF5, CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD);
+			List<CCLF5> CCLF5S = GenerateCCLF5(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF6
-			List<CCLF6> CCLF6S = GenerateCCLF6(PATHSPEC_CCLF6, CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM);
+			List<CCLF6> CCLF6S = GenerateCCLF6(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF7
-			List<CCLF7> CCLF7S = GenerateCCLF7(PATHSPEC_CCLF7, CUR_CLM_UNIQ_ID, BENE_HIC_NUM);
+			List<CCLF7> CCLF7S = GenerateCCLF7(CUR_CLM_UNIQ_ID, BENE_HIC_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF9
-			List<CCLF9> CCLF9S = GenerateCCLF9(PATHSPEC_CCLF9, BENE_HIC_NUM);
+			List<CCLF9> CCLF9S = GenerateCCLF9(BENE_HIC_NUM);
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLFA
-			List<CCLFA> CCLFAS = GenerateCCLFA(PATHSPEC_CCLFA, CUR_CLM_UNIQ_ID, new DateTime(2017, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2017, 3, 1, 0, 0, 0, DateTimeKind.Utc));
+			List<CCLFA> CCLFAS = GenerateCCLFA(CUR_CLM_UNIQ_ID, new DateTime(2017, 1, 1, 0, 0, 0, DateTimeKind.Utc), new DateTime(2017, 3, 1, 0, 0, 0, DateTimeKind.Utc));
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLFB
-			List<CCLFB> CCLFBS = GenerateCCLFB(PATHSPEC_CCLFB);
+			List<CCLFB> CCLFBS = GenerateCCLFB();
 			// //////////////////////////////////////////////////
 
 
 			// //////////////////////////////////////////////////
 			// CCLF0
 			// Contains summary statistics for the above files
-			GenerateCCLF0(PATHSPEC_CCLF0, CCLF1S, CCLF2S, CCLF3S, CCLF4S, CCLF5S, CCLF6S, CCLF7S, CCLF8S, CCLF9S, CCLFAS, CCLFBS);
+			GenerateCCLF0(CCLF1S, CCLF2S, CCLF3S, CCLF4S, CCLF5S, CCLF6S, CCLF7S, CCLF8S, CCLF9S, CCLFAS, CCLFBS);
 			// //////////////////////////////////////////////////
 		}
 
-		private List<CCLF8> GenerateCCLF8(string pathSpec)
+		private FileSpecFixedWidth GetFileSpec(List<IFieldSpec> fieldSpecs, string pathSpec)
+		{
+			return new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec, null, null, null);
+		}
+
+		private List<CCLF8> GenerateCCLF8()
 		{
 			List<IFieldSpec> fieldSpecs = CCLF8Specs.GetFieldSpecs();
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF8);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF8>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF8>();
 		}
 
-		private List<CCLF1> GenerateCCLF1(string pathSpec, List<Category> BENE_HIC_NUM)
+		private List<CCLF1> GenerateCCLF1(List<Category> BENE_HIC_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF1Specs.GetFieldSpecs(BENE_HIC_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF1);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF1>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF1>();
 		}
 
-		private List<CCLF2> GenerateCCLF2(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRVDR_OSCAR_NUM)
+		private List<CCLF2> GenerateCCLF2(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRVDR_OSCAR_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF2Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRVDR_OSCAR_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF2);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF2>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF2>();
 		}
 
-		private List<CCLF3> GenerateCCLF3(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
+		private List<CCLF3> GenerateCCLF3(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF3Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF3);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF3>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF3>();
 		}
 
-		private List<CCLF4> GenerateCCLF4(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
+		private List<CCLF4> GenerateCCLF4(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF4Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD, PRVDR_OSCAR_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF4);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF4>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF4>();
 		}
 
-		private List<CCLF5> GenerateCCLF5(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD)
+		private List<CCLF5> GenerateCCLF5(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF5Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM, PRNCPL_DGNS_CD);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF5);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF5>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF5>();
 		}
 
-		private List<CCLF6> GenerateCCLF6(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM)
+		private List<CCLF6> GenerateCCLF6(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF6Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM, BENE_EQTBL_BIC_HICN_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF6);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF6>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF6>();
 		}
 
-		private List<CCLF7> GenerateCCLF7(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM)
+		private List<CCLF7> GenerateCCLF7(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF7Specs.GetFieldSpecs(CUR_CLM_UNIQ_ID, BENE_HIC_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF7);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF7>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF7>();
 		}
 
-		private List<CCLF9> GenerateCCLF9(string pathSpec, List<Category> BENE_HIC_NUM)
+		private List<CCLF9> GenerateCCLF9(List<Category> BENE_HIC_NUM)
 		{
 			List<IFieldSpec> fieldSpecs = CCLF9Specs.GetFieldSpecs(BENE_HIC_NUM);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF9);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLF9>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLF9>();
 		}
 
-		private List<CCLFA> GenerateCCLFA(string pathSpec, List<Category> CUR_CLM_UNIQ_ID, DateTime dateStartClaimAdmission, DateTime dateEndClaimAdmission)
+		private List<CCLFA> GenerateCCLFA(List<Category> CUR_CLM_UNIQ_ID, DateTime dateStartClaimAdmission, DateTime dateEndClaimAdmission)
 		{
 			List<IFieldSpec> fieldSpecs = CCLFASpecs.GetFieldSpecs(CUR_CLM_UNIQ_ID, dateStartClaimAdmission, dateEndClaimAdmission);
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFA);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLFA>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLFA>();
 		}
 
-		private List<CCLFB> GenerateCCLFB(string pathSpec)
+		private List<CCLFB> GenerateCCLFB()
 		{
 			List<IFieldSpec> fieldSpecs = CCLFBSpecs.GetFieldSpecs();
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
+			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFB);
 
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<CCLFB>();
+			return new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile()).Run<CCLFB>();
 		}
 
 		private void GenerateCCLF0
 		(
-			string pathSpec,
 			List<CCLF1> CCLF1S,
 			List<CCLF2> CCLF2S,
 			List<CCLF3> CCLF3S,
@@ -245,7 +249,7 @@ namespace CCLF17.Lib
 		{
 			List<IFieldSpec> fieldSpecs = CCLF0Specs.GetFieldSpecs();
 
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(false, "|", string.Empty, this.FixedWidthPaddingCharacter, Util.Location.AtEnd, Util.Location.AtEnd, fieldSpecs, this.Encoding, null, null, pathSpec);
+			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(false, "|", string.Empty, this.FixedWidthPaddingCharacter, Util.Location.AtEnd, Util.Location.AtEnd, fieldSpecs, this.Encoding, null, null, PATHSPEC_CCLF0, null, null, null);
 
 			List<CCLF0> items = new List<CCLF0>
 			{
@@ -283,18 +287,9 @@ namespace CCLF17.Lib
 				new CCLF0() { File_Type = nameof(CCLFB), File_Name = "Part B BE and Demo Codes File", Number_Of_Records = CCLFBS.Count.ToString(), Length_Of_Record = "1" }
 			};
 
-			Generator generator = new Generator(this.OutputFolderRoot, fileSpec);
+			Generator generator = new Generator(this.OutputFolderRoot, fileSpec, new WriterLocalFile());
 
 			generator.Run(items);
-		}
-
-
-		private List<T> GenerateList<T>(List<IFieldSpec> fieldSpecs, string pathSpec)
-			where T : new()
-		{
-			FileSpecFixedWidth fileSpec = new FileSpecFixedWidth(this.IncludeHeaderRow, this.Delimiter, this.Encloser, this.FixedWidthPaddingCharacter, this.FixedWidthAddPadding, this.FixedWidthTruncate, fieldSpecs, this.Encoding, this.RecordsPerFileMin, this.RecordsPerFileMax, pathSpec);
-
-			return new Generator(this.OutputFolderRoot, fileSpec).Run<T>();
 		}
 
 		#region Utility
