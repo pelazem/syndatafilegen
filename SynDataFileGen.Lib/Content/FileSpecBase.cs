@@ -100,7 +100,7 @@ namespace SynDataFileGen.Lib
 
 		public List<IFieldSpec> FieldSpecs { get; } = new List<IFieldSpec>();
 
-		public List<ExpandoObject> GenerateAndWrite(string fullFilePath, DateTime? dateLoop = null)
+		public List<ExpandoObject> GetRecords(string fullFilePath, DateTime? dateLoop = null)
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
@@ -109,9 +109,16 @@ namespace SynDataFileGen.Lib
 			for (int i = 1; i <= numOfItems; i++)
 				result.Add(GetRecord(dateLoop));
 
-			WriteFile(fullFilePath, GetFileContent(result));
+			// TODO back to Generator WriteFile(fullFilePath, GetFileContent(result));
 
 			return result;
+		}
+
+		public abstract Stream GetFileContent(List<ExpandoObject> records);
+
+		public virtual Stream GetFileContent<T>(List<T> records)
+		{
+
 		}
 
 		#endregion
@@ -149,8 +156,6 @@ namespace SynDataFileGen.Lib
 
 			return record;
 		}
-
-		protected abstract Stream GetFileContent(List<ExpandoObject> records);
 
 		protected virtual void WriteFile(string fullFilePath, Stream contents)
 		{

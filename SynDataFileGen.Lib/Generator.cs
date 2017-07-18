@@ -41,14 +41,14 @@ namespace SynDataFileGen.Lib
 		public void Run()
 		{
 			if (!this.FileSpec.HasDateLooping)
-				this.FileSpec.GenerateAndWrite(GetPath(), this.DateLoop);
+				this.FileSpec.GetRecords(GetPath(), this.DateLoop);
 			else
 			{
 				Func<DateTime> func = GetDateLoopFunc();
 
 				while (this.DateLoop <= this.FileSpec.DateEnd)
 				{
-					this.FileSpec.GenerateAndWrite(GetPath(), this.DateLoop);
+					this.FileSpec.GetRecords(GetPath(), this.DateLoop);
 
 					this.DateLoop = func();
 				}
@@ -61,14 +61,14 @@ namespace SynDataFileGen.Lib
 			List<ExpandoObject> rawResults = new List<ExpandoObject>();
 
 			if (!this.FileSpec.HasDateLooping)
-				rawResults.AddRange(this.FileSpec.GenerateAndWrite(GetPath(), this.DateLoop));
+				rawResults.AddRange(this.FileSpec.GetRecords(GetPath(), this.DateLoop));
 			else
 			{
 				Func<DateTime> func = GetDateLoopFunc();
 
 				while (this.DateLoop <= this.FileSpec.DateEnd)
 				{
-					rawResults.AddRange(this.FileSpec.GenerateAndWrite(GetPath(), this.DateLoop));
+					rawResults.AddRange(this.FileSpec.GetRecords(GetPath(), this.DateLoop));
 
 					this.DateLoop = func();
 				}

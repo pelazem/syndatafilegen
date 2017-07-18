@@ -25,7 +25,7 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		protected override Stream GetFileContent(List<ExpandoObject> records)
+		public override Stream GetFileContent(List<ExpandoObject> records)
 		{
 			var result = new MemoryStream();
 
