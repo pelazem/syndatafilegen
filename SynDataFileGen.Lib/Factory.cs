@@ -30,7 +30,7 @@ namespace SynDataFileGen.Lib
 						break;
 				}
 
-				Generator generator = new Generator(config.Generator.OutputFolderRoot, fileSpec, new WriterLocalFile());
+				Generator generator = new Generator(config.Generator.OutputFolderRoot, config.Generator.DateStart, config.Generator.DateEnd, fileSpec, new WriterLocalFile());
 
 				result.Add(generator);
 			}
@@ -46,9 +46,7 @@ namespace SynDataFileGen.Lib
 				fileSpecConfig.RecordsPerFileMin,
 				fileSpecConfig.RecordsPerFileMax,
 				fileSpecConfig.PathSpec,
-				fileSpecConfig.FieldNameForLoopDateTime,
-				fileSpecConfig.DateStart,
-				fileSpecConfig.DateEnd
+				fileSpecConfig.FieldNameForLoopDateTime
 			);
 		}
 
@@ -64,9 +62,7 @@ namespace SynDataFileGen.Lib
 				fileSpecConfig.RecordsPerFileMin,
 				fileSpecConfig.RecordsPerFileMax,
 				fileSpecConfig.PathSpec,
-				fileSpecConfig.FieldNameForLoopDateTime,
-				fileSpecConfig.DateStart,
-				fileSpecConfig.DateEnd
+				fileSpecConfig.FieldNameForLoopDateTime
 			);
 		}
 
@@ -85,9 +81,7 @@ namespace SynDataFileGen.Lib
 				fileSpecConfig.RecordsPerFileMin,
 				fileSpecConfig.RecordsPerFileMax,
 				fileSpecConfig.PathSpec,
-				fileSpecConfig.FieldNameForLoopDateTime,
-				fileSpecConfig.DateStart,
-				fileSpecConfig.DateEnd
+				fileSpecConfig.FieldNameForLoopDateTime
 			);
 		}
 
@@ -100,9 +94,7 @@ namespace SynDataFileGen.Lib
 				fileSpecConfig.RecordsPerFileMin,
 				fileSpecConfig.RecordsPerFileMax,
 				fileSpecConfig.PathSpec,
-				fileSpecConfig.FieldNameForLoopDateTime,
-				fileSpecConfig.DateStart,
-				fileSpecConfig.DateEnd
+				fileSpecConfig.FieldNameForLoopDateTime
 			);
 		}
 

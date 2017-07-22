@@ -10,15 +10,60 @@ namespace SynDataFileGen.Lib
 {
 	public class Generator
 	{
+		#region Variables
+
+		private DateTime? _dateStart;
+		private DateTime? _dateEnd;
+
+		#endregion
+
 		#region Properties
 
 		public string OutputFolderRoot { get; private set; }
 
+		/// <summary>
+		/// Specify a valid date less than DateEnd to get date looping output. Leave null if time-series output is not needed.
+		/// </summary>
+		public DateTime? DateStart
+		{
+			get { return _dateStart; }
+			protected set
+			{
+				if (value == null)
+					_dateStart = value;
+				else
+				{
+					if (value.Value.Kind == DateTimeKind.Utc)
+						_dateStart = value;
+					else
+						_dateStart = value.Value.ToUniversalTime();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Specify a valid date greater than DateStart to get date looping output. Leave null if time-series output is not needed.
+		/// </summary>
+		public DateTime? DateEnd
+		{
+			get { return _dateEnd; }
+			protected set
+			{
+				if (value == null)
+					_dateEnd = value;
+				else
+				{
+					if (value.Value.Kind == DateTimeKind.Utc)
+						_dateEnd = value;
+					else
+						_dateEnd = value.Value.ToUniversalTime();
+				}
+			}
+		}
+
 		public IFileSpec FileSpec { get; private set; }
 
 		public IWriter Writer { get; private set; }
-
-		private DateTime? DateLoop { get; set; }
 
 		#endregion
 
@@ -32,11 +77,24 @@ namespace SynDataFileGen.Lib
 			IFileSpec fileSpec,
 			IWriter writer
 		)
+			: this(outputFolderRoot, null, null, fileSpec, writer)
+		{ }
+
+
+		public Generator
+		(
+			string outputFolderRoot,
+			DateTime? dateStart,
+			DateTime? dateEnd,
+			IFileSpec fileSpec,
+			IWriter writer
+		)
 		{
 			this.OutputFolderRoot = outputFolderRoot;
+			this.DateStart = dateStart;
+			this.DateEnd = dateEnd;
 			this.FileSpec = fileSpec;
 			this.Writer = writer;
-			this.DateLoop = this.FileSpec.DateStart;
 		}
 
 		#endregion
@@ -45,7 +103,9 @@ namespace SynDataFileGen.Lib
 		{
 			List<ExpandoObject> results = new List<ExpandoObject>();
 
-			if (!this.FileSpec.HasDateLooping)
+			bool useDateLooping = (this.FileSpec.HasDateLooping && this.DateStart != null && this.DateEnd != null && this.DateStart.Value <= this.DateEnd.Value);
+
+			if (!useDateLooping)
 			{
 				string uri = GetPath();
 				var records = this.FileSpec.GetRecords();
@@ -57,19 +117,22 @@ namespace SynDataFileGen.Lib
 			}
 			else
 			{
-				Func<DateTime> func = GetDateLoopFunc();
+				DateTime dateLoopStart = this.DateStart.Value;
+				Func<DateTime, DateTime> func = GetDateLoopFunc();
+				DateTime dateLoopEnd = func(dateLoopStart);
 
-				while (this.DateLoop <= this.FileSpec.DateEnd)
+				while (dateLoopEnd <= this.DateEnd)
 				{
-					string uri = GetPath(this.DateLoop);
-					var records = this.FileSpec.GetRecords(this.DateLoop);
+					string uri = GetPath(dateLoopStart);
+					var records = this.FileSpec.GetRecords(dateLoopStart, dateLoopEnd);
 					var stream = this.FileSpec.GetContentStream(records);
 
 					this.Writer.Write(uri, stream);
 
 					results.AddRange(records);
 
-					this.DateLoop = func();
+					dateLoopStart = func(dateLoopStart);
+					dateLoopEnd = func(dateLoopEnd);
 				}
 			}
 
@@ -89,19 +152,23 @@ namespace SynDataFileGen.Lib
 			this.Writer.Write(uri, stream);
 		}
 
-		private Func<DateTime> GetDateLoopFunc()
+		private Func<DateTime, DateTime> GetDateLoopFunc()
 		{
-			Func<DateTime> func = null;
+			Func<DateTime, DateTime> func = null;
 
 			// We iterate through date/time tokens the path spec may contain, from smallest to largest, and the first one we find will dictate the increment of our date loop.
-			if (this.FileSpec.PathSpec.Contains(Constants.HH))
-				func = () => this.DateLoop.Value.AddHours(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.DD))
-				func = () => this.DateLoop.Value.AddDays(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.MM))
-				func = () => this.DateLoop.Value.AddMonths(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.YY) || this.FileSpec.PathSpec.Contains(Constants.YYYY))
-				func = () => this.DateLoop.Value.AddYears(1);
+			if (this.FileSpec.PathSpec.Contains(Constants.SECOND))
+				func = (d) => d.AddSeconds(1);
+			else if (this.FileSpec.PathSpec.Contains(Constants.MINUTE))
+				func = (d) => d.AddMinutes(1);
+			else if (this.FileSpec.PathSpec.Contains(Constants.HOUR))
+				func = (d) => d.AddHours(1);
+			else if (this.FileSpec.PathSpec.Contains(Constants.DAY))
+				func = (d) => d.AddDays(1);
+			else if (this.FileSpec.PathSpec.Contains(Constants.MONTH))
+				func = (d) => d.AddMonths(1);
+			else if (this.FileSpec.PathSpec.Contains(Constants.YEAR2) || this.FileSpec.PathSpec.Contains(Constants.YEAR4))
+				func = (d) => d.AddYears(1);
 
 			return func;
 		}
@@ -120,11 +187,11 @@ namespace SynDataFileGen.Lib
 			if (dateTime != null)
 			{
 				path = path
-					.Replace(Constants.YYYY, dateTime.Value.Year.ToString())
-					.Replace(Constants.YY, dateTime.Value.Year.ToString().Substring(2))
-					.Replace(Constants.MM, Util.GetPadded(dateTime.Value.Month))
-					.Replace(Constants.DD, Util.GetPadded(dateTime.Value.Day))
-					.Replace(Constants.HH, Util.GetPadded(dateTime.Value.Hour))
+					.Replace(Constants.YEAR4, dateTime.Value.Year.ToString())
+					.Replace(Constants.YEAR2, dateTime.Value.Year.ToString().Substring(2))
+					.Replace(Constants.MONTH, Util.GetPadded(dateTime.Value.Month))
+					.Replace(Constants.DAY, Util.GetPadded(dateTime.Value.Day))
+					.Replace(Constants.HOUR, Util.GetPadded(dateTime.Value.Hour))
 				;
 			}
 

@@ -1,7 +1,9 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "d:\\test\\"
+		"OutputFolderRoot": "c:\\test\\",
+		"DateStart": "2017-01-01T00:00:00",
+		"DateEnd": "2017-03-31T00:00:00"
 	},
 	"FileSpecs":
 	[
@@ -9,10 +11,8 @@
 			"FileType": "FixedWidth",
 			"RecordsPerFileMin": 300,
 			"RecordsPerFileMax": 400,
-			"PathSpec": "{yyyy}-{mm}-{dd}-{hh}.txt",
+			"PathSpec": "{yyyy}-{MM}-{dd}-{hh}.txt",
 			"FieldNameForLoopDateTime": "EventDateTime",
-			"DateStart": "2017-01-01T00:00:00",
-			"DateEnd": "2017-03-31T00:00:00",
 			"IncludeHeaderRow": false,
 			"Delimiter": "|",
 			"Encloser": "'",

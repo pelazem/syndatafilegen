@@ -10,18 +10,11 @@ namespace SynDataFileGen.Lib
 {
 	public abstract class FileSpecBase : IFileSpec
 	{
-		#region Variables
-
-		private DateTime? _dateStart;
-		private DateTime? _dateEnd;
-
-		#endregion
-
 		#region Constructors
 
 		protected FileSpecBase() { }
 
-		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec> fieldSpecs, string fieldNameForLoopDateTime, DateTime? dateStart, DateTime? dateEnd)
+		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec> fieldSpecs, string fieldNameForLoopDateTime)
 		{
 			this.RecordsPerFileMin = recordsPerFileMin;
 			this.RecordsPerFileMax = recordsPerFileMax;
@@ -30,8 +23,6 @@ namespace SynDataFileGen.Lib
 			this.FieldSpecs.AddRange(fieldSpecs);
 
 			this.FieldNameForLoopDateTime = fieldNameForLoopDateTime;
-			this.DateStart = dateStart;
-			this.DateEnd = dateEnd;
 		}
 
 		#endregion
@@ -59,16 +50,18 @@ namespace SynDataFileGen.Lib
 			{
 				bool pathSpecHasDateLooping =
 				(
-					this.PathSpec.Contains(Constants.YYYY) ||
-					this.PathSpec.Contains(Constants.YY) ||
-					this.PathSpec.Contains(Constants.MM) ||
-					this.PathSpec.Contains(Constants.DD) ||
-					this.PathSpec.Contains(Constants.HH)
+					this.PathSpec.Contains(Constants.YEAR4) ||
+					this.PathSpec.Contains(Constants.YEAR2) ||
+					this.PathSpec.Contains(Constants.MONTH) ||
+					this.PathSpec.Contains(Constants.DAY) ||
+					this.PathSpec.Contains(Constants.HOUR) ||
+					this.PathSpec.Contains(Constants.MINUTE) ||
+					this.PathSpec.Contains(Constants.SECOND)
 				);
 
-				bool dateLoopingDatesSpecified = (this.DateStart != null && this.DateEnd != null && this.DateStart.Value <= this.DateEnd.Value);
+				//bool dateLoopingDatesSpecified = (this.DateStart != null && this.DateEnd != null && this.DateStart.Value <= this.DateEnd.Value);
 
-				return pathSpecHasDateLooping && dateLoopingDatesSpecified;
+				return pathSpecHasDateLooping; // && dateLoopingDatesSpecified;
 			}
 		}
 
@@ -78,64 +71,49 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		public string FieldNameForLoopDateTime { get; protected set; }
 
-		/// <summary>
-		/// Specify a valid date less than DateEnd to get date looping output. Leave null to output a single file.
-		/// </summary>
-		public DateTime? DateStart
-		{
-			get { return _dateStart; }
-			protected set
-			{
-				if (value == null)
-					_dateStart = value;
-				else
-				{
-					if (value.Value.Kind == DateTimeKind.Utc)
-						_dateStart = value;
-					else
-						_dateStart = value.Value.ToUniversalTime();
-				}
-			}
-		}
-
-		/// <summary>
-		/// Specify a valid date greater than DateStart to get date looping output. Leave null to output a single file.
-		/// </summary>
-		public DateTime? DateEnd
-		{
-			get { return _dateEnd; }
-			protected set
-			{
-				if (value == null)
-					_dateEnd = value;
-				else
-				{
-					if (value.Value.Kind == DateTimeKind.Utc)
-						_dateEnd = value;
-					else
-						_dateEnd = value.Value.ToUniversalTime();
-				}
-			}
-		}
-
 		public List<IFieldSpec> FieldSpecs { get; } = new List<IFieldSpec>();
 
 		/// <summary>
 		/// Gets a list of records with generated values. This list can then be translated into a Stream with GetFileContent.
 		/// </summary>
-		/// <param name="dateLoop"></param>
 		/// <returns></returns>
-		public List<ExpandoObject> GetRecords(DateTime? dateLoop = null)
+		public List<ExpandoObject> GetRecords()
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
 			List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
 
 			for (int i = 1; i <= numOfItems; i++)
-				result.Add(GetRecord(dateLoop));
+				result.Add(GetRecord());
 
 			return result;
 		}
+
+		/// <summary>
+		/// Gets a list of records with generated values. This list can then be translated into a Stream with GetFileContent.
+		/// </summary>
+		/// <returns></returns>
+		public List<ExpandoObject> GetRecords(DateTime dateStart, DateTime dateEnd)
+		{
+			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
+
+			long ticksDelta = dateEnd.Ticks - dateStart.Ticks;
+			long ticksPerItem = ticksDelta / numOfItems;
+			DateTime dateLoop = dateStart;
+
+			List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
+
+			for (int i = 1; i <= numOfItems; i++)
+			{
+				result.Add(GetRecord(dateLoop));
+
+				double ticksFactor = RNG.GetUniform(0, 1.999999);
+				dateLoop = dateLoop.AddTicks(Converter.GetInt64(ticksPerItem * ticksFactor));
+			}
+
+			return result;
+		}
+
 
 		/// <summary>
 		/// Generates a Stream from the list of dynamic objects.
@@ -143,18 +121,6 @@ namespace SynDataFileGen.Lib
 		/// <param name="records"></param>
 		/// <returns></returns>
 		public abstract Stream GetContentStream(List<ExpandoObject> records);
-
-		/// <summary>
-		/// Generates a Stream from the list of objects. The objects are serialized by writing key-value pairs for their primitive properties and values.
-		/// </summary>
-		/// <param name="records"></param>
-		/// <returns></returns>
-		public Stream GetContentStream<T>(List<T> records)
-		{
-			List<ExpandoObject> exoRecords = records.Select(r => GetRecord<T>(r)).ToList();
-
-			return GetContentStream(exoRecords);
-		}
 
 		#endregion
 
@@ -174,26 +140,6 @@ namespace SynDataFileGen.Lib
 
 			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
 				recordProperties[fieldSpec.Name] = fieldSpec.Value;
-
-			return record;
-		}
-
-		/// <summary>
-		/// Gets a record to write to file based on passed-in type. FieldSpecs and the date loop field are ignored since the presumption is that the type, i.e. T, and the item are externally specified/instantiated.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		protected virtual ExpandoObject GetRecord<T>(T item)
-		{
-			ExpandoObject record = new ExpandoObject();
-
-			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
-
-			var props = TypeUtil.GetPrimitiveProps(typeof(T));
-
-			foreach (PropertyInfo prop in props)
-				recordProperties[prop.Name] = prop.GetValueEx(item);
 
 			return record;
 		}

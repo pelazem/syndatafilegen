@@ -31,10 +31,6 @@ namespace SynDataFileGen.Lib
 
 		public string FieldNameForLoopDateTime { get; set; }
 
-		public DateTime? DateStart { get; set; }
-
-		public DateTime? DateEnd { get; set; }
-
 		public bool IncludeHeaderRow { get; set; }
 
 		public string Delimiter { get; set; }

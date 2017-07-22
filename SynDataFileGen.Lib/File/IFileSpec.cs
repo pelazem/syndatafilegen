@@ -13,16 +13,13 @@ namespace SynDataFileGen.Lib
 		string PathSpec { get; }
 
 		bool HasDateLooping { get; }
-
 		string FieldNameForLoopDateTime { get; }
-
-		DateTime? DateStart { get; }
-		DateTime? DateEnd { get; }
 
 		List<IFieldSpec> FieldSpecs { get; }
 
-		List<ExpandoObject> GetRecords(DateTime? dateLoop = null);
+		List<ExpandoObject> GetRecords();
+		List<ExpandoObject> GetRecords(DateTime dateStart, DateTime dateEnd);
+
 		Stream GetContentStream(List<ExpandoObject> records);
-		Stream GetContentStream<T>(List<T> records);
 	}
 }

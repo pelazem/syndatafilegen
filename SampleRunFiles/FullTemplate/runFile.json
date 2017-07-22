@@ -3,7 +3,9 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "" // Root folder where generated folders/files will be written
+		"OutputFolderRoot": "", // Root folder where generated folders/files will be written
+		"DateStart": "2017-01-01T00:00:00", // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
+		"DateEnd": "2017-03-31T00:00:00" // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
 	},
 	"FileSpecs":
 	[
@@ -11,10 +13,8 @@
 			"FileType": "Delimited", // Output file(s) type. One of: Avro, Delimited, FixedWidth, Json*
 			"RecordsPerFileMin": 100, // Minimum number of records to generate per file. The actual number of records will be randomly generated for each generated file in the open range min-max.
 			"RecordsPerFileMax": 200, // Maximum number of records to generate per file.
-			"PathSpec": "{yyyy}\\{mm}\\{dd}\\{hh}.txt", // Path specification for output folders/files. Can be explicit (e.g. data.txt) or tokenized. Valid tokens: {yy} or {yyyy} for year, {mm} for month, {dd} for day, {hh} for hour. Each token valid in folder and/or file name and can be used multiple times (e.g. {yyyy}\{yyyy}.txt).
+			"PathSpec": "{yyyy}\\{MM}\\{dd}\\{hh}{mm}{ss}.txt", // Path specification for output folders/files. Can be explicit (e.g. data.txt) or tokenized. Valid tokens: {yy} or {yyyy} for year, {MM} for month, {dd} for day, {hh} for hour, {mm} for minute, {ss} for seconds. Each token valid in folder and/or file name and can be used multiple times (e.g. {yyyy}\{yyyy}.txt).
 			"FieldNameForLoopDateTime": "EventDateTime", // Optional: a field name in the output to which the looping date/time should be written, i.e. if you want the loop date time inside the file as well as in the path. Example: simulating telemetry or event logs.
-			"DateStart": "2017-01-01T00:00:00", // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
-			"DateEnd": "2017-03-31T00:00:00", // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
 			"IncludeHeaderRow": false, // Specifies whether generated files should include a first row with field names. NOTE that for fixed-width files, if the field name length exceeds the field width, the field name will be truncated!
 			"Delimiter": ",", // Optional: a string that will separate values in delimited and fixed-width files. Example: specifying | will yield a row like this: ValueA|ValueB|ValueC etc.
 			"Encloser": "", // Optional: a string that will enclose values in delimited and fixed-width files. Example: specifying * will yield a row like this: *ValueA**ValueB**ValueC* etc.

@@ -66,6 +66,8 @@ namespace SynDataFileGen.RunFileUtil
 
 			// Generator
 			config.Generator.OutputFolderRoot = @"d:\temp\";
+			config.Generator.DateStart = new DateTime(2017, 1, 1);
+			config.Generator.DateEnd = new DateTime(2017, 3, 31);
 
 
 			// File Spec
@@ -74,10 +76,8 @@ namespace SynDataFileGen.RunFileUtil
 				FileType = "Delimited",
 				RecordsPerFileMin = 100,
 				RecordsPerFileMax = 200,
-				PathSpec = @"{yyyy}\{mm}\{dd}\{hh}.txt",
+				PathSpec = @"{yyyy}\{MM}\{dd}\{hh}{mm}{ss}.txt",
 				FieldNameForLoopDateTime = "EventDateTime",
-				DateStart = new DateTime(2017, 1, 1),
-				DateEnd = new DateTime(2017, 3, 31),
 				IncludeHeaderRow = true,
 				Delimiter = "|",
 				Encloser = "'",
@@ -198,8 +198,6 @@ namespace SynDataFileGen.RunFileUtil
 				RecordsPerFileMax = 400,
 				PathSpec = @"{yyyy}-{mm}-{dd}-{hh}.txt",
 				FieldNameForLoopDateTime = "EventDateTime",
-				DateStart = new DateTime(2017, 1, 1),
-				DateEnd = new DateTime(2017, 3, 31),
 				IncludeHeaderRow = false,
 				Delimiter = "|",
 				Encloser = "'",
