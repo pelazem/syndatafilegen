@@ -133,13 +133,15 @@ namespace SynDataFileGen.Lib
 			// Actual field values
 			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
 			{
+				fieldSpec.SetNextValue();
+
 				int fullFieldWidth = (fieldSpec.FixedWidthLength != null ? fieldSpec.FixedWidthLength.Value : fieldSpec.Name.Length);
 				int fieldWidthNetEncloser = Math.Max(0, fullFieldWidth - (2 * this.Encloser.Length));
 
-				string value = fieldSpec.Value.ToString();
+				string valueString = fieldSpec.ValueString;
 
 				// Handle padding or truncation
-				if (value.Length < fieldWidthNetEncloser)
+				if (valueString.Length < fieldWidthNetEncloser)
 				{
 					char paddingChar = fieldSpec.FixedWidthPaddingChar ?? this.PaddingCharacter;
 
@@ -151,34 +153,34 @@ namespace SynDataFileGen.Lib
 							// Edge Case
 							// If we're left-padding with a non-whitespace character, and the value is a negative number: we need to move the - to the front so we get -000123.45 and not 000-123.45
 							if (!char.IsWhiteSpace(paddingChar) && Converter.GetDouble(fieldSpec.Value) < 0)
-								value = GetPaddedValueForNegativeNumber(value, paddingChar, fieldWidthNetEncloser);
+								valueString = GetPaddedValueForNegativeNumber(valueString, paddingChar, fieldWidthNetEncloser);
 							else
-								value = value.PadLeft(fieldWidthNetEncloser, paddingChar);
+								valueString = valueString.PadLeft(fieldWidthNetEncloser, paddingChar);
 							break;
 						case Util.Location.AtEnd:
 						default:
-							value = value.PadRight(fieldWidthNetEncloser, paddingChar);
+							valueString = valueString.PadRight(fieldWidthNetEncloser, paddingChar);
 							break;
 					}
 				}
-				else if (value.Length > fieldWidthNetEncloser)
+				else if (valueString.Length > fieldWidthNetEncloser)
 				{
 					Util.Location? truncateAt = fieldSpec.FixedWidthTruncate ?? this.Truncate;
 
 					switch (truncateAt)
 					{
 						case Util.Location.AtStart:
-							value = value.Substring(value.Length - fieldWidthNetEncloser);
+							valueString = valueString.Substring(valueString.Length - fieldWidthNetEncloser);
 							break;
 						case Util.Location.AtEnd:
 						default:
-							value = value.Substring(0, fieldWidthNetEncloser);
+							valueString = valueString.Substring(0, fieldWidthNetEncloser);
 							break;
 					}
 				}
 
 				// Add to the output
-				recordProperties[fieldSpec.Name] = value;
+				recordProperties[fieldSpec.Name] = valueString;
 			}
 
 			return record;

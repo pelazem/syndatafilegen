@@ -11,6 +11,7 @@
 	[
 		{
 			"FileType": "Delimited", // Output file(s) type. One of: Avro, Delimited, FixedWidth, Json*
+			"RecordSetName": "MyRecords",	// Optional: specifies a name for the record set. Used in the header for ARFF and AVRO formats.
 			"RecordsPerFileMin": 100, // Minimum number of records to generate per file. The actual number of records will be randomly generated for each generated file in the open range min-max.
 			"RecordsPerFileMax": 200, // Maximum number of records to generate per file.
 			"PathSpec": "{yyyy}\\{MM}\\{dd}\\{hh}{mm}{ss}.txt", // Path specification for output folders/files. Can be explicit (e.g. data.txt) or tokenized. Valid tokens: {yy} or {yyyy} for year, {MM} for month, {dd} for day, {hh} for hour, {mm} for minute, {ss} for seconds. Each token valid in folder and/or file name and can be used multiple times (e.g. {yyyy}\{yyyy}.txt).

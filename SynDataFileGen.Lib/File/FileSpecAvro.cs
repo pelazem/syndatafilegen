@@ -14,13 +14,16 @@ namespace SynDataFileGen.Lib
 	{
 		private const int SYNCNUM = 24;
 
+		public string RecordSetName { get; private set; } = string.Empty;
+
 		#region Constructors
 
 		private FileSpecAvro() { }
 
-		public FileSpecAvro(List<IFieldSpec> fieldSpecs, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime)
+		public FileSpecAvro(string recordSetName, List<IFieldSpec> fieldSpecs, int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, string fieldNameForLoopDateTime)
 			: base(recordsPerFileMin, recordsPerFileMax, pathSpec, fieldSpecs, fieldNameForLoopDateTime)
 		{
+			this.RecordSetName = recordSetName;
 		}
 
 		#endregion
@@ -75,74 +78,46 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		private string GetJsonSchema()
 		{
-			var schema = new AvroSchema();
+			var schema = new AvroSchema((string.IsNullOrWhiteSpace(this.RecordSetName) ? nameof(AvroSchema) : this.RecordSetName));
 
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
-				schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "string"));
+				schema.Fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "string"));
 
 			foreach (var fieldSpec in this.FieldSpecs)
 			{
+				// We set a value just so we can get the type
+				fieldSpec.SetNextValue();
+
 				Type type = fieldSpec.Value.GetType();
 
 				if (TypeUtil.IsNumeric(type))
-					schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "double"));
+					schema.Fields.Add(new AvroSchemaTuple(fieldSpec.Name, "double"));
 				else if (TypeUtil.IsPrimitive(type))
-					schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "string"));
+					schema.Fields.Add(new AvroSchemaTuple(fieldSpec.Name, "string"));
 				else
-					schema.fields.Add(new AvroSchemaTuple(this.FieldNameForLoopDateTime, "bytes"));
+					schema.Fields.Add(new AvroSchemaTuple(fieldSpec.Name, "bytes"));
 			}
 
 			return JsonConvert.SerializeObject(schema, Newtonsoft.Json.Formatting.None);
 		}
-
-		//private string GetJsonSchema<T>(List<PropertyInfo> props)
-		//{
-		//	var schema = new AvroSchema();
-
-		//	foreach (PropertyInfo prop in props)
-		//	{
-		//		string typeAlias = GetAvroPrimitiveTypeAlias(prop.PropertyType);
-
-		//		if (string.IsNullOrWhiteSpace(typeAlias))
-		//			throw new Exception("The Microsoft.Hadoop.Avro2 serializer does not support this type: " + prop.PropertyType.Name);
-
-		//		schema.fields.Add(new AvroSchemaTuple(prop.Name, typeAlias));
-		//	}
-
-		//	return JsonConvert.SerializeObject(schema, Newtonsoft.Json.Formatting.None);
-		//}
-
-		/// <summary>
-		/// Microsoft.Hadoop.Avro2 serializer has very limited list of supported primitive types. Their aliases are neither .NET nor C#-compliant.
-		/// See https://github.com/dougmsft/microsoft-avro/blob/master/Microsoft.Hadoop.Avro/Schema/JsonSchemaBuilder.cs
-		/// </summary>
-		//private static readonly Dictionary<Type, string> AvroPrimitiveTypeAliases = new Dictionary<Type, string>
-		//{
-		//	{ TypeUtil.TypeBool, "boolean" },
-		//	{ TypeUtil.TypeInt32, "int" },
-		//	{ TypeUtil.TypeInt64, "long" },
-		//	{ TypeUtil.TypeSingle, "float" },
-		//	{ TypeUtil.TypeDouble, "double" },
-		//	{ TypeUtil.TypeString, "string" },
-		//	{ typeof(Byte[]), "bytes" }
-		//};
-
-		//private string GetAvroPrimitiveTypeAlias(Type type)
-		//{
-		//	if (type == null)
-		//		return string.Empty;
-		//	else
-		//		return AvroPrimitiveTypeAliases.ContainsKey(type) ? AvroPrimitiveTypeAliases[type] : string.Empty;
-		//}
 
 		#endregion
 	}
 
 	internal class AvroSchema
 	{
-		public string Type { get; set; } = "record";
-		public string Name { get; set; } = nameof(AvroSchema);
-		public List<AvroSchemaTuple> fields = new List<AvroSchemaTuple>();
+		public const string Type = "record";
+
+		public string Name { get; private set; }
+
+		public List<AvroSchemaTuple> Fields { get; private set; } = new List<AvroSchemaTuple>();
+
+		private AvroSchema() { }
+
+		public AvroSchema(string recordSetName)
+		{
+			this.Name = recordSetName;
+		}
 	}
 
 	internal class AvroSchemaTuple
@@ -151,6 +126,7 @@ namespace SynDataFileGen.Lib
 		public string Type { get; set; }
 
 		public AvroSchemaTuple() { }
+
 		public AvroSchemaTuple(string name, string type)
 		{
 			this.Name = name;

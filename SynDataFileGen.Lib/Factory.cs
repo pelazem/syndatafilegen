@@ -38,10 +38,25 @@ namespace SynDataFileGen.Lib
 			return result;
 		}
 
+		private static IFileSpec GetFileSpecArff(FileSpecConfig fileSpecConfig)
+		{
+			return new FileSpecArff
+			(
+				fileSpecConfig.RecordSetName,
+				GetFieldSpecs(fileSpecConfig.FieldSpecs),
+				Util.GetEncoding(fileSpecConfig.EncodingName),
+				fileSpecConfig.RecordsPerFileMin,
+				fileSpecConfig.RecordsPerFileMax,
+				fileSpecConfig.PathSpec,
+				fileSpecConfig.FieldNameForLoopDateTime
+			);
+		}
+
 		private static IFileSpec GetFileSpecAvro(FileSpecConfig fileSpecConfig)
 		{
 			return new FileSpecAvro
 			(
+				fileSpecConfig.RecordSetName,
 				GetFieldSpecs(fileSpecConfig.FieldSpecs),
 				fileSpecConfig.RecordsPerFileMin,
 				fileSpecConfig.RecordsPerFileMax,

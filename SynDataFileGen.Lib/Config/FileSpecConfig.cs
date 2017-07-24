@@ -24,6 +24,8 @@ namespace SynDataFileGen.Lib
 			}
 		}
 
+		public string RecordSetName { get; set; }
+
 		public int RecordsPerFileMin { get; set; }
 		public int RecordsPerFileMax { get; set; }
 

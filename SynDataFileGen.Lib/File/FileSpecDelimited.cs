@@ -88,11 +88,6 @@ namespace SynDataFileGen.Lib
 			return fieldNames.Select(fn => this.Encloser + fn + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
 		}
 
-		//private string GetHeaderRecord<T>()
-		//{
-		//	return TypeUtil.GetPrimitiveProps(typeof(T)).Select(p => this.Encloser + p.Name + this.Encloser).GetDelimitedList(this.Delimiter, string.Empty);
-		//}
-
 		private string SerializeRecord(ExpandoObject record)
 		{
 			if (record is IDictionary<string, object> recordProperties)

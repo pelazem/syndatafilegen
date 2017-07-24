@@ -42,7 +42,7 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		protected override object GetValue()
+		public override void SetNextValue()
 		{
 			// If unique values was set but all of them have been used, turn off unique values so we can continue generating with repeated categorical values.
 			if (this.EnforceUniqueValues && this.Categories.Count == this.UniqueValues.Count)
@@ -65,7 +65,7 @@ namespace SynDataFileGen.Lib
 				this.UniqueValues.Add(result, false);
 			}
 
-			return result;
+			_value = result;
 		}
 
 		#endregion

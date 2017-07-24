@@ -5,6 +5,8 @@ namespace SynDataFileGen.Lib
 {
 	public abstract class FieldSpecBase : IFieldSpec
 	{
+		protected object _value = null;
+
 		#region IFieldSpec implementation
 
 		/// <summary>
@@ -49,14 +51,28 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		public Util.Location? FixedWidthTruncate { get; protected set; } = null;
 
+		/// <summary>
+		/// Generate a new value by calling SetNextValue()
+		/// </summary>
 		public object Value
 		{
 			get
 			{
+				return _value;
+			}
+		}
+
+		/// <summary>
+		/// Generate a new value by calling SetNextValue()
+		/// </summary>
+		public string ValueString
+		{
+			get
+			{
 				if (!string.IsNullOrWhiteSpace(this.FormatString))
-					return string.Format(this.FormatString, GetValue());
+					return string.Format(this.FormatString, this.Value);
 				else
-					return GetValue();
+					return this.Value.ToString();
 			}
 		}
 
@@ -106,6 +122,7 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		protected abstract object GetValue();
+		//protected abstract object GetValue();
+		public abstract void SetNextValue();
 	}
 }

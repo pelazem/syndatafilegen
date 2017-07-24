@@ -4,15 +4,6 @@ namespace SynDataFileGen.Lib
 {
 	public class FieldSpecIdempotent : FieldSpecBase
 	{
-		#region FieldSpecBase implementation
-
-		protected override object GetValue()
-		{
-			return this.Value;
-		}
-
-		#endregion
-
 		#region Properties
 
 		public new object Value { get; set; }
@@ -33,6 +24,15 @@ namespace SynDataFileGen.Lib
 			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 
+		}
+
+		#endregion
+
+		#region FieldSpecBase implementation
+
+		public override void SetNextValue()
+		{
+			return;
 		}
 
 		#endregion

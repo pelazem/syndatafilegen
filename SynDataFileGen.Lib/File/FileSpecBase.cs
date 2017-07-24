@@ -139,7 +139,11 @@ namespace SynDataFileGen.Lib
 				recordProperties[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
 
 			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
-				recordProperties[fieldSpec.Name] = fieldSpec.Value;
+			{
+				fieldSpec.SetNextValue();
+
+				recordProperties[fieldSpec.Name] = fieldSpec.ValueString;
+			}
 
 			return record;
 		}

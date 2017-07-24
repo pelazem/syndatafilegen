@@ -20,7 +20,9 @@ namespace SynDataFileGen.Lib
 
 		Util.Location? FixedWidthTruncate { get; }
 
-
 		object Value { get; }
+		string ValueString { get; }
+
+		void SetNextValue();
 	}
 }

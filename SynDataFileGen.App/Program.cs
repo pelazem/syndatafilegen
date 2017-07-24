@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
 using Newtonsoft.Json;
@@ -21,13 +22,21 @@ namespace SynDataFileGen.App
 				return;
 			}
 
+			Console.WriteLine("Starting...");
+
+			Stopwatch sw = new Stopwatch();
+
+			sw.Start();
+
 			Config config = ReadRunFile(args[0]);
 
 			List<Generator> generators = Factory.Get(config);
 
 			generators.ForEach(g => g.Run());
 
-			// Console.Read();
+			sw.Stop();
+
+			Console.WriteLine("Completed. Elapsed time: " + sw.Elapsed.ToString());
 		}
 
 		private static Config ReadRunFile(string path)

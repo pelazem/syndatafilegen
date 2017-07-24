@@ -31,10 +31,13 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		protected override object GetValue()
+		public override void SetNextValue()
 		{
 			if (this.FuncToGenerateValue == null)
-				return string.Empty;
+			{
+				_value = string.Empty;
+				return;
+			}
 
 			object result = this.FuncToGenerateValue();
 
@@ -46,7 +49,7 @@ namespace SynDataFileGen.Lib
 				this.UniqueValues.Add(result, false);
 			}
 
-			return result;
+			_value = result;
 		}
 
 		#endregion

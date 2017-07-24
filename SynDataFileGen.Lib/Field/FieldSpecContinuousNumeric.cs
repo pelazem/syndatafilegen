@@ -44,7 +44,7 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		protected override object GetValue()
+		public override void SetNextValue()
 		{
 			double result = this.Distribution.GetValue();
 
@@ -59,7 +59,7 @@ namespace SynDataFileGen.Lib
 			if (this.MaxDigitsAfterDecimalPoint != null)
 				result = Math.Round(result, this.MaxDigitsAfterDecimalPoint.Value);
 
-			return result;
+			_value = result;
 		}
 
 		#endregion

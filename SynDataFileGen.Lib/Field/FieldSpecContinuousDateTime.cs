@@ -37,10 +37,13 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		protected override object GetValue()
+		public override void SetNextValue()
 		{
 			if (this.DateStart == this.DateEnd)
-				return this.DateStart;
+			{
+				_value = this.DateStart;
+				return;
+			}
 
 			long diffTicks = this.DateEnd.Subtract(this.DateStart).Ticks;
 
@@ -54,7 +57,7 @@ namespace SynDataFileGen.Lib
 				this.UniqueValues.Add(value, false);
 			}
 
-			return this.DateStart.AddTicks(Converter.GetInt64(value * diffTicks));
+			_value = this.DateStart.AddTicks(Converter.GetInt64(value * diffTicks));
 		}
 
 		#endregion
