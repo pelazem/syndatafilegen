@@ -37,6 +37,8 @@ namespace SynDataFileGen.App
 			sw.Stop();
 
 			Console.WriteLine("Completed. Elapsed time: " + sw.Elapsed.ToString());
+
+			Console.Read();
 		}
 
 		private static Config ReadRunFile(string path)

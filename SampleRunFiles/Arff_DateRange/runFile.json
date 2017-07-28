@@ -1,97 +1,99 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "d:\\test\\fwloop\\",
+		"OutputFolderRoot": "d:\\test\\arffloop\\",
 		"DateStart": "2017-01-01T00:00:00",
 		"DateEnd": "2017-03-31T00:00:00"
 	},
 	"FileSpecs":
 	[
 		{
-			"FileType": "FixedWidth",
-			"RecordsPerFileMin": 300,
-			"RecordsPerFileMax": 400,
-			"PathSpec": "{yyyy}-{MM}-{dd}-{hh}.txt",
+			"FileType": "Arff",
+			"RecordSetName": "ArffRecords",
+			"RecordsPerFileMin": 100,
+			"RecordsPerFileMax": 200,
+			"PathSpec": "{yyyy}\\{MM}\\{dd}\\{hh}.txt",
 			"FieldNameForLoopDateTime": "EventDateTime",
-			"IncludeHeaderRow": false,
+			"IncludeHeaderRow": "true",
 			"Delimiter": "|",
 			"Encloser": "",
-			"EncodingName": "ASCII",
-			"FixedWidthPaddingChar": " ",
-			"FixedWidthAddPadding": "AtStart",
-			"FixedWidthTruncate": "AtEnd",
+			"EncodingName": "UTF8",
+			"FixedWidthPaddingChar": null,
+			"FixedWidthAddPadding": null,
+			"FixedWidthTruncate": null,
 			"FieldSpecs":
 			[
 				{
 					"FieldType": "continuousnumeric",
 					"Name": "Id",
-					"EnforceUniqueValues": false,
-					"FormatString": null,
-					"FixedWidthLength": 20,
+					"EnforceUniqueValues": "false",
 					"NumericDistribution":
 					{
 						"DistributionName": "incrementing",
-						"Seed": 1000000
+						"Seed": 1000000.0,
+						"Increment": 1.0
 					},
 					"MaxDigitsAfterDecimalPoint": 0
 				},
 				{
 					"FieldType": "continuousnumeric",
 					"Name": "Qty",
-					"EnforceUniqueValues": false,
+					"EnforceUniqueValues": "false",
 					"FormatString": "{0:n1}",
-					"FixedWidthLength": 20,
 					"NumericDistribution":
 					{
 						"DistributionName": "normal",
-						"Mean": 800.0,
-						"StandardDeviation": 350.0
+						"Mean": 80.0,
+						"StandardDeviation": 35.0
 					},
 					"MaxDigitsAfterDecimalPoint": 0
 				},
 				{
 					"FieldType": "continuousnumeric",
 					"Name": "UnitPrice",
-					"EnforceUniqueValues": false,
+					"EnforceUniqueValues": "false",
 					"FormatString": "{0:c}",
-					"FixedWidthLength": 20,
 					"NumericDistribution":
 					{
 						"DistributionName": "uniform",
-						"Min": 123.45,
-						"Max": 180000.66
+						"Min": 0.15,
+						"Max": 149.99
 					},
 					"MaxDigitsAfterDecimalPoint": 2
 				},
 				{
 					"FieldType": "categorical",
-					"Name": "Element",
-					"FixedWidthLength": 30,
-					"EnforceUniqueValues": false,
+					"Name": "DayOfWeek",
+					"EnforceUniqueValues": "false",
+					"FormatString": null,
 					"Categories":
 					[
 						{
-							"Value": "Carbon",
-							"Weight": 6.0
+							"Value": "Monday",
+							"Weight": 1.0
 						},
 						{
-							"Value": "Nitrogen",
-							"Weight": 5.0
+							"Value": "Tuesday",
+							"Weight": 1.0
 						},
 						{
-							"Value": "Oxygen",
-							"Weight": 8.0
+							"Value": "Wednesday",
+							"Weight": 1.25
 						},
 						{
-							"Value": "Aluminum",
-							"Weight": 0.1
+							"Value": "Thursday",
+							"Weight": 1.0
 						},
 						{
-							"Value": "Gold",
-							"Weight": 0.01
+							"Value": "Friday",
+							"Weight": 1.0
 						},
 						{
-							"Value": "Plutonium",
+							"Value": "Saturday",
+							"Weight": 0.25
+						},
+						{
+							"Value": "Sunday",
 							"Weight": 0.1
 						}
 					]
@@ -99,9 +101,8 @@
 				{
 					"FieldType": "dynamic",
 					"Name": "Guid",
-					"EnforceUniqueValues": false,
+					"EnforceUniqueValues": "false",
 					"FormatString": null,
-					"FixedWidthLength": 40,
 					"DynamicFunc": "() => System.Guid.NewGuid().ToString()"
 				}
 			]

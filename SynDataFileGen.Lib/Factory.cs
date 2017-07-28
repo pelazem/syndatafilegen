@@ -16,6 +16,9 @@ namespace SynDataFileGen.Lib
 
 				switch (fileSpecConfig.FileType.ToLowerInvariant())
 				{
+					case ConfigValues.FILETYPE_ARFF:
+						fileSpec = GetFileSpecArff(fileSpecConfig);
+						break;
 					case ConfigValues.FILETYPE_AVRO:
 						fileSpec = GetFileSpecAvro(fileSpecConfig);
 						break;

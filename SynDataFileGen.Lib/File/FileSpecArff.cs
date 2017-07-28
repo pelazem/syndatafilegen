@@ -54,7 +54,6 @@ namespace SynDataFileGen.Lib
 				using (var sw = new StreamWriter(interim, this.Encoding))
 				{
 					sw.Write(GetHeaderRecord());
-					sw.WriteLine();
 
 					foreach (var record in records)
 						sw.WriteLine(SerializeRecord(record));
@@ -103,6 +102,7 @@ namespace SynDataFileGen.Lib
 			StringBuilder sb = new StringBuilder();
 
 			sb.AppendLine("% 1. Title: '" + this.RecordSetName + "'");
+			sb.AppendLine();
 
 			sb.AppendLine(RELATION + this.RecordSetName);
 

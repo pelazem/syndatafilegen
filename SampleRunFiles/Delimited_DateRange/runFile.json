@@ -1,7 +1,7 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "c:\\test\\",
+		"OutputFolderRoot": "d:\\test\\delimloop\\",
 		"DateStart": "2017-01-01T00:00:00",
 		"DateEnd": "2017-03-31T00:00:00"
 	},
@@ -15,7 +15,7 @@
 			"FieldNameForLoopDateTime": "EventDateTime",
 			"IncludeHeaderRow": "true",
 			"Delimiter": "|",
-			"Encloser": "'",
+			"Encloser": "",
 			"EncodingName": "UTF8",
 			"FixedWidthPaddingChar": null,
 			"FixedWidthAddPadding": null,
