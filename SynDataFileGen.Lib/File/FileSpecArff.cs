@@ -16,9 +16,9 @@ namespace SynDataFileGen.Lib
 		private const string ATTRIB = "@ATTRIBUTE ";
 		private const string DATA = "@DATA";
 
-		private const string FMT_DATE = " date ";
-		private const string FMT_NUMERIC = " numeric ";
-		private const string FMT_STRING = " string ";
+		private const string FMT_DATE = " DATE ";
+		private const string FMT_NUMERIC = " NUMERIC ";
+		private const string FMT_STRING = " STRING ";
 
 		private const string DELIM = ",";
 
@@ -76,7 +76,7 @@ namespace SynDataFileGen.Lib
 			IDictionary<string, object> recordProperties = record as IDictionary<string, object>;
 
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime) && dateLoop != null)
-				recordProperties[this.FieldNameForLoopDateTime] = "\"" + string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop) + "\"";
+				recordProperties[this.FieldNameForLoopDateTime] = string.Format("{0:" + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL + "}", dateLoop);
 
 			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
 			{
@@ -85,10 +85,10 @@ namespace SynDataFileGen.Lib
 				string type = GetDataType(fieldSpec);
 
 				if (type == FMT_NUMERIC)
-					recordProperties[fieldSpec.Name] = fieldSpec.ValueString;
+					recordProperties[fieldSpec.Name] = fieldSpec.Value.ToString();	// We do not use ValueString here since that uses any provided format string, which may include currency symbols or other punctuation, which ARFF deserializers would not accept as numeric.
 				else if (type == FMT_DATE)
-					recordProperties[fieldSpec.Name] = "\"" + fieldSpec.ValueString + "\"";
-				else
+					recordProperties[fieldSpec.Name] = fieldSpec.ValueString;	// No quotes around dates seems to work
+				else // string
 					recordProperties[fieldSpec.Name] = "\"" + fieldSpec.ValueString.Replace("\"", "\\\"") + "\"";
 			}
 
@@ -101,13 +101,10 @@ namespace SynDataFileGen.Lib
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("% 1. Title: '" + this.RecordSetName + "'");
-			sb.AppendLine();
-
 			sb.AppendLine(RELATION + this.RecordSetName);
 
 			if (!string.IsNullOrWhiteSpace(this.FieldNameForLoopDateTime))
-				sb.AppendLine(ATTRIB + this.FieldNameForLoopDateTime + FMT_DATE + pelazem.util.Constants.FORMAT_DATETIME_UNIVERSAL);
+				sb.AppendLine(ATTRIB + this.FieldNameForLoopDateTime + FMT_DATE);
 
 			foreach (IFieldSpec fieldSpec in this.FieldSpecs)
 			{

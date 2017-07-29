@@ -3,7 +3,7 @@
 	{
 		"OutputFolderRoot": "d:\\test\\arffloop\\",
 		"DateStart": "2017-01-01T00:00:00",
-		"DateEnd": "2017-03-31T00:00:00"
+		"DateEnd": "2017-01-31T00:00:00"
 	},
 	"FileSpecs":
 	[
@@ -12,15 +12,9 @@
 			"RecordSetName": "ArffRecords",
 			"RecordsPerFileMin": 100,
 			"RecordsPerFileMax": 200,
-			"PathSpec": "{yyyy}\\{MM}\\{dd}\\{hh}.txt",
+			"PathSpec": "{yyyy}-{MM}-{dd}-{hh}.arff",
 			"FieldNameForLoopDateTime": "EventDateTime",
-			"IncludeHeaderRow": "true",
-			"Delimiter": "|",
-			"Encloser": "",
 			"EncodingName": "UTF8",
-			"FixedWidthPaddingChar": null,
-			"FixedWidthAddPadding": null,
-			"FixedWidthTruncate": null,
 			"FieldSpecs":
 			[
 				{
