@@ -143,7 +143,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF8);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g = new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF1(List<Category> BENE_HIC_NUM)
@@ -152,7 +155,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF1);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF2(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRVDR_OSCAR_NUM)
@@ -161,7 +167,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF2);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF3(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
@@ -170,7 +179,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF3);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF4(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD, List<Category> PRVDR_OSCAR_NUM)
@@ -179,7 +191,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF4);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF5(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM, List<Category> PRNCPL_DGNS_CD)
@@ -188,7 +203,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF5);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF6(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM, List<Category> BENE_EQTBL_BIC_HICN_NUM)
@@ -197,7 +215,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF6);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF7(List<Category> CUR_CLM_UNIQ_ID, List<Category> BENE_HIC_NUM)
@@ -206,7 +227,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF7);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g = new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLF9(List<Category> BENE_HIC_NUM)
@@ -215,7 +239,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF9);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLFA(List<Category> CUR_CLM_UNIQ_ID, DateTime dateStartClaimAdmission, DateTime dateEndClaimAdmission)
@@ -224,7 +251,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFA);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private List<ExpandoObject> GenerateCCLFB()
@@ -233,7 +263,10 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFB);
 
-			return new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile()).Run();
+			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			g.Run(true);
+
+			return g.Results;
 		}
 
 		private void GenerateCCLF0

@@ -15,6 +15,8 @@ namespace SynDataFileGen.Lib
 		private DateTime? _dateStart;
 		private DateTime? _dateEnd;
 
+		private List<ExpandoObject> _results = null;
+
 		#endregion
 
 		#region Properties
@@ -65,6 +67,17 @@ namespace SynDataFileGen.Lib
 
 		public IWriter Writer { get; private set; }
 
+		public List<ExpandoObject> Results
+		{
+			get
+			{
+				if (_results == null)
+					_results = new List<ExpandoObject>();	// TODO size this list based on RecordsPerFileMax and calc max num of files
+
+				return _results;
+			}
+		}
+
 		#endregion
 
 		#region Constructors
@@ -99,10 +112,12 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		public List<ExpandoObject> Run()
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="collectResults">If true, the Generator's Results property will contain all results for further usage in caller after Run() completes</param>
+		public void Run(bool collectResults = false)
 		{
-			List<ExpandoObject> results = new List<ExpandoObject>();
-
 			bool useDateLooping = (this.FileSpec.HasDateLooping && this.DateStart != null && this.DateEnd != null && this.DateStart.Value <= this.DateEnd.Value);
 
 			if (!useDateLooping)
@@ -113,7 +128,8 @@ namespace SynDataFileGen.Lib
 
 				this.Writer.Write(uri, stream);
 
-				results.AddRange(records);
+				if (collectResults)
+					this.Results.AddRange(records);
 			}
 			else
 			{
@@ -129,14 +145,13 @@ namespace SynDataFileGen.Lib
 
 					this.Writer.Write(uri, stream);
 
-					results.AddRange(records);
+					if (collectResults)
+						this.Results.AddRange(records);
 
 					dateLoopStart = func(dateLoopStart);
 					dateLoopEnd = func(dateLoopEnd);
 				}
 			}
-
-			return results;
 		}
 
 		/// <summary>

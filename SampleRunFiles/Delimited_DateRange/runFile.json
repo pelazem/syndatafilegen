@@ -1,7 +1,7 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "d:\\test\\delimloop1\\",
+		"OutputFolderRoot": "d:\\test\\delimloop2\\",
 		"DateStart": "2017-01-01T00:00:00",
 		"DateEnd": "2017-01-31T00:00:00"
 	},
@@ -9,17 +9,14 @@
 	[
 		{
 			"FileType": "Delimited",
-			"RecordsPerFileMin": 100,
-			"RecordsPerFileMax": 200,
-			"PathSpec": "{yyyy}\\{MM}\\{dd}\\{hh}.csv",
+			"RecordsPerFileMin": 100000,
+			"RecordsPerFileMax": 200000,
+			"PathSpec": "{yyyy}\\{MM}-{dd}-{hh}.csv",
 			"FieldNameForLoopDateTime": "EventDateTime",
 			"IncludeHeaderRow": "true",
 			"Delimiter": ",",
 			"Encloser": "",
 			"EncodingName": "UTF8",
-			"FixedWidthPaddingChar": null,
-			"FixedWidthAddPadding": null,
-			"FixedWidthTruncate": null,
 			"FieldSpecs":
 			[
 				{
