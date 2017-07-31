@@ -16,8 +16,8 @@ I wrote sdfg to allow for simple specification of the layout and other options f
 
 **_How can you use sdfg?_**
 
-1. You can download the run/syndatafilegen/ folder. This is the main tool. You provide a run file with the needed configuration and invoke the tool, and it does the rest. Multiple run file samples, as well as a full run file template with all options (and comments), are provided under /samples.
-2. You can clone (or fork - I'm happy to consider pull requests) the repo. /src contains the full Visual Studio 2017 solution. You can write your own specific wrapper around sdfg; for example, the solution contains a CCLF17 project which I wrote to generate fairly complex and inter-related Medicare CCLF 2017 file sets, where data in one file (for example) is referenced in other files. The CCLF17 tool is also available for command-line invocation in /run/cclf17; note that as with the core sdfg tool, you need to provide a run file but again, there is a sample under /samples/runfile_cclfgenerator.
+1. You can download the `run/syndatafilegen` folder. This is the main tool. You provide a run file with the needed configuration and invoke the tool, and it does the rest. See the README in that folder for command-line example. Multiple run file samples, as well as a full run file template with all options (and comments), are provided under /samples.
+2. You can clone (or fork - I'm happy to consider pull requests) the repo. `/src` contains the full Visual Studio 2017 solution. You can write your own specific wrapper around sdfg; for example, the solution contains a CCLF17 project which I wrote to generate fairly complex and inter-related Medicare CCLF 2017 file sets, where data in one file (for example) is referenced in other files. The CCLF17 tool is also available for command-line invocation in `/run/cclf17`; note that as with the core sdfg tool, you need to provide a run file but again, there is a sample under `/samples/runfile_cclfgenerator`.
 
 ---
 
@@ -35,7 +35,7 @@ All the above are loosely coupled and work together through interfaces, so that 
 
 ## Detailed Configuration
 
-Each of the structural areas has specific settings. The best way to gain quick insight into these is to review /samples/runfile_FULL_TEMPLATE/runFile.json, which contains every possible option and extensive comments for each option including when to use it, allowable values, and more.
+Each of the structural areas has specific settings. The best way to gain quick insight into these is to review `/samples/runfile_FULL_TEMPLATE/runFile.json`, which contains every possible option and extensive comments for each option including when to use it, allowable values, and more.
 
 ---
 
