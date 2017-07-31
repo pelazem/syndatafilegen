@@ -16,8 +16,12 @@ namespace SynDataFileGen.Lib
 
 		public FileSpecBase(int? recordsPerFileMin, int? recordsPerFileMax, string pathSpec, IEnumerable<IFieldSpec> fieldSpecs, string fieldNameForLoopDateTime)
 		{
-			this.RecordsPerFileMin = recordsPerFileMin;
-			this.RecordsPerFileMax = recordsPerFileMax;
+			if (recordsPerFileMin != null && recordsPerFileMin >= 0)
+				this.RecordsPerFileMin = Math.Min(recordsPerFileMin.Value, Constants.LIST_MAX);
+
+			if (recordsPerFileMax != null && recordsPerFileMax >= 0)
+				this.RecordsPerFileMax = Math.Min(recordsPerFileMax.Value, Constants.LIST_MAX);
+
 			this.PathSpec = pathSpec.Replace(@"/", @"\");
 
 			this.FieldSpecs.AddRange(fieldSpecs);
@@ -77,41 +81,52 @@ namespace SynDataFileGen.Lib
 		/// Gets a list of records with generated values. This list can then be translated into a Stream with GetFileContent.
 		/// </summary>
 		/// <returns></returns>
-		public List<ExpandoObject> GetRecords()
+		public IEnumerable<ExpandoObject> GetRecords()
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
-			List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
+			// List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
 
 			for (int i = 1; i <= numOfItems; i++)
-				result.Add(GetRecord());
+				yield return GetRecord();
+				//result.Add(GetRecord());
 
-			return result;
+			// return result;
 		}
 
 		/// <summary>
 		/// Gets a list of records with generated values. This list can then be translated into a Stream with GetFileContent.
 		/// </summary>
 		/// <returns></returns>
-		public List<ExpandoObject> GetRecords(DateTime dateStart, DateTime dateEnd)
+		public IEnumerable<ExpandoObject> GetRecords(DateTime dateStart, DateTime dateEnd)
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
-			long ticksDelta = dateEnd.Ticks - dateStart.Ticks;
+			long ticksDelta = (dateEnd.Ticks - dateStart.Ticks) - 1;
 			long ticksPerItem = ticksDelta / numOfItems;
 			DateTime dateLoop = dateStart;
+			double ticksFactor;
+			double min = 1.0;
+			double max;
 
-			List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
+			// List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
 
 			for (int i = 1; i <= numOfItems; i++)
 			{
-				result.Add(GetRecord(dateLoop));
+				yield return GetRecord(dateLoop);
+				//result.Add(GetRecord(dateLoop));
 
-				double ticksFactor = RNG.GetUniform(0, 1.999999);
+				if ((dateEnd.Ticks - dateLoop.Ticks) < (2.0 * ticksDelta))
+					max = 1.0;
+				else
+					max = 2.0;
+
+				ticksFactor = RNG.GetUniform(min, max);
+
 				dateLoop = dateLoop.AddTicks(Converter.GetInt64(ticksPerItem * ticksFactor));
 			}
 
-			return result;
+			//return result;
 		}
 
 
@@ -120,7 +135,7 @@ namespace SynDataFileGen.Lib
 		/// </summary>
 		/// <param name="records"></param>
 		/// <returns></returns>
-		public abstract Stream GetContentStream(List<ExpandoObject> records);
+		public abstract Stream GetContentStream(IEnumerable<ExpandoObject> records);
 
 		#endregion
 

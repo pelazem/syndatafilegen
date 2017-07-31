@@ -29,7 +29,7 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		public override Stream GetContentStream(List<ExpandoObject> records)
+		public override Stream GetContentStream(IEnumerable<ExpandoObject> records)
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 

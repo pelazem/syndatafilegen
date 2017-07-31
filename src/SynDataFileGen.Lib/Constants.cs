@@ -13,6 +13,9 @@ namespace SynDataFileGen.Lib
 		public const string MINUTE = "{mm}";
 		public const string SECOND = "{ss}";
 
+		// Biggest max size accepted at this point (internal limits to various collections used herein)
+		public const int LIST_MAX = 250000000;
+
 		public const string DEFAULT_FILE_NAME = "generated";
 		public const string DEFAULT_FILE_EXTENSION = ".txt";
 	}

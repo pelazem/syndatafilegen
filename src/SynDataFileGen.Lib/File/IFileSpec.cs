@@ -17,9 +17,9 @@ namespace SynDataFileGen.Lib
 
 		List<IFieldSpec> FieldSpecs { get; }
 
-		List<ExpandoObject> GetRecords();
-		List<ExpandoObject> GetRecords(DateTime dateStart, DateTime dateEnd);
+		IEnumerable<ExpandoObject> GetRecords();
+		IEnumerable<ExpandoObject> GetRecords(DateTime dateStart, DateTime dateEnd);
 
-		Stream GetContentStream(List<ExpandoObject> records);
+		Stream GetContentStream(IEnumerable<ExpandoObject> records);
 	}
 }

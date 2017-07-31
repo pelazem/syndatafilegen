@@ -72,9 +72,13 @@ namespace SynDataFileGen.Lib
 			get
 			{
 				if (_results == null)
-					_results = new List<ExpandoObject>();	// TODO size this list based on RecordsPerFileMax and calc max num of files
+					_results = new List<ExpandoObject>();
 
 				return _results;
+			}
+			private set
+			{
+				_results = value;
 			}
 		}
 
@@ -124,26 +128,41 @@ namespace SynDataFileGen.Lib
 			{
 				string uri = GetPath();
 				var records = this.FileSpec.GetRecords();
-				var stream = this.FileSpec.GetContentStream(records);
 
-				this.Writer.Write(uri, stream);
+				using (var stream = this.FileSpec.GetContentStream(records))
+				{
+					this.Writer.Write(uri, stream);
+				}
 
 				if (collectResults)
 					this.Results.AddRange(records);
 			}
 			else
 			{
+				int loopCount;
+
+				string dateLoopGranularity = GetDateLoopGranularity();
+
+				// If collectResults true, pre-size the results list to the number of files to be written * max rows per file - this will over-allocate but we trim excess at end
+				if (collectResults)
+				{
+					loopCount = GetLoopCount(dateLoopGranularity);
+					this.Results = new List<ExpandoObject>(loopCount * this.FileSpec.RecordsPerFileMax.Value);
+				}
+
+				Func<DateTime, DateTime> func = GetDateLoopFunc(dateLoopGranularity);
 				DateTime dateLoopStart = this.DateStart.Value;
-				Func<DateTime, DateTime> func = GetDateLoopFunc();
 				DateTime dateLoopEnd = func(dateLoopStart);
 
 				while (dateLoopEnd <= this.DateEnd)
 				{
 					string uri = GetPath(dateLoopStart);
 					var records = this.FileSpec.GetRecords(dateLoopStart, dateLoopEnd);
-					var stream = this.FileSpec.GetContentStream(records);
 
-					this.Writer.Write(uri, stream);
+					using (var stream = this.FileSpec.GetContentStream(records))
+					{
+						this.Writer.Write(uri, stream);
+					}
 
 					if (collectResults)
 						this.Results.AddRange(records);
@@ -151,6 +170,9 @@ namespace SynDataFileGen.Lib
 					dateLoopStart = func(dateLoopStart);
 					dateLoopEnd = func(dateLoopEnd);
 				}
+
+				if (collectResults)
+					this.Results.TrimExcess();
 			}
 		}
 
@@ -167,22 +189,67 @@ namespace SynDataFileGen.Lib
 			this.Writer.Write(uri, stream);
 		}
 
-		private Func<DateTime, DateTime> GetDateLoopFunc()
+		private string GetDateLoopGranularity()
+		{
+			string result = string.Empty;
+
+			if (this.FileSpec.PathSpec.Contains(Constants.SECOND))
+				result = Constants.SECOND;
+			else if (this.FileSpec.PathSpec.Contains(Constants.MINUTE))
+				result = Constants.MINUTE;
+			else if (this.FileSpec.PathSpec.Contains(Constants.HOUR))
+				result = Constants.HOUR;
+			else if (this.FileSpec.PathSpec.Contains(Constants.DAY))
+				result = Constants.DAY;
+			else if (this.FileSpec.PathSpec.Contains(Constants.MONTH))
+				result = Constants.MONTH;
+			else if (this.FileSpec.PathSpec.Contains(Constants.YEAR2) || this.FileSpec.PathSpec.Contains(Constants.YEAR4))
+				result = Constants.YEAR4;
+
+			return result;
+		}
+
+		private int GetLoopCount(string dateLoopGranularity)
+		{
+			int result = 1;
+
+			if (this.DateStart == null || this.DateEnd == null || this.DateEnd < this.DateStart)
+				return result;
+
+			TimeSpan diff = this.DateEnd.Value.Subtract(this.DateStart.Value);
+
+			if (dateLoopGranularity == Constants.SECOND)
+				result = Converter.GetInt32(diff.TotalSeconds) + 1;
+			else if (dateLoopGranularity == Constants.MINUTE)
+				result = Converter.GetInt32(diff.TotalMinutes) + 1;
+			else if (dateLoopGranularity == Constants.HOUR)
+				result = Converter.GetInt32(diff.TotalHours) + 1;
+			else if (dateLoopGranularity == Constants.DAY)
+				result = Converter.GetInt32(diff.TotalDays) + 1;
+			else if (dateLoopGranularity == Constants.MONTH)
+				result = Converter.GetInt32(Math.Ceiling(diff.TotalDays / 30));
+			else if (dateLoopGranularity == Constants.YEAR2 || dateLoopGranularity == Constants.YEAR4)
+				result = Converter.GetInt32(Math.Ceiling(diff.TotalDays / 365));
+
+			return result;
+		}
+
+		private Func<DateTime, DateTime> GetDateLoopFunc(string dateLoopGranularity)
 		{
 			Func<DateTime, DateTime> func = null;
 
 			// We iterate through date/time tokens the path spec may contain, from smallest to largest, and the first one we find will dictate the increment of our date loop.
-			if (this.FileSpec.PathSpec.Contains(Constants.SECOND))
+			if (dateLoopGranularity == Constants.SECOND)
 				func = (d) => d.AddSeconds(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.MINUTE))
+			else if (dateLoopGranularity == Constants.MINUTE)
 				func = (d) => d.AddMinutes(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.HOUR))
+			else if (dateLoopGranularity == Constants.HOUR)
 				func = (d) => d.AddHours(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.DAY))
+			else if (dateLoopGranularity == Constants.DAY)
 				func = (d) => d.AddDays(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.MONTH))
+			else if (dateLoopGranularity == Constants.MONTH)
 				func = (d) => d.AddMonths(1);
-			else if (this.FileSpec.PathSpec.Contains(Constants.YEAR2) || this.FileSpec.PathSpec.Contains(Constants.YEAR4))
+			else if (dateLoopGranularity == Constants.YEAR2 || dateLoopGranularity == Constants.YEAR4)
 				func = (d) => d.AddYears(1);
 
 			return func;

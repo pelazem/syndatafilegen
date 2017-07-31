@@ -2,7 +2,7 @@
   "profiles": {
     "SynDataFileGen.App": {
       "commandName": "Project",
-      "commandLineArgs": "..\\SampleRunFiles\\Delimited_DateRange\\runFile.json -i"
+      "commandLineArgs": "..\\..\\samples\\Delimited_DateRange\\runFile.json -i"
     }
   }
 }

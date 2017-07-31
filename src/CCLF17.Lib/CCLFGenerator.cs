@@ -29,7 +29,7 @@ namespace CCLF17.Lib
 
 		#region Properties
 
-		public string OutputFolderRoot = @"c:\test\cclf17\";
+		public string OutputFolder { get; set; }
 
 		public bool IncludeHeaderRow { get; set; } = false;
 		public string Delimiter { get; set; } = string.Empty;
@@ -46,6 +46,22 @@ namespace CCLF17.Lib
 		private DateTime DateEnd { get; set; } = new DateTime(2017, 6, 30, 0, 0, 0, DateTimeKind.Utc);
 
 		#endregion
+
+		#region Constructors
+
+		private CCLFGenerator() { }
+
+		public CCLFGenerator(CCLFConfig config)
+		{
+			this.OutputFolder = config.OutputFolder;
+			this.RecordsPerFileMin = config.RecordsPerFileMin;
+			this.RecordsPerFileMax = config.RecordsPerFileMax;
+			this.DateStart = config.DateStart;
+			this.DateEnd = config.DateEnd;
+		}
+
+		#endregion
+
 
 		public void Run()
 		{
@@ -143,7 +159,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF8);
 
-			Generator g = new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g = new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -155,7 +171,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF1);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -167,7 +183,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF2);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -179,7 +195,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF3);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -191,7 +207,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF4);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -203,7 +219,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF5);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -215,7 +231,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF6);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -227,7 +243,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF7);
 
-			Generator g = new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g = new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -239,7 +255,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLF9);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -251,7 +267,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFA);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -263,7 +279,7 @@ namespace CCLF17.Lib
 
 			FileSpecFixedWidth fileSpec = GetFileSpec(fieldSpecs, PATHSPEC_CCLFB);
 
-			Generator g =  new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator g =  new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 			g.Run(true);
 
 			return g.Results;
@@ -308,7 +324,7 @@ namespace CCLF17.Lib
 
 			};
 
-			Generator generator = new Generator(this.OutputFolderRoot, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
+			Generator generator = new Generator(this.OutputFolder, this.DateStart, this.DateEnd, fileSpec, new WriterLocalFile());
 
 			generator.Run(items);
 		}
