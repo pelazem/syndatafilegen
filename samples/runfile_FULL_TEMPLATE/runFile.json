@@ -10,7 +10,7 @@
 	"FileSpecs":
 	[
 		{
-			"FileType": "Delimited", // Output file(s) type. One of: Avro, Delimited, FixedWidth, Json*
+			"FileType": "Delimited", // Output file(s) type. One of: Arff, Avro, Delimited, FixedWidth, Json*
 			"RecordSetName": "MyRecords",	// Optional: specifies a name for the record set. Used in the header for ARFF and AVRO formats.
 			"RecordsPerFileMin": 100, // Minimum number of records to generate per file. The actual number of records will be randomly generated for each generated file in the open range min-max.
 			"RecordsPerFileMax": 200, // Maximum number of records to generate per file.
@@ -67,7 +67,7 @@
 					},
 					"MaxDigitsAfterDecimalPoint": "", // Number of digits after decimal point for numeric values.
 					"FieldNameToCopy": "", // Use this when the value to be output should be identical to the value in a different field on the same record
-					"DynamicFunc": "" // A C# dynamic function expression to use to generate values for this field. Example: "() => Guid.NewGuid().ToString()"
+					"DynamicFunc": "" // A C# dynamic function expression to use to generate values for this field. Example: "() => System.Guid.NewGuid().ToString()"
 				}
 			]
 		}
