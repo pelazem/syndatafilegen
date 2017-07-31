@@ -39,6 +39,12 @@ Each of the structural areas has specific settings. The best way to gain quick i
 
 ---
 
+## Technical
+
+sdfg is a Visual Studio 2017 solution. The console apps are .Net Core 1.1; the libraries (DLLs) are .Net Standard 1.6. To run the apps, you will need to install the latest .NET Core 1.1 runtime from [https://www.microsoft.com/net/download/core#/runtime](https://www.microsoft.com/net/download/core#/runtime).
+
+---
+
 # PLEASE NOTE FOR THE ENTIRETY OF THIS REPOSITORY AND ALL ASSETS
 ## 1. No warranties or guarantees are made or implied.
 ## 2. All assets here are provided by me "as is". Use at your own risk.
