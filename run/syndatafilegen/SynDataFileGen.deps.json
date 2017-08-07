@@ -293,7 +293,7 @@
     "protobuf-net/2.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-0BVNsKmrs1xd6P6UXbFh6ssNUc/2oGZuWs+q+cxW2NLtib1l0ijFMoVtMoWWESy8ktDZ7FjneuZaDbY5MvGV4g==",
+      "sha512": "sha512-8ijiRUzGcB9SYo2ohIujk5s93MeaXF+/xd9WBGCgS1SqQyOC5gUTnCKIXZPlf8a6UROkK70McJloL4P19IvghQ==",
       "path": "protobuf-net/2.1.0",
       "hashPath": "protobuf-net.2.1.0.nupkg.sha512"
     },
@@ -342,7 +342,7 @@
     "system.diagnostics.stacktrace/4.3.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-nV6qjfT8wqjxcl4u2MbznJHV/BT7TvuR84UUK8+JZvkrtWQPuzSy4ZmCnaR6M4Zdo2W2iuAXVzoK/R9lrfWWAQ==",
+      "sha512": "sha512-5lpPKAio2cZFDPfjlzutxd71cKfhCl7YNn3PIX6qG86atPucnAsTFQ9xmsU42+d0f6xJUM/EmzHzAqEuhvldYg==",
       "path": "system.diagnostics.stacktrace/4.3.0",
       "hashPath": "system.diagnostics.stacktrace.4.3.0.nupkg.sha512"
     },
