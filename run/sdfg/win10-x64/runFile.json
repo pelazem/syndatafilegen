@@ -1,0 +1,107 @@
+{
+	"Generator":
+	{
+		"OutputFolderRoot": "d:\\test\\delimloop\\",
+		"DateStart": "2017-07-01T00:00:00",
+		"DateEnd": "2017-08-01T00:00:00"
+	},
+	"FileSpecs":
+	[
+		{
+			"FileType": "Delimited",
+			"RecordsPerFileMin": 1000,
+			"RecordsPerFileMax": 2000,
+			"PathSpec": "{yyyy}\\{MM}\\{dd}-{hh}.csv",
+			"FieldNameForLoopDateTime": "EventDateTime",
+			"IncludeHeaderRow": "true",
+			"Delimiter": ",",
+			"Encloser": "",
+			"EncodingName": "UTF8",
+			"FieldSpecs":
+			[
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "Id",
+					"EnforceUniqueValues": "false",
+					"NumericDistribution":
+					{
+						"DistributionName": "incrementing",
+						"Seed": 1000000.0,
+						"Increment": 1.0
+					},
+					"MaxDigitsAfterDecimalPoint": 0
+				},
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "Qty",
+					"EnforceUniqueValues": "false",
+					"FormatString": "{0:n1}",
+					"NumericDistribution":
+					{
+						"DistributionName": "normal",
+						"Mean": 5000.0,
+						"StandardDeviation": 1750.0
+					},
+					"MaxDigitsAfterDecimalPoint": 0
+				},
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "UnitPrice",
+					"EnforceUniqueValues": "false",
+					"FormatString": "{0:c}",
+					"NumericDistribution":
+					{
+						"DistributionName": "uniform",
+						"Min": 0.15,
+						"Max": 49999.99
+					},
+					"MaxDigitsAfterDecimalPoint": 2
+				},
+				{
+					"FieldType": "categorical",
+					"Name": "DayOfWeek",
+					"EnforceUniqueValues": "false",
+					"FormatString": null,
+					"Categories":
+					[
+						{
+							"Value": "Monday",
+							"Weight": 1.0
+						},
+						{
+							"Value": "Tuesday",
+							"Weight": 1.0
+						},
+						{
+							"Value": "Wednesday",
+							"Weight": 1.25
+						},
+						{
+							"Value": "Thursday",
+							"Weight": 1.0
+						},
+						{
+							"Value": "Friday",
+							"Weight": 1.0
+						},
+						{
+							"Value": "Saturday",
+							"Weight": 0.25
+						},
+						{
+							"Value": "Sunday",
+							"Weight": 0.1
+						}
+					]
+				},
+				{
+					"FieldType": "dynamic",
+					"Name": "Guid",
+					"EnforceUniqueValues": "false",
+					"FormatString": null,
+					"DynamicFunc": "() => System.Guid.NewGuid().ToString()"
+				}
+			]
+		}
+	]
+}

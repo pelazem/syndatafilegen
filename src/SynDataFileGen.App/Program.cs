@@ -45,6 +45,7 @@ namespace SynDataFileGen.App
 			{
 				sw.Stop();
 				Console.WriteLine("Completed. Elapsed time: " + sw.Elapsed.ToString());
+				Console.WriteLine("Press any key to exit.");
 				Console.Read();
 			}
 		}
