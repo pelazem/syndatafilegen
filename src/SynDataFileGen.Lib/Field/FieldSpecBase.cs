@@ -122,7 +122,6 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		//protected abstract object GetValue();
 		public abstract void SetNextValue();
 	}
 }

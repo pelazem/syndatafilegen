@@ -1,0 +1,110 @@
+{
+	"Generator":
+	{
+		"OutputFolderRoot": "d:\\test\\fwloop\\",
+		"DateStart": "2017-01-01T00:00:00",
+		"DateEnd": "2017-03-31T00:00:00"
+	},
+	"FileSpecs":
+	[
+		{
+			"FileType": "FixedWidth",
+			"RecordsPerFileMin": 300,
+			"RecordsPerFileMax": 400,
+			"PathSpec": "{yyyy}-{MM}-{dd}-{hh}.txt",
+			"FieldNameForLoopDateTime": "EventDateTime",
+			"IncludeHeaderRow": false,
+			"Delimiter": "|",
+			"Encloser": "",
+			"EncodingName": "ASCII",
+			"FixedWidthPaddingChar": " ",
+			"FixedWidthAddPadding": "AtStart",
+			"FixedWidthTruncate": "AtEnd",
+			"FieldSpecs":
+			[
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "Id",
+					"EnforceUniqueValues": false,
+					"FormatString": null,
+					"FixedWidthLength": 20,
+					"NumericDistribution":
+					{
+						"DistributionName": "incrementing",
+						"Seed": 1000000
+					},
+					"MaxDigitsAfterDecimalPoint": 0
+				},
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "Qty",
+					"EnforceUniqueValues": false,
+					"FormatString": "{0:n1}",
+					"FixedWidthLength": 20,
+					"NumericDistribution":
+					{
+						"DistributionName": "normal",
+						"Mean": 800.0,
+						"StandardDeviation": 350.0
+					},
+					"MaxDigitsAfterDecimalPoint": 0
+				},
+				{
+					"FieldType": "continuousnumeric",
+					"Name": "UnitPrice",
+					"EnforceUniqueValues": false,
+					"FormatString": "{0:c}",
+					"FixedWidthLength": 20,
+					"NumericDistribution":
+					{
+						"DistributionName": "uniform",
+						"Min": 123.45,
+						"Max": 180000.66
+					},
+					"MaxDigitsAfterDecimalPoint": 2
+				},
+				{
+					"FieldType": "categorical",
+					"Name": "Element",
+					"FixedWidthLength": 30,
+					"EnforceUniqueValues": false,
+					"Categories":
+					[
+						{
+							"Value": "Carbon",
+							"Weight": 6.0
+						},
+						{
+							"Value": "Nitrogen",
+							"Weight": 5.0
+						},
+						{
+							"Value": "Oxygen",
+							"Weight": 8.0
+						},
+						{
+							"Value": "Aluminum",
+							"Weight": 0.1
+						},
+						{
+							"Value": "Gold",
+							"Weight": 0.01
+						},
+						{
+							"Value": "Plutonium",
+							"Weight": 0.1
+						}
+					]
+				},
+				{
+					"FieldType": "dynamic",
+					"Name": "Guid",
+					"EnforceUniqueValues": false,
+					"FormatString": null,
+					"FixedWidthLength": 40,
+					"DynamicFunc": "() => System.Guid.NewGuid().ToString()"
+				}
+			]
+		}
+	]
+}
