@@ -18,7 +18,7 @@ namespace SynDataFileGen.App
 				Console.WriteLine("Usage: generator [-i] {run file path}");
 				Console.WriteLine("If -i is specified, some output will be written to the console and the app will wait for user input at end. Otherwise, app runs silently and exits when done.");
 				Console.WriteLine("{run file path} is the path to a JSON runfile.");
-				Console.WriteLine("See example sampleRunFile.json in the same folder as the generator app.");
+				Console.WriteLine("See sample runfiles at https://github.com/pelazem/syndatafilegen/tree/master/runfiles.");
 				Console.WriteLine("Press any key to exit.");
 				Console.Read();
 				return;
