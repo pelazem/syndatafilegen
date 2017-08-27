@@ -13,41 +13,40 @@ namespace SynDataFileGen.App
 	{
 		static void Main(string[] args)
 		{
-			if (args.Length == 0 || (args.Length == 1 && args[0].ToLowerInvariant() == "-i") || args.Length > 2)
+			if (args.Length == 0 || args.Length > 1 || !File.Exists(args[0]))
 			{
-				Console.WriteLine("Usage: generator [-i] {run file path}");
-				Console.WriteLine("If -i is specified, some output will be written to the console and the app will wait for user input at end. Otherwise, app runs silently and exits when done.");
-				Console.WriteLine("{run file path} is the path to a JSON runfile.");
+				Console.BackgroundColor = ConsoleColor.DarkBlue;
+				Console.ForegroundColor = ConsoleColor.Yellow;
+
+				Console.WriteLine("Usage: sdfg {run file path}");
+
+				Console.ResetColor();
+
+				Console.BackgroundColor = ConsoleColor.DarkBlue;
+				Console.ForegroundColor = ConsoleColor.White;
+
+				Console.WriteLine("{run file path} is a valid path to a JSON runfile.");
 				Console.WriteLine("See sample runfiles at https://github.com/pelazem/syndatafilegen/tree/master/runfiles.");
-				Console.WriteLine("Press any key to exit.");
-				Console.Read();
+
+				Console.ResetColor();
+
 				return;
 			}
 
-			bool interactive = (args.FirstOrDefault(a => a.ToLowerInvariant() == "-i") != null);
-
 			Stopwatch sw = null;
 
-			if (interactive)
-			{
-				Console.WriteLine("Starting...");
-				sw = new Stopwatch();
-				sw.Start();
-			}
+			Console.WriteLine("Starting...");
+			sw = new Stopwatch();
+			sw.Start();
 
-			Config config = ReadRunFile(args.FirstOrDefault(a => a.ToLowerInvariant() != "-i"));
+			Config config = ReadRunFile(args[0]);
 
 			List<Generator> generators = Factory.Get(config);
 
 			generators.ForEach(g => g.Run());
 
-			if (interactive)
-			{
-				sw.Stop();
-				Console.WriteLine("Completed. Elapsed time: " + sw.Elapsed.ToString());
-				Console.WriteLine("Press any key to exit.");
-				Console.Read();
-			}
+			sw.Stop();
+			Console.WriteLine("Completed. Elapsed time: " + sw.Elapsed.ToString());
 		}
 
 		private static Config ReadRunFile(string path)
