@@ -4,6 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFramework>netcoreapp2.0</TargetFramework>
 		<AssemblyName>sdfg</AssemblyName>
+		<!--<RuntimeIdentifier>win10-x64</RuntimeIdentifier>--> <!-- Uncomment this to build an EXE without the Publish process -->
 		<RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 
@@ -15,5 +16,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SynDataFileGen.Lib\SynDataFileGen.Lib.csproj" />
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="xcopy $(SolutionDir)..\runfiles\*.* $(TargetDir)runfiles /d /e /c /h /i /r /y" />
+	</Target>
 
 </Project>

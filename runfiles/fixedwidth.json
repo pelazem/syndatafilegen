@@ -1,7 +1,7 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "d:\\test\\fwloop\\",
+		"OutputFolderRoot": "output\\fixedwidth\\",
 		"DateStart": "2017-01-01T00:00:00",
 		"DateEnd": "2017-03-31T00:00:00"
 	},
@@ -9,8 +9,8 @@
 	[
 		{
 			"FileType": "FixedWidth",
-			"RecordsPerFileMin": 300,
-			"RecordsPerFileMax": 400,
+			"RecordsPerFileMin": 100,
+			"RecordsPerFileMax": 200,
 			"PathSpec": "{yyyy}-{MM}-{dd}-{hh}.txt",
 			"FieldNameForLoopDateTime": "EventDateTime",
 			"IncludeHeaderRow": false,

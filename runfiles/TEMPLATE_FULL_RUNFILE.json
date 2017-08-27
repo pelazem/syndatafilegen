@@ -3,7 +3,7 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "", // Root folder where generated folders/files will be written
+		"OutputFolderRoot": "output\\", // Root folder where generated folders/files will be written
 		"DateStart": "2017-01-01T00:00:00", // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
 		"DateEnd": "2017-03-31T00:00:00" // To generate files for a date range (make sure to tokenize PathSpec appropriately), specify ISO-formatted start and end dates within which to generate files.
 	},

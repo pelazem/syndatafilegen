@@ -1,7 +1,7 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "d:\\test\\arffloop\\",
+		"OutputFolderRoot": "output\\arff\\",
 		"DateStart": "2017-01-01T00:00:00",
 		"DateEnd": "2017-01-31T00:00:00"
 	},
