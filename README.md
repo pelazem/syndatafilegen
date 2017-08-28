@@ -1,47 +1,9 @@
 # Synthetic Data File Generator (sdfg)
 
-## Summary
-**_What is sdfg?_**
-
 A tool to generate synthetic data files to your specifications.
 
-**_Why did I write sdfg?_**
-
-There are scenarios where non-trivial data files with specific layouts are needed, but where existing/production/real data cannot be used - even with masking and/or scrubbing, out of concern that "we may miss some sensitive data in our mask/scrub steps" or "creating custom mask/scrub steps for our data is too time-consuming".
-
-I wrote sdfg to allow for simple specification of the layout and other options for completely synthetic data file generation, to address these requirements from real-world situations:
-1. We need data files with realistic sizes and data characteristics which cannot be in any way based on production data, but must _resemble_ production data.
-2. We need to specify exact file layouts. Generic examples with layouts different from our files will not work.
-3. We need to specify other options including file date ranges, number of records per file, and details about different fields (columns) in the files. (Details below)
-
-**_How can you use sdfg?_**
-
-1. You can download the `run/syndatafilegen` folder. This is the main tool; it is provided as a self-contained deployment so that no pre-requisites are necessary. You provide a run file with the needed configuration and invoke the tool, and it does the rest. See the README in that folder for command-line example. Multiple run file samples, as well as a full run file template with all options (and comments), are provided under /samples.
-2. You can clone (or fork - I'm happy to consider pull requests) the repo. `/src` contains the full Visual Studio 2017 solution. You can write your own specific wrapper around sdfg; for example, the solution contains a CCLF17 project which I wrote to generate inter-related Medicare CCLF 2017 file sets, where data in one file (for example) is referenced in other files. The CCLF17 tool is also available for command-line invocation in `/run/cclf17`; note that as with the core sdfg tool, you need to provide a run file but again, there is a sample under `/samples/runfile_cclfgenerator`.
-
----
-
-## Structure
-
-sdfg consists of four functional areas:
-* FileSpec: where output file-specific options are set. Currently, sdfg supports output to these formats: .arff; .avro; delimited (e.g. .csv, .tsv, etc.); fixed-width; and JSON.
-* FieldSpec: this is used to configure each field in a file. Currently, sdfg supports these field types: categorical (where you provide a list of categories); date/time (where you provide a min/max date); numeric (where you specify a numeric distribution to use); dynamic (where you provide a C# Func<> to use). In each case, a FieldSpec generates a unique, random value for each record using the info you provide.
-* Distribution: for numeric fields, this is used to specify the numeric distribution to use plus any needed parameters. For example, if you specify a Normal distribution, you'll also need to specify the mean and standard deviation. (See the sample run files.)
-* Writer. Currently, only output to local file-system files is supported.
-
-All the above are loosely coupled and work together through interfaces, so that extension and addition are as easy as possible.
-
----
-
-## Detailed Configuration
-
-Each of the structural areas has specific settings. The best way to gain quick insight into these is to review `/samples/runfile_FULL_TEMPLATE/runFile.json`, which contains every possible option and extensive comments for each option including when to use it, allowable values, and more.
-
----
-
-## Technical
-
-sdfg is a Visual Studio 2017 solution. The console apps are .Net Core 1.1; the libraries (DLLs) are .Net Standard 1.6. To run the apps, you will need to install the latest .NET Core 1.1 runtime from [https://www.microsoft.com/net/download/core#/runtime](https://www.microsoft.com/net/download/core#/runtime).
+Please read my blog post about sdfg here:
+[https://blogs.msdn.microsoft.com/paelaz/2017/08/28/no-data-for-you/](https://blogs.msdn.microsoft.com/paelaz/2017/08/28/no-data-for-you/)
 
 ---
 
