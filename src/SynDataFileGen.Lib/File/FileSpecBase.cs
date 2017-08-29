@@ -85,13 +85,8 @@ namespace SynDataFileGen.Lib
 		{
 			int numOfItems = Converter.GetInt32(RNG.GetUniform(this.RecordsPerFileMin ?? 0, this.RecordsPerFileMax ?? 0));
 
-			// List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
-
 			for (int i = 1; i <= numOfItems; i++)
 				yield return GetRecord();
-				//result.Add(GetRecord());
-
-			// return result;
 		}
 
 		/// <summary>
@@ -109,24 +104,23 @@ namespace SynDataFileGen.Lib
 			double min = 1.0;
 			double max;
 
-			// List<ExpandoObject> result = new List<ExpandoObject>(numOfItems);
-
 			for (int i = 1; i <= numOfItems; i++)
 			{
 				yield return GetRecord(dateLoop);
-				//result.Add(GetRecord(dateLoop));
 
 				if ((dateEnd.Ticks - dateLoop.Ticks) < (2.0 * ticksDelta))
 					max = 1.0;
 				else
 					max = 2.0;
 
+				// Get random coefficient to alter increment between successive record dates
+				// Do not want each record to be identical time increment after previous
+				// Want to simulate "real world", i.e. events occur at varying intervals,
+				//   not with metronome-like regularity
 				ticksFactor = RNG.GetUniform(min, max);
 
 				dateLoop = dateLoop.AddTicks(Converter.GetInt64(ticksPerItem * ticksFactor));
 			}
-
-			//return result;
 		}
 
 
