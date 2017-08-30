@@ -14,14 +14,14 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecIdempotent() { }
 
-		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString)
-			: base(name, enforceUniqueValues, formatString)
+		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString, double? percentChanceEmpty, string emptyValue)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue)
 		{
 			
 		}
 
-		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null, double? percentChanceEmpty = null, string emptyValue = null)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 
 		}
@@ -30,7 +30,7 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		public override void SetNextValue()
+		protected override void SetNextValueWorker()
 		{
 			return;
 		}

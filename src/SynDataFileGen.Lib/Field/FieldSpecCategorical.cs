@@ -22,16 +22,16 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecCategorical() { }
 
-		public FieldSpecCategorical(string name, List<Category> categories, bool enforceUniqueValues, string formatString)
-			: base(name, enforceUniqueValues, formatString)
+		public FieldSpecCategorical(string name, List<Category> categories, bool enforceUniqueValues, string formatString, double? percentChanceEmpty, string emptyValue)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue)
 		{
 			PrepareValues(categories);
 
 			this.Categories = categories;
 		}
 
-		public FieldSpecCategorical(string name, List<Category> categories, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecCategorical(string name, List<Category> categories, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null, double? percentChanceEmpty = null, string emptyValue = null)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			PrepareValues(categories);
 
@@ -42,7 +42,7 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		public override void SetNextValue()
+		protected override void SetNextValueWorker()
 		{
 			// If unique values was set but all of them have been used, turn off unique values so we can continue generating with repeated categorical values.
 			if (this.EnforceUniqueValues && this.Categories.Count == this.UniqueValues.Count)

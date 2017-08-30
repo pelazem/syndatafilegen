@@ -18,8 +18,8 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecContinuousNumeric() { }
 
-		public FieldSpecContinuousNumeric(string name, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString)
-			: base(name, enforceUniqueValues, formatString)
+		public FieldSpecContinuousNumeric(string name, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString, double? percentChanceEmpty, string emptyValue)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue)
 		{
 			this.Distribution = distribution;
 
@@ -29,8 +29,8 @@ namespace SynDataFileGen.Lib
 				this.MaxDigitsAfterDecimalPoint = maxDigitsAfterDecimalPoint;
 		}
 
-		public FieldSpecContinuousNumeric(string name, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecContinuousNumeric(string name, IDistribution distribution, int? maxDigitsAfterDecimalPoint, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null, double? percentChanceEmpty = null, string emptyValue = null)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			this.Distribution = distribution;
 
@@ -44,7 +44,7 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		public override void SetNextValue()
+		protected override void SetNextValueWorker()
 		{
 			double result = this.Distribution.GetValue();
 

@@ -12,6 +12,11 @@ namespace SynDataFileGen.Lib
 		string FormatString { get; }
 
 
+		double? PercentChanceEmpty { get; }
+
+		string EmptyValue { get; }
+
+
 		int? FixedWidthLength { get; }
 
 		char? FixedWidthPaddingChar { get; }

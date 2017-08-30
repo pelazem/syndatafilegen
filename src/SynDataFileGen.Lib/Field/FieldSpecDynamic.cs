@@ -15,14 +15,14 @@ namespace SynDataFileGen.Lib
 
 		private FieldSpecDynamic() { }
 
-		public FieldSpecDynamic(string name, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString)
-			: base(name, enforceUniqueValues, formatString)
+		public FieldSpecDynamic(string name, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString, double? percentChanceEmpty, string emptyValue)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue)
 		{
 			this.FuncToGenerateValue = funcToGenerateValue;
 		}
 
-		public FieldSpecDynamic(string name, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null)
-			: base(name, enforceUniqueValues, formatString, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
+		public FieldSpecDynamic(string name, Func<object> funcToGenerateValue, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null, double? percentChanceEmpty = null, string emptyValue = null)
+			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 			this.FuncToGenerateValue = funcToGenerateValue;
 		}
@@ -31,7 +31,7 @@ namespace SynDataFileGen.Lib
 
 		#region FieldSpecBase implementation
 
-		public override void SetNextValue()
+		protected override void SetNextValueWorker()
 		{
 			if (this.FuncToGenerateValue == null)
 			{

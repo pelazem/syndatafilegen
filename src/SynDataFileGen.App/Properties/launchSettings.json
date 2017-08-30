@@ -1,7 +1,8 @@
 {
   "profiles": {
     "SynDataFileGen.App": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "..\\..\\runfiles\\csv.json"
     }
   }
 }

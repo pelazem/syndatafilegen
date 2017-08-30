@@ -127,16 +127,16 @@ namespace SynDataFileGen.Lib
 				switch (fieldSpecConfig.FieldType)
 				{
 					case ConfigValues.FIELDTYPE_CATEGORICAL:
-						fieldSpec = new FieldSpecCategorical(fieldSpecConfig.Name, fieldSpecConfig.Categories, fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar);
+						fieldSpec = new FieldSpecCategorical(fieldSpecConfig.Name, fieldSpecConfig.Categories, fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar, fieldSpecConfig.PercentChanceEmpty, fieldSpecConfig.EmptyValue);
 						break;
 					case ConfigValues.FIELDTYPE_CONTINUOUSDATETIME:
-						fieldSpec = new FieldSpecContinuousDateTime(fieldSpecConfig.Name, fieldSpecConfig.DateStart, fieldSpecConfig.DateEnd, fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar);
+						fieldSpec = new FieldSpecContinuousDateTime(fieldSpecConfig.Name, fieldSpecConfig.DateStart, fieldSpecConfig.DateEnd, fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar, fieldSpecConfig.PercentChanceEmpty, fieldSpecConfig.EmptyValue);
 						break;
 					case ConfigValues.FIELDTYPE_CONTINUOUSNUMERIC:
-						fieldSpec = new FieldSpecContinuousNumeric(fieldSpecConfig.Name, GetDistribution(fieldSpecConfig.NumericDistribution), fieldSpecConfig.MaxDigitsAfterDecimalPoint, fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar);
+						fieldSpec = new FieldSpecContinuousNumeric(fieldSpecConfig.Name, GetDistribution(fieldSpecConfig.NumericDistribution), fieldSpecConfig.MaxDigitsAfterDecimalPoint, fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar, fieldSpecConfig.PercentChanceEmpty, fieldSpecConfig.EmptyValue);
 						break;
 					case ConfigValues.FIELDTYPE_DYNAMIC:
-						fieldSpec = new FieldSpecDynamic(fieldSpecConfig.Name, GetFunky(fieldSpecConfig.DynamicFunc), fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar);
+						fieldSpec = new FieldSpecDynamic(fieldSpecConfig.Name, GetFunky(fieldSpecConfig.DynamicFunc), fieldSpecConfig.EnforceUniqueValues, fieldSpecConfig.FormatString, fieldSpecConfig.FixedWidthLength, GetLocation(fieldSpecConfig.FixedWidthAddPadding), GetLocation(fieldSpecConfig.FixedWidthTruncate), fieldSpecConfig.FixedWidthPaddingChar, fieldSpecConfig.PercentChanceEmpty, fieldSpecConfig.EmptyValue);
 						break;
 				}
 

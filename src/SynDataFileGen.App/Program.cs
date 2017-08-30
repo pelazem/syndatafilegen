@@ -13,6 +13,10 @@ namespace SynDataFileGen.App
 	{
 		static void Main(string[] args)
 		{
+#if DEBUG
+			Console.WriteLine(Directory.GetCurrentDirectory());
+#endif
+
 			if (args.Length == 0 || args.Length > 1 || !File.Exists(args[0]))
 			{
 				Console.BackgroundColor = ConsoleColor.DarkBlue;

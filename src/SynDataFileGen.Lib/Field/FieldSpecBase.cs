@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using pelazem.util;
 
 namespace SynDataFileGen.Lib
 {
 	public abstract class FieldSpecBase : IFieldSpec
 	{
+		protected double? _percentChanceEmpty = 0;
+		protected string _emptyValue = string.Empty;
+
 		protected object _value = null;
 
 		#region IFieldSpec implementation
@@ -24,6 +28,41 @@ namespace SynDataFileGen.Lib
 		/// String to format output. Optional.
 		/// </summary>
 		public string FormatString { get; protected set; }
+
+		/// <summary>
+		/// Percent chance that a generated value will be empty.
+		/// Passing null or negative will set this to zero.
+		/// Passing greater than 100 will set this to 100.
+		/// </summary>
+		public double? PercentChanceEmpty
+		{
+			get { return _percentChanceEmpty; }
+			protected set
+			{
+				if (value == null || value < 0)
+					_percentChanceEmpty = 0;
+				else if (value >= 100)
+					_percentChanceEmpty = 100;
+				else
+					_percentChanceEmpty = value;
+			}
+		}
+
+		/// <summary>
+		/// If an empty value is generated (based on PercentChanceEmpty), the value to be written to the output.
+		/// Generally empty string ("") is appropriate.
+		/// </summary>
+		public string EmptyValue
+		{
+			get { return _emptyValue; }
+			protected set
+			{
+				if (value == null)
+					_emptyValue = string.Empty;
+				else
+					_emptyValue = value;
+			}
+		}
 
 		/// <summary>
 		/// Length of this field in fixed-width files; ignored otherwise. Values will be padded or truncated (as needed) to this length.
@@ -72,7 +111,7 @@ namespace SynDataFileGen.Lib
 				if (!string.IsNullOrWhiteSpace(this.FormatString))
 					return string.Format(this.FormatString, this.Value);
 				else
-					return this.Value.ToString();
+					return (this.Value == null ? string.Empty : this.Value.ToString());
 			}
 		}
 
@@ -94,11 +133,13 @@ namespace SynDataFileGen.Lib
 		/// <param name="prop"></param>
 		/// <param name="formatString"></param>
 		/// <param name="enforceUniqueValues"></param>
-		public FieldSpecBase(string name, bool enforceUniqueValues, string formatString)
+		public FieldSpecBase(string name, bool enforceUniqueValues, string formatString, double? percentChanceEmpty, string emptyValue)
 		{
 			this.Name = name;
 			this.FormatString = formatString;
 			this.EnforceUniqueValues = enforceUniqueValues;
+			this.PercentChanceEmpty = percentChanceEmpty;
+			this.EmptyValue = emptyValue;
 		}
 
 		/// <summary>
@@ -111,8 +152,8 @@ namespace SynDataFileGen.Lib
 		/// <param name="fixedWidthAddPadding"></param>
 		/// <param name="fixedWidthTruncate"></param>
 		/// <param name="enforceUniqueValues"></param>
-		public FieldSpecBase(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, char? fixedWidthPaddingChar, Util.Location? fixedWidthAddPadding, Util.Location? fixedWidthTruncate)
-			: this(name, enforceUniqueValues, formatString)
+		public FieldSpecBase(string name, bool enforceUniqueValues, string formatString, double? percentChanceEmpty, string emptyValue, int? fixedWidthLength, char? fixedWidthPaddingChar, Util.Location? fixedWidthAddPadding, Util.Location? fixedWidthTruncate)
+			: this(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue)
 		{
 			this.FixedWidthLength = fixedWidthLength;
 			this.FixedWidthPaddingChar = fixedWidthPaddingChar;
@@ -122,6 +163,23 @@ namespace SynDataFileGen.Lib
 
 		#endregion
 
-		public abstract void SetNextValue();
+		public void SetNextValue()
+		{
+			bool itsEmpty = false;
+
+			if (this.PercentChanceEmpty == 100)
+				itsEmpty = true;
+			else if (this.PercentChanceEmpty > 0)
+				itsEmpty = (RNG.GetUniform(0, 100) <= this.PercentChanceEmpty);
+			else
+				itsEmpty = false;   // Just being explicit...
+
+			if (itsEmpty)
+				_value = this.EmptyValue;
+			else
+				SetNextValueWorker();
+		}
+
+		protected abstract void SetNextValueWorker();
 	}
 }
