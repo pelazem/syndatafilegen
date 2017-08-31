@@ -18,17 +18,17 @@ namespace CCLF17.Lib
 		{
 			return new List<IFieldSpec>()
 			{
-				new FieldSpecCategorical(CCLFData.CUR_CLM_UNIQ_ID, CUR_CLM_UNIQ_ID, false, null, 13),
-				new FieldSpecCategorical(CCLFData.BENE_HIC_NUM, BENE_HIC_NUM, false, null, 11),
-				new FieldSpecCategorical(CCLFData.CLM_TYPE_CD, CCLFData.LIST_CLM_TYPE_CD, false, null, 2),
-				new FieldSpecContinuousNumeric(CCLFData.CLM_VAL_SQNC_NUM, new DistIncrementing(0, 1), 0, false, null, 2),
-				new FieldSpecCategorical(CCLFData.CLM_PRCDR_CD, PRNCPL_DGNS_CD, false, null, 7),
-				new FieldSpecContinuousDateTime(CCLFData.CLM_PRCDR_PRFRM_DT, DateTime.UtcNow.AddMonths(-4), DateTime.UtcNow.AddMonths(-1), false, "{0:yyyy-MM-dd}", 10),
-				new FieldSpecCategorical(CCLFData.BENE_EQTBL_BIC_HICN_NUM, BENE_EQTBL_BIC_HICN_NUM, false, null, 11),
-				new FieldSpecCategorical(CCLFData.PRVDR_OSCAR_NUM, PRVDR_OSCAR_NUM, false, null, 6),
-				new FieldSpecContinuousDateTime(CCLFData.CLM_FROM_DT, DateTime.UtcNow.AddMonths(-2), DateTime.UtcNow.AddMonths(-1), false, "{0:yyyy-MM-dd}", 10),
-				new FieldSpecContinuousDateTime(CCLFData.CLM_THRU_DT, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow, false, "{0:yyyy-MM-dd}", 10),
-				new FieldSpecDynamic(CCLFData.DGNS_PRCDR_ICD_IND, () => "0", false, null, 1),
+				new FieldSpecCategorical(CCLFData.CUR_CLM_UNIQ_ID, CUR_CLM_UNIQ_ID, false, null, 13, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecCategorical(CCLFData.BENE_HIC_NUM, BENE_HIC_NUM, false, null, 11, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecCategorical(CCLFData.CLM_TYPE_CD, CCLFData.LIST_CLM_TYPE_CD, false, null, 2, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecContinuousNumeric(CCLFData.CLM_VAL_SQNC_NUM, new DistIncrementing(0, 1), 0, false, null, 2, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecCategorical(CCLFData.CLM_PRCDR_CD, PRNCPL_DGNS_CD, false, null, 7, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecContinuousDateTime(CCLFData.CLM_PRCDR_PRFRM_DT, DateTime.UtcNow.AddMonths(-4), DateTime.UtcNow.AddMonths(-1), false, "{0:yyyy-MM-dd}", 10, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecCategorical(CCLFData.BENE_EQTBL_BIC_HICN_NUM, BENE_EQTBL_BIC_HICN_NUM, false, null, 11, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecCategorical(CCLFData.PRVDR_OSCAR_NUM, PRVDR_OSCAR_NUM, false, null, 6, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecContinuousDateTime(CCLFData.CLM_FROM_DT, DateTime.UtcNow.AddMonths(-2), DateTime.UtcNow.AddMonths(-1), false, "{0:yyyy-MM-dd}", 10, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecContinuousDateTime(CCLFData.CLM_THRU_DT, DateTime.UtcNow.AddMonths(-1), DateTime.UtcNow, false, "{0:yyyy-MM-dd}", 10, Util.Location.AtStart, Util.Location.AtEnd, null, null, null),
+				new FieldSpecDynamic(CCLFData.DGNS_PRCDR_ICD_IND, () => "0", false, null, 1, Util.Location.AtStart, Util.Location.AtEnd, null, null, null)
 			};
 		}
 	}

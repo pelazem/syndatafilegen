@@ -6,6 +6,9 @@
 		<AssemblyName>sdfg</AssemblyName>
 		<!--<RuntimeIdentifier>win10-x64</RuntimeIdentifier>--> <!-- Uncomment this to build an EXE without the Publish process -->
 		<RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+		<Version>1.1.0</Version>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<Description />
 	</PropertyGroup>
 
 	<ItemGroup>

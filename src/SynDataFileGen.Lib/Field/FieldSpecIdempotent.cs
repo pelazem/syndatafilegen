@@ -20,7 +20,7 @@ namespace SynDataFileGen.Lib
 			
 		}
 
-		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding = Util.Location.AtStart, Util.Location? fixedWidthTruncate = Util.Location.AtEnd, char? fixedWidthPaddingChar = null, double? percentChanceEmpty = null, string emptyValue = null)
+		public FieldSpecIdempotent(string name, bool enforceUniqueValues, string formatString, int? fixedWidthLength, Util.Location? fixedWidthAddPadding, Util.Location? fixedWidthTruncate, char? fixedWidthPaddingChar, double? percentChanceEmpty, string emptyValue)
 			: base(name, enforceUniqueValues, formatString, percentChanceEmpty, emptyValue, fixedWidthLength, fixedWidthPaddingChar, fixedWidthAddPadding, fixedWidthTruncate)
 		{
 

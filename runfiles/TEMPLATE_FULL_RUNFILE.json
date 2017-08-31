@@ -30,6 +30,8 @@
 					"Name": "", // Field name. --Make sure that if you specify FieldNameForLoopDateTime at the FileSpec level, that field is included in the list.
 					"EnforceUniqueValues": false, // Sets whether repeated values are prevented in this field for a given file. Note that for categorical fields, if the number of rows exceeds the number of distinct categories provided, this setting will be ignored and duplicate values will be allowed.
 					"FormatString": "", // Optional: a .NET format string for the output. See https://docs.microsoft.com/en-us/dotnet/standard/base-types/formatting-types. Example: c for currency, n for integer, etc.
+					"PercentChanceEmpty": "10",	// Optional: a number between 0 and 100 (inclusive) for the chance that a given record's value for this field is "empty". This is to give you the option of generating sparse/gapped data. Blank means zero; values below zero will be deserialized as zero; values above 100 as 100.
+					"EmptyValue": "",	// Optional: a string to write to output if the record's value for this field is generated as blank. Empty string by default.
 					"FixedWidthLength": 50, // In a fixed-width file, size of the field. Ignored for file types other than fixed-width.
 					"FixedWidthPaddingChar": "", // Optional. Field-level override of the file-level setting. If not specified, the file-level setting is used.
 					"FixedWidthAddPadding": "", // Optional. Field-level override of the file-level setting. If not specified, the file-level setting is used.
