@@ -1,9 +1,9 @@
 {
 	"Generator":
 	{
-		"OutputFolderRoot": "D:\\test\\csv\\",
-		"DateStart": "2017-07-01T00:00:00",
-		"DateEnd": "2017-08-01T00:00:00"
+		"OutputFolderRoot": "output\\csv\\",
+		"DateStart": "2017-08-01T00:00:00",
+		"DateEnd": "2017-09-01T00:00:00"
 	},
 	"FileSpecs":
 	[
@@ -36,7 +36,7 @@
 					"Name": "Qty",
 					"EnforceUniqueValues": "false",
 					"FormatString": "{0:n0}",
-					"PercentChanceEmpty": "20",
+					"PercentChanceEmpty": "10",
 					"EmptyValue": "",
 					"NumericDistribution":
 					{
@@ -51,7 +51,7 @@
 					"Name": "UnitPrice",
 					"EnforceUniqueValues": "false",
 					"FormatString": "{0:c}",
-					"PercentChanceEmpty": "50",
+					"PercentChanceEmpty": "10",
 					"EmptyValue": "",
 					"NumericDistribution":
 					{
@@ -105,8 +105,6 @@
 					"Name": "Guid",
 					"EnforceUniqueValues": "false",
 					"FormatString": null,
-					"PercentChanceEmpty": "20",
-					"EmptyValue": "",
 					"DynamicFunc": "() => System.Guid.NewGuid().ToString()"
 				}
 			]

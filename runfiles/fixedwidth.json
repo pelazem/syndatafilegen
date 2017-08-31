@@ -2,8 +2,8 @@
 	"Generator":
 	{
 		"OutputFolderRoot": "output\\fixedwidth\\",
-		"DateStart": "2017-01-01T00:00:00",
-		"DateEnd": "2017-03-31T00:00:00"
+		"DateStart": "2017-08-01T00:00:00",
+		"DateEnd": "2017-09-01T00:00:00"
 	},
 	"FileSpecs":
 	[
@@ -40,6 +40,8 @@
 					"Name": "Qty",
 					"EnforceUniqueValues": false,
 					"FormatString": "{0:n1}",
+					"PercentChanceEmpty": "10",
+					"EmptyValue": "",
 					"FixedWidthLength": 20,
 					"NumericDistribution":
 					{
@@ -54,6 +56,8 @@
 					"Name": "UnitPrice",
 					"EnforceUniqueValues": false,
 					"FormatString": "{0:c}",
+					"PercentChanceEmpty": "10",
+					"EmptyValue": "",
 					"FixedWidthLength": 20,
 					"NumericDistribution":
 					{
@@ -66,6 +70,8 @@
 				{
 					"FieldType": "categorical",
 					"Name": "Element",
+					"PercentChanceEmpty": "10",
+					"EmptyValue": "Unobtainium",
 					"FixedWidthLength": 30,
 					"EnforceUniqueValues": false,
 					"Categories":

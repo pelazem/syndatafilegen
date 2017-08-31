@@ -15,6 +15,7 @@ namespace SynDataFileGen.App
 		{
 #if DEBUG
 			Console.WriteLine(Directory.GetCurrentDirectory());
+			Console.WriteLine();
 #endif
 
 			if (args.Length == 0 || args.Length > 1 || !File.Exists(args[0]))
@@ -39,7 +40,7 @@ namespace SynDataFileGen.App
 
 			Stopwatch sw = null;
 
-			Console.WriteLine("Starting...");
+			Console.WriteLine("Generating. Please wait...");
 			sw = new Stopwatch();
 			sw.Start();
 
