@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SynDataFileGen.Lib", "SynDataFileGen.Lib\SynDataFileGen.Lib.csproj", "{7CD4E3E1-B37F-4298-88D9-5DA00FA67FD3}"
 EndProject
@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CCLF17", "CCLF17", "{83CF19
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCLF17.Lib", "CCLF17.Lib\CCLF17.Lib.csproj", "{D6226D5A-D7F3-499A-A91B-A778805B34F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCLF17.App", "CCLF17.App\CCLF17.App.csproj", "{6D774DA6-EBE2-4C6B-9A65-9A52DF70D364}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CCLF17.App", "CCLF17.App\CCLF17.App.csproj", "{6D774DA6-EBE2-4C6B-9A65-9A52DF70D364}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +48,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D6226D5A-D7F3-499A-A91B-A778805B34F2} = {83CF19B1-EADB-4A05-B096-7EDBFDDB5772}
 		{6D774DA6-EBE2-4C6B-9A65-9A52DF70D364} = {83CF19B1-EADB-4A05-B096-7EDBFDDB5772}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {31D4B3E5-0E42-476C-AE66-EC413CF9355C}
 	EndGlobalSection
 EndGlobal
